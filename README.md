@@ -60,7 +60,7 @@ To use this setup in your own project:
 
 ## Acknowledgments
 
-This setup is heavily inspired by and adapted from the excellent work done for the Claude Code community. Special thanks to the original author: [[Link to original repository/author here](https://github.com/fdhhhdjd/Class-AI-Agent)]
+This setup is heavily inspired by and adapted from the excellent work done for the Claude Code community. Special thanks to the original author: [[Class-AI-Agent](https://github.com/fdhhhdjd/Class-AI-Agent)]
 
 ---
 

@@ -27,11 +27,13 @@ npm install -g @google/gemini-cli
 ```
 
 Đăng nhập:
+
 ```bash
 gemini auth login
 ```
 
 Kiểm tra hoạt động:
+
 ```bash
 gemini --version
 ```
@@ -51,6 +53,7 @@ Dùng file `GEMINI.md` đi kèm — điền vào phần **Project Context** vớ
 
 ```markdown
 ## Project Context
+
 - Project name: E-commerce API
 - Stack: Node.js, Express, TypeScript, PostgreSQL, Redis
 - Current goal: Implement order management module
@@ -119,6 +122,7 @@ gemini --model gemini-2.5-pro
 ```
 
 Hoặc đổi model trong session:
+
 ```
 /model gemini-2.5-pro
 ```
@@ -154,18 +158,21 @@ Mark each step complete in tasks/todo.md as you go.
 Đây là thứ Gemini làm tốt hơn hầu hết AI khác. Dùng nó cho:
 
 **Phân tích toàn bộ codebase:**
+
 ```
 Load all files in src/ and give me a comprehensive architectural overview.
 Write the summary to docs/ai/architecture-review.md
 ```
 
 **Phân tích dependency giữa các module:**
+
 ```
 Load @src/auth/ and @src/users/ together.
 Explain how they interact and identify any coupling issues.
 ```
 
 **Review toàn bộ PR diff:**
+
 ```
 Here is the full git diff: !git diff main...feat/my-feature
 Review this as a senior engineer. What concerns do you have?
@@ -214,13 +221,13 @@ Trace the root cause and propose the minimal fix.
 
 ### Phân loại task: Tự chạy vs Theo dõi sát
 
-| Để Gemini tự chạy | Theo dõi từng bước |
-|---|---|
-| Phân tích codebase lớn | Core business logic |
-| Viết unit tests | Authentication / Security / Payment |
-| Tạo documentation | Database migrations |
-| Refactor nhỏ, rõ ràng | Tích hợp third-party service |
-| Convert code giữa ngôn ngữ | API contract changes |
+| Để Gemini tự chạy          | Theo dõi từng bước                  |
+| -------------------------- | ----------------------------------- |
+| Phân tích codebase lớn     | Core business logic                 |
+| Viết unit tests            | Authentication / Security / Payment |
+| Tạo documentation          | Database migrations                 |
+| Refactor nhỏ, rõ ràng      | Tích hợp third-party service        |
+| Convert code giữa ngôn ngữ | API contract changes                |
 
 ---
 
@@ -245,6 +252,7 @@ Search for the most common causes and apply the fix to @src/components/UserList.
 ### Vấn đề với context window lớn
 
 Lợi thế của context lớn có thể trở thành vấn đề nếu:
+
 - Session kéo dài nhiều giờ, nhiều task khác nhau
 - Context chứa nhiều output cũ của shell commands
 - Gemini bắt đầu "nhớ" quyết định sai từ sớm trong session
@@ -281,14 +289,14 @@ Lợi thế của context lớn có thể trở thành vấn đề nếu:
 
 ### Slash Commands Quan Trọng
 
-| Lệnh | Tác dụng |
-|---|---|
-| `/help` | Xem tất cả lệnh có sẵn |
-| `/clear` | Reset context hoàn toàn |
-| `/compress` | Nén context, giữ tóm tắt |
-| `/model [name]` | Đổi model (flash/pro/ultra) |
-| `/tools` | Xem các tool Gemini có thể dùng |
-| `/quit` hoặc `Ctrl+C` | Thoát |
+| Lệnh                  | Tác dụng                        |
+| --------------------- | ------------------------------- |
+| `/help`               | Xem tất cả lệnh có sẵn          |
+| `/clear`              | Reset context hoàn toàn         |
+| `/compress`           | Nén context, giữ tóm tắt        |
+| `/model [name]`       | Đổi model (flash/pro/ultra)     |
+| `/tools`              | Xem các tool Gemini có thể dùng |
+| `/quit` hoặc `Ctrl+C` | Thoát                           |
 
 ### Shell Commands Trong Session
 
@@ -316,11 +324,13 @@ Lợi thế của context lớn có thể trở thành vấn đề nếu:
 ### Prompt tốt = Input tốt → Output tốt
 
 **Không tốt:**
+
 ```
 Fix the bug
 ```
 
 **Tốt:**
+
 ```
 # Context
 File: @src/api/orders.ts
@@ -340,17 +350,21 @@ Write tests for the bank_transfer case.
 
 ```markdown
 # Goal
+
 Refactor the authentication module
 
 ## Current state
+
 @src/auth/auth.service.ts — monolithic, 800 lines
 
 ## Requirements
+
 - Split into: TokenService, SessionService, PasswordService
 - Maintain all existing public APIs
 - No behavior changes
 
 ## Constraints
+
 - Cannot change the database schema
 - Must stay compatible with existing middleware
 ```
@@ -361,15 +375,15 @@ Refactor the authentication module
 
 Hiểu điểm mạnh của từng tool để dùng đúng lúc:
 
-| | Gemini CLI | Claude Code |
-|---|---|---|
-| **Context window** | Rất lớn (1M+ tokens) | Lớn, quản lý tốt |
-| **Whole-codebase analysis** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Web search tích hợp** | ✅ Native | Cần tool bổ sung |
-| **Shell integration** | ✅ `!command` | ✅ Native |
-| **Ecosystem & plugins** | Đang phát triển | Trưởng thành hơn |
-| **Custom slash commands** | Giới hạn | Phong phú |
-| **GEMINI.md / CLAUDE.md** | `GEMINI.md` | `CLAUDE.md` |
+|                             | Gemini CLI           | Claude Code      |
+| --------------------------- | -------------------- | ---------------- |
+| **Context window**          | Rất lớn (1M+ tokens) | Lớn, quản lý tốt |
+| **Whole-codebase analysis** | ⭐⭐⭐⭐⭐           | ⭐⭐⭐⭐         |
+| **Web search tích hợp**     | ✅ Native            | Cần tool bổ sung |
+| **Shell integration**       | ✅ `!command`        | ✅ Native        |
+| **Ecosystem & plugins**     | Đang phát triển      | Trưởng thành hơn |
+| **Custom slash commands**   | Giới hạn             | Phong phú        |
+| **GEMINI.md / CLAUDE.md**   | `GEMINI.md`          | `CLAUDE.md`      |
 
 **Kết luận thực tế**: Hai tool complement nhau tốt. Nhiều developer dùng cả hai — Gemini cho phân tích codebase lớn, Claude Code cho coding workflow hàng ngày.
 
@@ -378,27 +392,32 @@ Hiểu điểm mạnh của từng tool để dùng đúng lúc:
 ## Phần 8 — Tình Huống Thường Gặp
 
 ### Gemini đọc sai file?
+
 ```
 # Specify rõ hơn
 Load ONLY @src/auth/auth.service.ts — do not load other files.
 ```
 
 ### Output quá dài, khó đọc?
+
 ```
 Give me a summary in bullet points, max 10 points.
 Then write the full analysis to docs/ai/analysis.md
 ```
 
 ### Gemini đang overcomplicate giải pháp?
+
 ```
 Stop. This solution is too complex.
 What is the simplest possible approach to solve this specific problem?
 ```
 
 ### Muốn Gemini làm nhiều task song song?
+
 Mở nhiều terminal window, mỗi window một instance Gemini trong context riêng.
 
 ### Gemini lặp lại cùng một lỗi?
+
 ```
 Update tasks/lessons.md with this rule: [mô tả pattern cụ thể]
 Reference this rule at the start of future sessions.
@@ -460,3 +479,22 @@ Commit checkpoint trước khi làm gì phức tạp:
 3. **Commit thường xuyên** — Checkpoint trước mỗi task lớn. Rollback nếu cần, không sợ mất gì.
 
 > Gemini CLI mạnh nhất khi bạn cho nó **toàn cảnh** — nhưng với **mục tiêu rõ ràng**. Đó là sự khác biệt giữa dùng AI như công cụ và dùng AI như đồng đội.
+
+---
+
+PROMPT ĐÁNH GIÁ CODE TOÀN DIỆN
+Đảm bảo chất lượng code
+
+---
+
+Đánh giá đoạn code sau về các thực tiễn tốt nhất, hiệu suất, bảo mật và khả năng bảo trì:
+[DÁN CODE CỦA BẠN]
+Ngôn ngữ/Framework: [ví dụ: Python/Django, JavaScript/React]
+Cung cấp:
+
+1. Các lỗ hổng bảo mật
+2. Các điểm nghẽn hiệu suất
+3. Phát hiện mã lỗi
+4. Vi phạm thực tiễn tốt nhất
+5. Đề xuất tái cấu trúc
+6. Xếp hạng (1-10) kèm lý do

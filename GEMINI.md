@@ -70,9 +70,7 @@
 
 ### 7. Using Skills
 
-- Proactively use inherent skills (available, established) that are appropriate for the task requirements.
-
-- When the skill content is insufficient to complete the task, read the @SKILLS_GUIDE.md file to find and use user-created skill extensions in the project.
+- Proactively use inherent skills in `@.agents/skills/` (available, established) that are appropriate for the task requirements.
 
 ---
 

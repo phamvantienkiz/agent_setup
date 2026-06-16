@@ -27,7 +27,7 @@ Transform user requirements into professional Product Requirements Documents (PR
 1. Read project README, package.json/pyproject.toml in parallel. If it's a newly created project and you're in the process of writing the necessary documentation beforehand, look for the files in `docs/` or the specified documents.
 2. Understand tech stack, existing architecture, and conventions
 3. Present initial interpretation of the user's request within the project context. Ask: "Is this understanding correct? What would you like to add?"
-4. Create a file named `docs/ai/ask-user-question.md` to list all the questions that need to be asked for user answers to clarify requirements. Do not delete answered questions; instead, add new questions to the end of the file or directly below the questions that need further clarification.
+4. Create a file named `docs/ai/ask-prd.md` to list all the questions that need to be asked for user answers to clarify requirements. Do not delete answered questions; instead, add new questions to the end of the file or directly below the questions that need further clarification.
 
 **Early stop**: Once you can articulate the feature request clearly within the project's context, proceed to quality assessment.
 
@@ -85,7 +85,7 @@ Breakdown:
 
 ### Step 3: Targeted Clarification
 
-**If score < 90**, use file named `docs/ai/ask-user-question.md` to to ask further questions clarify gaps. Focus on the lowest-scoring area first.
+**If score < 90**, use file named `docs/ai/ask-prd.md` to to ask further questions clarify gaps. Focus on the lowest-scoring area first.
 
 **Question categories by dimension:**
 

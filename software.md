@@ -1,4 +1,4 @@
-Các dạng tài liệu mà dân công nghệ có thể bạn sẽ gặp phải khi học/làm nghề IT:
+Các dạng tài liệu :
 
 1. Tài liệu yêu cầu
 
@@ -83,3 +83,56 @@ Các dạng tài liệu mà dân công nghệ có thể bạn sẽ gặp phải 
 - Maintenance Guide - Hướng dẫn bảo trì
   Làm công nghệ không chỉ là viết code. Bạn sẽ phải đọc, viết, trao đổi và làm việc với rất nhiều loại tài liệu khác nhau.
   Vì tài liệu chính là thứ giúp BA, Dev, Tester, Data, PM, khách hàng và người dùng hiểu cùng một vấn đề theo cùng một cách.
+
+---
+
+Các dạng sơ đồ, biểu đồ:
+
+1. Nhóm sơ đồ yêu cầu & nghiệp vụ
+
+- Use Case Diagram - Sơ đồ mô tả chức năng hệ thống và ai sử dụng chức năng đó
+- Activity Diagram - Sơ đồ mô tả luồng hoạt động hoặc quy trình xử lý
+- Flowchart - Lưu đồ mô tả các bước xử lý theo thứ tự
+- BPMN Diagram - Sơ đồ mô tả quy trình nghiệp vụ trong doanh nghiệp
+- User Flow - Sơ đồ mô tả hành trình người dùng đi qua các màn hình
+
+2. Nhóm sơ đồ dữ liệu
+
+- ERD - Sơ đồ thực thể liên kết, mô tả bảng dữ liệu và quan hệ giữa các bảng
+- DFD - Sơ đồ luồng dữ liệu, mô tả dữ liệu đi vào, đi ra và được xử lý như thế nào
+- Data Flow Diagram - Sơ đồ mô tả luồng dữ liệu giữa các chức năng, màn hình hoặc hệ thống
+- CRUD Matrix - Bảng/sơ đồ thể hiện chức năng nào được tạo, đọc, sửa, xóa dữ liệu
+
+3. Nhóm sơ đồ thiết kế hệ thống
+
+- System Architecture Diagram - Sơ đồ kiến trúc tổng thể của hệ thống
+- Sequence Diagram - Sơ đồ tuần tự, mô tả cách các thành phần tương tác với nhau theo thời gian
+- Component Diagram - Sơ đồ mô tả các thành phần chính trong hệ thống
+- Deployment Diagram - Sơ đồ mô tả hệ thống được triển khai lên server, cloud hoặc hạ tầng thật
+- Class Diagram - Sơ đồ lớp, thường gặp khi học/làm với lập trình hướng đối tượng
+
+4. Nhóm sơ đồ API & tích hợp
+
+- API Flow Diagram - Sơ đồ mô tả luồng gọi API giữa frontend, backend và hệ thống khác
+- Integration Diagram - Sơ đồ mô tả cách nhiều phần mềm, dịch vụ hoặc nền tảng kết nối với nhau
+- Authentication Flow Diagram - Sơ đồ mô tả luồng đăng nhập, xác thực và phân quyền
+- Permission Matrix - Bảng/sơ đồ phân quyền, thể hiện ai được xem, thêm, sửa, xóa chức năng nào
+
+5. Nhóm sơ đồ UI/UX & sản phẩm
+
+- Wireframe - Sơ đồ khung giao diện, mô tả bố cục màn hình ở mức thô
+- Sitemap - Sơ đồ cấu trúc các trang hoặc màn hình trong website/app
+- User Journey Map - Sơ đồ hành trình người dùng khi sử dụng sản phẩm
+- Screen Flow - Sơ đồ mô tả cách người dùng di chuyển giữa các màn hình
+
+6. Nhóm sơ đồ vận hành & hạ tầng
+
+- CI/CD Pipeline Diagram - Sơ đồ quy trình tự động build, test và deploy phần mềm
+- Infrastructure Diagram - Sơ đồ hạ tầng gồm server, database, cloud, network
+- Network Diagram - Sơ đồ mạng, mô tả các kết nối giữa thiết bị và hệ thống
+- Monitoring Dashboard - Bảng theo dõi trạng thái hệ thống, lỗi, log và hiệu năng
+
+7. Nhóm biểu đồ dữ liệu & báo cáo
+
+- Heatmap - Biểu đồ nhiệt, giúp nhìn nhanh khu vực có mật độ cao/thấp
+- Dashboard - Màn hình tổng hợp nhiều biểu đồ/chỉ số để theo dõi tình hình kinh doanh, sản phẩm hoặc hệ thống

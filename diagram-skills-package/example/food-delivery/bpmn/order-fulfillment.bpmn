@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Def_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="Collaboration_1">
+    <bpmn:participant id="Participant_1" name="Đặt &amp; giao đồ ăn — đầu cuối" processRef="Process_order_fulfillment"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_order_fulfillment" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_customer" name="Khách"><bpmn:flowNodeRef>Start_1</bpmn:flowNodeRef><bpmn:flowNodeRef>End_payfail</bpmn:flowNodeRef><bpmn:flowNodeRef>End_cancel</bpmn:flowNodeRef><bpmn:flowNodeRef>End_failed</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_receive</bpmn:flowNodeRef><bpmn:flowNodeRef>End_done</bpmn:flowNodeRef></bpmn:lane>
+      <bpmn:lane id="Lane_system" name="Hệ thống"><bpmn:flowNodeRef>Task_total</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_online</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_pay</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_paid</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_send</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_refund</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_assign</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_shipper</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_fail</bpmn:flowNodeRef></bpmn:lane>
+      <bpmn:lane id="Lane_restaurant" name="Nhà hàng"><bpmn:flowNodeRef>GW_accept</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_prepare</bpmn:flowNodeRef></bpmn:lane>
+      <bpmn:lane id="Lane_shipper" name="Shipper"><bpmn:flowNodeRef>Task_pickup</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_delivered</bpmn:flowNodeRef></bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_1" name="Khách đặt món"><bpmn:outgoing>Flow_start</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:task id="Task_total" name="Tính tổng tiền (món + ship + KM)"><bpmn:incoming>Flow_start</bpmn:incoming><bpmn:outgoing>Flow_totot</bpmn:outgoing></bpmn:task>
+    <bpmn:exclusiveGateway id="GW_online" name="Thanh toán online?"><bpmn:incoming>Flow_totot</bpmn:incoming><bpmn:outgoing>Flow_on_yes</bpmn:outgoing><bpmn:outgoing>Flow_on_no</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:task id="Task_pay" name="Gọi cổng thanh toán"><bpmn:incoming>Flow_on_yes</bpmn:incoming><bpmn:outgoing>Flow_topaid</bpmn:outgoing></bpmn:task>
+    <bpmn:exclusiveGateway id="GW_paid" name="Thu tiền thành công?"><bpmn:incoming>Flow_topaid</bpmn:incoming><bpmn:outgoing>Flow_paid_no</bpmn:outgoing><bpmn:outgoing>Flow_paid_yes</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_payfail" name="Thanh toán thất bại (dừng)"><bpmn:incoming>Flow_paid_no</bpmn:incoming></bpmn:endEvent>
+    <bpmn:task id="Task_send" name="Gửi đơn tới nhà hàng"><bpmn:incoming>Flow_on_no</bpmn:incoming><bpmn:incoming>Flow_paid_yes</bpmn:incoming><bpmn:outgoing>Flow_toaccept</bpmn:outgoing></bpmn:task>
+    <bpmn:exclusiveGateway id="GW_accept" name="Nhà hàng nhận đơn trong 5 phút?"><bpmn:incoming>Flow_toaccept</bpmn:incoming><bpmn:outgoing>Flow_acc_no</bpmn:outgoing><bpmn:outgoing>Flow_acc_yes</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:task id="Task_refund" name="Hoàn tiền nếu đã thu online"><bpmn:incoming>Flow_acc_no</bpmn:incoming><bpmn:incoming>Flow_sh_no</bpmn:incoming><bpmn:outgoing>Flow_torefund</bpmn:outgoing></bpmn:task>
+    <bpmn:endEvent id="End_cancel" name="Đơn bị hủy (dừng)"><bpmn:incoming>Flow_torefund</bpmn:incoming></bpmn:endEvent>
+    <bpmn:task id="Task_prepare" name="Xác nhận &amp; chuẩn bị món"><bpmn:incoming>Flow_acc_yes</bpmn:incoming><bpmn:outgoing>Flow_toassign</bpmn:outgoing></bpmn:task>
+    <bpmn:task id="Task_assign" name="Tìm &amp; gán shipper gần nhất"><bpmn:incoming>Flow_toassign</bpmn:incoming><bpmn:outgoing>Flow_toship</bpmn:outgoing></bpmn:task>
+    <bpmn:exclusiveGateway id="GW_shipper" name="Có shipper nhận trong 15 phút?"><bpmn:incoming>Flow_toship</bpmn:incoming><bpmn:outgoing>Flow_sh_no</bpmn:outgoing><bpmn:outgoing>Flow_sh_yes</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:task id="Task_pickup" name="Lấy món &amp; giao tới khách"><bpmn:incoming>Flow_sh_yes</bpmn:incoming><bpmn:outgoing>Flow_todeliv</bpmn:outgoing></bpmn:task>
+    <bpmn:exclusiveGateway id="GW_delivered" name="Giao thành công?"><bpmn:incoming>Flow_todeliv</bpmn:incoming><bpmn:outgoing>Flow_dl_no</bpmn:outgoing><bpmn:outgoing>Flow_dl_yes</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:task id="Task_fail" name="Chuyển CSKH xử lý / hoàn tiền"><bpmn:incoming>Flow_dl_no</bpmn:incoming><bpmn:outgoing>Flow_tofail</bpmn:outgoing></bpmn:task>
+    <bpmn:endEvent id="End_failed" name="Giao thất bại (dừng)"><bpmn:incoming>Flow_tofail</bpmn:incoming></bpmn:endEvent>
+    <bpmn:task id="Task_receive" name="Khách nhận món"><bpmn:incoming>Flow_dl_yes</bpmn:incoming><bpmn:outgoing>Flow_todone</bpmn:outgoing></bpmn:task>
+    <bpmn:endEvent id="End_done" name="Hoàn tất đơn"><bpmn:incoming>Flow_todone</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_start" name="" sourceRef="Start_1" targetRef="Task_total"/>
+    <bpmn:sequenceFlow id="Flow_totot" name="" sourceRef="Task_total" targetRef="GW_online"/>
+    <bpmn:sequenceFlow id="Flow_on_yes" name="Có" sourceRef="GW_online" targetRef="Task_pay"/>
+    <bpmn:sequenceFlow id="Flow_on_no" name="COD" sourceRef="GW_online" targetRef="Task_send"/>
+    <bpmn:sequenceFlow id="Flow_topaid" name="" sourceRef="Task_pay" targetRef="GW_paid"/>
+    <bpmn:sequenceFlow id="Flow_paid_no" name="Không" sourceRef="GW_paid" targetRef="End_payfail"/>
+    <bpmn:sequenceFlow id="Flow_paid_yes" name="Có" sourceRef="GW_paid" targetRef="Task_send"/>
+    <bpmn:sequenceFlow id="Flow_toaccept" name="" sourceRef="Task_send" targetRef="GW_accept"/>
+    <bpmn:sequenceFlow id="Flow_acc_no" name="Không / từ chối" sourceRef="GW_accept" targetRef="Task_refund"/>
+    <bpmn:sequenceFlow id="Flow_torefund" name="" sourceRef="Task_refund" targetRef="End_cancel"/>
+    <bpmn:sequenceFlow id="Flow_acc_yes" name="Có" sourceRef="GW_accept" targetRef="Task_prepare"/>
+    <bpmn:sequenceFlow id="Flow_toassign" name="" sourceRef="Task_prepare" targetRef="Task_assign"/>
+    <bpmn:sequenceFlow id="Flow_toship" name="" sourceRef="Task_assign" targetRef="GW_shipper"/>
+    <bpmn:sequenceFlow id="Flow_sh_no" name="Không (15p)" sourceRef="GW_shipper" targetRef="Task_refund"/>
+    <bpmn:sequenceFlow id="Flow_sh_yes" name="Có" sourceRef="GW_shipper" targetRef="Task_pickup"/>
+    <bpmn:sequenceFlow id="Flow_todeliv" name="" sourceRef="Task_pickup" targetRef="GW_delivered"/>
+    <bpmn:sequenceFlow id="Flow_dl_no" name="Không" sourceRef="GW_delivered" targetRef="Task_fail"/>
+    <bpmn:sequenceFlow id="Flow_tofail" name="" sourceRef="Task_fail" targetRef="End_failed"/>
+    <bpmn:sequenceFlow id="Flow_dl_yes" name="Có" sourceRef="GW_delivered" targetRef="Task_receive"/>
+    <bpmn:sequenceFlow id="Flow_todone" name="" sourceRef="Task_receive" targetRef="End_done"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_1">
+    <bpmndi:BPMNPlane id="Plane_1" bpmnElement="Collaboration_1">
+      <bpmndi:BPMNShape bpmnElement="Participant_1" isHorizontal="false"><dc:Bounds x="0" y="0" width="1190" height="1760"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Lane_customer" isHorizontal="false"><dc:Bounds x="0" y="30" width="440" height="1730"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Lane_system" isHorizontal="false"><dc:Bounds x="440" y="30" width="250" height="1730"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Lane_restaurant" isHorizontal="false"><dc:Bounds x="690" y="30" width="250" height="1730"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Lane_shipper" isHorizontal="false"><dc:Bounds x="940" y="30" width="250" height="1730"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Start_1"><dc:Bounds x="107" y="92" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_total"><dc:Bounds x="500" y="195" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GW_online"><dc:Bounds x="540" y="325" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_pay"><dc:Bounds x="500" y="435" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GW_paid"><dc:Bounds x="540" y="565" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="End_payfail"><dc:Bounds x="107" y="692" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_send"><dc:Bounds x="500" y="675" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GW_accept"><dc:Bounds x="790" y="805" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_refund"><dc:Bounds x="500" y="1275" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="End_cancel"><dc:Bounds x="107" y="1412" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_prepare"><dc:Bounds x="750" y="915" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_assign"><dc:Bounds x="500" y="1035" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GW_shipper"><dc:Bounds x="540" y="1165" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_pickup"><dc:Bounds x="1000" y="1275" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GW_delivered"><dc:Bounds x="1040" y="1405" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_fail"><dc:Bounds x="500" y="1515" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="End_failed"><dc:Bounds x="107" y="1652" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Task_receive"><dc:Bounds x="60" y="1515" width="130" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="End_done"><dc:Bounds x="297" y="1652" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="Flow_start"><di:waypoint x="125" y="128"/><di:waypoint x="125" y="162"/><di:waypoint x="565" y="162"/><di:waypoint x="565" y="195"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_totot"><di:waypoint x="565" y="265"/><di:waypoint x="565" y="325"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_on_yes"><di:waypoint x="565" y="375"/><di:waypoint x="565" y="435"/><bpmndi:BPMNLabel><dc:Bounds x="573" y="398" width="24" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_on_no"><di:waypoint x="590" y="350"/><di:waypoint x="650" y="350"/><di:waypoint x="650" y="655"/><di:waypoint x="557" y="655"/><di:waypoint x="557" y="675"/><bpmndi:BPMNLabel><dc:Bounds x="628" y="343" width="24" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_topaid"><di:waypoint x="565" y="505"/><di:waypoint x="565" y="565"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_paid_no"><di:waypoint x="540" y="590"/><di:waypoint x="520" y="590"/><di:waypoint x="520" y="672"/><di:waypoint x="125" y="672"/><di:waypoint x="125" y="692"/><bpmndi:BPMNLabel><dc:Bounds x="481" y="583" width="31" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_paid_yes"><di:waypoint x="565" y="615"/><di:waypoint x="565" y="645"/><di:waypoint x="573" y="645"/><di:waypoint x="573" y="675"/><bpmndi:BPMNLabel><dc:Bounds x="573" y="638" width="24" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_toaccept"><di:waypoint x="565" y="745"/><di:waypoint x="565" y="775"/><di:waypoint x="815" y="775"/><di:waypoint x="815" y="805"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_acc_no"><di:waypoint x="790" y="830"/><di:waypoint x="730" y="830"/><di:waypoint x="730" y="1255"/><di:waypoint x="557" y="1255"/><di:waypoint x="557" y="1275"/><bpmndi:BPMNLabel><dc:Bounds x="659" y="823" width="93" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_torefund"><di:waypoint x="565" y="1345"/><di:waypoint x="565" y="1379"/><di:waypoint x="125" y="1379"/><di:waypoint x="125" y="1412"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_acc_yes"><di:waypoint x="815" y="855"/><di:waypoint x="815" y="915"/><bpmndi:BPMNLabel><dc:Bounds x="823" y="878" width="24" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_toassign"><di:waypoint x="815" y="985"/><di:waypoint x="815" y="1010"/><di:waypoint x="565" y="1010"/><di:waypoint x="565" y="1035"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_toship"><di:waypoint x="565" y="1105"/><di:waypoint x="565" y="1165"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_sh_no"><di:waypoint x="565" y="1215"/><di:waypoint x="565" y="1245"/><di:waypoint x="573" y="1245"/><di:waypoint x="573" y="1275"/><bpmndi:BPMNLabel><dc:Bounds x="573" y="1238" width="68" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_sh_yes"><di:waypoint x="590" y="1190"/><di:waypoint x="610" y="1190"/><di:waypoint x="610" y="1241"/><di:waypoint x="1065" y="1241"/><di:waypoint x="1065" y="1275"/><bpmndi:BPMNLabel><dc:Bounds x="618" y="1183" width="24" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_todeliv"><di:waypoint x="1065" y="1345"/><di:waypoint x="1065" y="1405"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_dl_no"><di:waypoint x="1065" y="1455"/><di:waypoint x="1065" y="1485"/><di:waypoint x="565" y="1485"/><di:waypoint x="565" y="1515"/><bpmndi:BPMNLabel><dc:Bounds x="1073" y="1478" width="31" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_tofail"><di:waypoint x="565" y="1585"/><di:waypoint x="565" y="1605"/><di:waypoint x="125" y="1605"/><di:waypoint x="125" y="1652"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_dl_yes"><di:waypoint x="1040" y="1430"/><di:waypoint x="1020" y="1430"/><di:waypoint x="1020" y="1495"/><di:waypoint x="125" y="1495"/><di:waypoint x="125" y="1515"/><bpmndi:BPMNLabel><dc:Bounds x="988" y="1423" width="24" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_todone"><di:waypoint x="125" y="1585"/><di:waypoint x="125" y="1619"/><di:waypoint x="315" y="1619"/><di:waypoint x="315" y="1652"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,71 @@
+@startuml
+!theme plain
+title Đặt món — điều phối đơn & xử lý ngoại lệ (swimlane đa vai trò)
+
+|Khách|
+start
+:Chọn món, địa chỉ và xác nhận đặt;
+
+|Hệ thống|
+:Tính tổng tiền (món + ship + khuyến mãi);
+if (Thanh toán online?) then (Có)
+  repeat
+    :Gọi cổng thanh toán;
+  repeat while (Thất bại và chưa đủ 3 lần?) is (Thất bại, thử lại) not (Xong)
+  if (Thu tiền thành công?) then (Không)
+    |Khách|
+    :Nhận báo thanh toán thất bại;
+    stop
+  else (Có)
+  endif
+else (COD)
+endif
+
+|Hệ thống|
+:Gửi đơn tới nhà hàng;
+
+|Nhà hàng|
+if (Nhận đơn trong 5 phút?) then (Có)
+  :Xác nhận và chuẩn bị món;
+else (Không / từ chối)
+  |Hệ thống|
+  :Hoàn tiền nếu đã thu online;
+  |Khách|
+  :Nhận thông báo hủy đơn + hoàn tiền;
+  stop
+endif
+
+|Hệ thống|
+repeat
+  :Tìm shipper gần nhất;
+repeat while (Có shipper nhận trong 15 phút?) is (Chưa, tìm tiếp) not (Có)
+
+|Shipper|
+:Tới nhà hàng lấy món;
+:Giao món tới khách;
+
+if (Liên lạc được khách?) then (Có)
+  |Khách|
+  :Nhận món;
+  |Hệ thống|
+  if (Đơn COD?) then (Có)
+    |Shipper|
+    :Thu tiền mặt;
+  else (Online)
+    |Hệ thống|
+    :Ghi nhận đã thanh toán;
+  endif
+  |Khách|
+  :Đánh giá đơn (tùy chọn);
+  stop
+else (Không, sau 3 lần trong 10 phút)
+  |Shipper|
+  :Báo giao thất bại;
+  |CSKH|
+  :Xử lý đơn giao lỗi, quyết định hoàn tiền;
+  |Khách|
+  :Nhận thông báo & hỗ trợ;
+  stop
+endif
+
+@enduml

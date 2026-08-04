@@ -1,0 +1,43 @@
+# Food Delivery — Activity flow (D2, layout ELK)
+# Output /d2-activity. Đẹp hơn Mermaid khi nhiều nhánh chéo.
+
+direction: down
+
+start: Khách đặt món {shape: oval}
+calc: Tính tổng tiền
+pay_q: Thanh toán online? {shape: diamond}
+gateway: Gọi cổng thanh toán
+pay_ok: Thu tiền OK? {shape: diamond}
+fail_pay: "Kết thúc: báo thất bại" {shape: oval; style.fill: "#fde"}
+send_nh: Gửi đơn tới nhà hàng
+nh_q: Nhà hàng nhận trong 5 phút? {shape: diamond}
+refund: Hoàn tiền nếu đã thu
+cancel: "Kết thúc: hủy đơn" {shape: oval; style.fill: "#fde"}
+prepare: Nhà hàng chuẩn bị món
+assign: Tìm & gán shipper
+ship_q: Có shipper nhận? {shape: diamond}
+deliver: Shipper lấy món & giao
+deliver_q: Giao thành công? {shape: diamond}
+cskh: Chuyển CSKH / hoàn tiền
+fail_deliver: "Kết thúc: giao lỗi" {shape: oval; style.fill: "#fde"}
+receive: Khách nhận món
+done: "Hoàn tất đơn" {shape: oval; style.fill: "#dfd"}
+
+start -> calc -> pay_q
+pay_q -> gateway: Có
+pay_q -> send_nh: COD
+gateway -> pay_ok
+pay_ok -> fail_pay: Không
+pay_ok -> send_nh: Có
+send_nh -> nh_q
+nh_q -> refund: Không
+refund -> cancel
+nh_q -> prepare: Có
+prepare -> assign -> ship_q
+ship_q -> refund: Không (15p)
+ship_q -> deliver: Có
+deliver -> deliver_q
+deliver_q -> cskh: Không
+cskh -> fail_deliver
+deliver_q -> receive: Có
+receive -> done

@@ -1,0 +1,45 @@
+@startuml food-delivery-usecase-diagram
+' Output /usecase-diagram — use case diagram (visual scope). System boundary bắt buộc.
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Khách" as Customer
+actor "Nhà hàng" as Restaurant
+actor "Shipper" as Shipper
+actor "CSKH / Admin" as Admin
+actor "Cổng thanh toán" as Gateway
+
+rectangle "Hệ thống Đặt & Giao đồ ăn" {
+  usecase "Duyệt menu & đặt món" as UC1
+  usecase "Thanh toán đơn" as UC2
+  usecase "Theo dõi đơn hàng" as UC3
+  usecase "Xác nhận & chuẩn bị món" as UC4
+  usecase "Nhận & giao đơn" as UC5
+  usecase "Hủy đơn" as UC6
+  usecase "Hoàn tiền" as UC7
+  usecase "Đánh giá đơn" as UC8
+  usecase "Xử lý giao thất bại" as UC9
+}
+
+Customer --> UC1
+Customer --> UC2
+Customer --> UC3
+Customer --> UC6
+Customer --> UC8
+
+Restaurant --> UC4
+Restaurant --> UC6
+
+Shipper --> UC5
+
+Admin --> UC7
+Admin --> UC9
+
+UC2 ..> Gateway
+UC7 ..> Gateway : <<include>>
+
+UC6 ..> UC7 : <<extend>>\n(khi đã thu tiền)
+UC9 ..> UC7 : <<include>>
+
+@enduml

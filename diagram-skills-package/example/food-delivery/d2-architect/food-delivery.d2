@@ -1,0 +1,52 @@
+# Food Delivery — Sơ đồ kiến trúc hệ thống (D2, layout ELK)
+# Output /d2-architect. Bức tranh component/service/DB lồng nhau + dịch vụ ngoài.
+
+direction: right
+
+client: Client Apps {
+  customer_app: App Khách {shape: rectangle}
+  restaurant_app: App Nhà hàng {shape: rectangle}
+  shipper_app: App Shipper {shape: rectangle}
+  admin_web: Web Admin {shape: rectangle}
+}
+
+gateway: API Gateway {shape: hexagon}
+
+backend: Backend Services {
+  order_svc: Order Service
+  payment_svc: Payment Service
+  dispatch_svc: Dispatch Service (gán shipper)
+  notify_svc: Notification Service
+
+  db: Databases {
+    order_db: Order DB {shape: cylinder}
+    payment_db: Payment DB {shape: cylinder}
+  }
+
+  queue: Message Queue {shape: queue}
+}
+
+external: Dịch vụ ngoài {
+  pg: Cổng thanh toán (VNPay/Momo) {shape: cloud}
+  maps: Bản đồ & định vị {shape: cloud}
+  push: Push/SMS provider {shape: cloud}
+}
+
+client.customer_app -> gateway
+client.restaurant_app -> gateway
+client.shipper_app -> gateway
+client.admin_web -> gateway
+
+gateway -> backend.order_svc
+gateway -> backend.payment_svc
+gateway -> backend.dispatch_svc
+
+backend.order_svc -> backend.db.order_db
+backend.payment_svc -> backend.db.payment_db
+backend.order_svc -> backend.queue: publish sự kiện đơn
+backend.queue -> backend.dispatch_svc: đơn cần shipper
+backend.queue -> backend.notify_svc: sự kiện cần báo
+
+backend.payment_svc -> external.pg: thu/hoàn tiền
+backend.dispatch_svc -> external.maps: tìm shipper gần
+backend.notify_svc -> external.push: đẩy thông báo

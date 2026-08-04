@@ -1,0 +1,94 @@
+# Food Delivery — ERD (D2 sql_table, layout ELK)
+# Output /d2-erd. Cùng data model với srs/food-delivery-erd.md nhưng hình đẹp standalone.
+
+direction: right
+
+customer: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  name: string
+  phone: string
+  default_address: string
+}
+
+restaurant: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  name: string
+  address: string
+  is_open: boolean
+}
+
+menu_item: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  restaurant_id: string {constraint: foreign_key}
+  name: string
+  price: int
+  available: boolean
+}
+
+order: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  customer_id: string {constraint: foreign_key}
+  restaurant_id: string {constraint: foreign_key}
+  status: string
+  total_amount: int
+  payment_method: string
+  created_at: datetime
+}
+
+order_line: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  order_id: string {constraint: foreign_key}
+  menu_item_id: string {constraint: foreign_key}
+  quantity: int
+  line_total: int
+}
+
+payment: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  order_id: string {constraint: foreign_key}
+  status: string
+  amount: int
+  gateway_ref: string
+}
+
+delivery: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  order_id: string {constraint: foreign_key}
+  shipper_id: string {constraint: foreign_key}
+  status: string
+  picked_at: datetime
+  delivered_at: datetime
+}
+
+shipper: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  name: string
+  phone: string
+  vehicle: string
+}
+
+review: {
+  shape: sql_table
+  id: string {constraint: primary_key}
+  order_id: string {constraint: foreign_key}
+  rating: int
+  comment: string
+}
+
+customer.id -> order.customer_id
+restaurant.id -> order.restaurant_id
+restaurant.id -> menu_item.restaurant_id
+order.id -> order_line.order_id
+menu_item.id -> order_line.menu_item_id
+order.id -> payment.order_id
+order.id -> delivery.order_id
+shipper.id -> delivery.shipper_id
+order.id -> review.order_id

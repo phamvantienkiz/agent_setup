@@ -1,0 +1,137 @@
+// Food Delivery — Schema DBML
+// Output /dbdiagram. Import dbdiagram.io / dbdocs.io. Export SQL qua: dbml2sql food-delivery.dbml --postgres
+// Tầng gần dev nhất họ ERD: kiểu DB thật + enum + index + default.
+
+Enum order_status {
+  pending_payment
+  paid
+  restaurant_accepted
+  preparing
+  ready_for_pickup
+  delivering
+  delivered
+  delivery_failed
+  refunding
+  refunded
+  cancelled
+}
+
+Enum payment_status {
+  initiated
+  authorized
+  captured
+  voided
+  refunded
+  partially_refunded
+  failed
+}
+
+Enum payment_method {
+  cod
+  card
+  ewallet
+}
+
+Enum delivery_status {
+  assigned
+  picked
+  delivering
+  delivered
+  failed
+}
+
+Table customers {
+  id uuid [pk]
+  name varchar(120) [not null]
+  phone varchar(20) [not null, unique]
+  default_address varchar(255)
+  created_at timestamp [default: `now()`]
+}
+
+Table restaurants {
+  id uuid [pk]
+  name varchar(160) [not null]
+  address varchar(255) [not null]
+  is_open boolean [not null, default: true]
+
+  Indexes {
+    is_open
+  }
+}
+
+Table menu_items {
+  id uuid [pk]
+  restaurant_id uuid [not null, ref: > restaurants.id]
+  name varchar(160) [not null]
+  price integer [not null, note: 'VND']
+  available boolean [not null, default: true]
+
+  Indexes {
+    (restaurant_id, available)
+  }
+}
+
+Table orders {
+  id uuid [pk]
+  customer_id uuid [not null, ref: > customers.id]
+  restaurant_id uuid [not null, ref: > restaurants.id]
+  status order_status [not null, default: 'pending_payment']
+  payment_method payment_method [not null]
+  total_amount integer [not null, note: 'VND, gồm phí ship + khuyến mãi']
+  created_at timestamp [default: `now()`]
+
+  Indexes {
+    customer_id
+    (restaurant_id, status)
+    created_at
+  }
+}
+
+Table order_lines {
+  id uuid [pk]
+  order_id uuid [not null, ref: > orders.id]
+  menu_item_id uuid [not null, ref: > menu_items.id]
+  quantity integer [not null, default: 1]
+  line_total integer [not null]
+
+  Indexes {
+    order_id
+  }
+}
+
+Table payments {
+  id uuid [pk]
+  order_id uuid [not null, unique, ref: - orders.id]
+  status payment_status [not null, default: 'initiated']
+  amount integer [not null]
+  gateway_ref varchar(80) [note: 'mã giao dịch cổng thanh toán']
+  created_at timestamp [default: `now()`]
+}
+
+Table shippers {
+  id uuid [pk]
+  name varchar(120) [not null]
+  phone varchar(20) [not null, unique]
+  vehicle varchar(40)
+}
+
+Table deliveries {
+  id uuid [pk]
+  order_id uuid [not null, unique, ref: - orders.id]
+  shipper_id uuid [ref: > shippers.id]
+  status delivery_status [not null, default: 'assigned']
+  picked_at timestamp
+  delivered_at timestamp
+
+  Indexes {
+    shipper_id
+  }
+}
+
+Table reviews {
+  id uuid [pk]
+  order_id uuid [not null, unique, ref: - orders.id]
+  rating smallint [not null, note: '1..5']
+  comment text
+  created_at timestamp [default: `now()`]
+}

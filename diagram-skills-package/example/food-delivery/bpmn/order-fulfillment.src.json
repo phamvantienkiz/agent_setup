@@ -1,0 +1,5 @@
+{
+  "actors": ["Khách", "Hệ thống", "Nhà hàng", "Shipper"],
+  "branches": ["COD", "Không", "Không / từ chối", "Không (15p)"],
+  "errors": ["Thanh toán thất bại", "Đơn bị hủy", "Giao thất bại"]
+}

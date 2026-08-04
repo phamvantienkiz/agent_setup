@@ -1,0 +1,52 @@
+{
+  "process": { "id": "Process_order_fulfillment", "title": "Đặt & giao đồ ăn — đầu cuối" },
+  "lanes": [
+    { "id": "Lane_customer",   "name": "Khách" },
+    { "id": "Lane_system",     "name": "Hệ thống" },
+    { "id": "Lane_restaurant", "name": "Nhà hàng" },
+    { "id": "Lane_shipper",    "name": "Shipper" }
+  ],
+  "nodes": [
+    { "id": "Start_1",      "kind": "start",   "lane": "Lane_customer",   "name": "Khách đặt món" },
+    { "id": "Task_total",   "kind": "task",    "lane": "Lane_system",     "name": "Tính tổng tiền (món + ship + KM)" },
+    { "id": "GW_online",    "kind": "gateway", "lane": "Lane_system",     "name": "Thanh toán online?" },
+    { "id": "Task_pay",     "kind": "task",    "lane": "Lane_system",     "name": "Gọi cổng thanh toán" },
+    { "id": "GW_paid",      "kind": "gateway", "lane": "Lane_system",     "name": "Thu tiền thành công?" },
+    { "id": "End_payfail",  "kind": "end",     "lane": "Lane_customer",   "name": "Thanh toán thất bại (dừng)" },
+    { "id": "Task_send",    "kind": "task",    "lane": "Lane_system",     "name": "Gửi đơn tới nhà hàng" },
+    { "id": "GW_accept",    "kind": "gateway", "lane": "Lane_restaurant", "name": "Nhà hàng nhận đơn trong 5 phút?" },
+    { "id": "Task_refund",  "kind": "task",    "lane": "Lane_system",     "name": "Hoàn tiền nếu đã thu online" },
+    { "id": "End_cancel",   "kind": "end",     "lane": "Lane_customer",   "name": "Đơn bị hủy (dừng)" },
+    { "id": "Task_prepare", "kind": "task",    "lane": "Lane_restaurant", "name": "Xác nhận & chuẩn bị món" },
+    { "id": "Task_assign",  "kind": "task",    "lane": "Lane_system",     "name": "Tìm & gán shipper gần nhất" },
+    { "id": "GW_shipper",   "kind": "gateway", "lane": "Lane_system",     "name": "Có shipper nhận trong 15 phút?" },
+    { "id": "Task_pickup",  "kind": "task",    "lane": "Lane_shipper",    "name": "Lấy món & giao tới khách" },
+    { "id": "GW_delivered", "kind": "gateway", "lane": "Lane_shipper",    "name": "Giao thành công?" },
+    { "id": "Task_fail",    "kind": "task",    "lane": "Lane_system",     "name": "Chuyển CSKH xử lý / hoàn tiền" },
+    { "id": "End_failed",   "kind": "end",     "lane": "Lane_customer",   "name": "Giao thất bại (dừng)" },
+    { "id": "Task_receive", "kind": "task",    "lane": "Lane_customer",   "name": "Khách nhận món" },
+    { "id": "End_done",     "kind": "end",     "lane": "Lane_customer",   "name": "Hoàn tất đơn" }
+  ],
+  "flows": [
+    { "id": "Flow_start",    "src": "Start_1",      "tgt": "Task_total" },
+    { "id": "Flow_totot",    "src": "Task_total",   "tgt": "GW_online" },
+    { "id": "Flow_on_yes",   "src": "GW_online",    "tgt": "Task_pay",     "name": "Có" },
+    { "id": "Flow_on_no",    "src": "GW_online",    "tgt": "Task_send",    "name": "COD" },
+    { "id": "Flow_topaid",   "src": "Task_pay",     "tgt": "GW_paid" },
+    { "id": "Flow_paid_no",  "src": "GW_paid",      "tgt": "End_payfail",  "name": "Không" },
+    { "id": "Flow_paid_yes", "src": "GW_paid",      "tgt": "Task_send",    "name": "Có" },
+    { "id": "Flow_toaccept", "src": "Task_send",    "tgt": "GW_accept" },
+    { "id": "Flow_acc_no",   "src": "GW_accept",    "tgt": "Task_refund",  "name": "Không / từ chối" },
+    { "id": "Flow_torefund", "src": "Task_refund",  "tgt": "End_cancel" },
+    { "id": "Flow_acc_yes",  "src": "GW_accept",    "tgt": "Task_prepare", "name": "Có" },
+    { "id": "Flow_toassign", "src": "Task_prepare", "tgt": "Task_assign" },
+    { "id": "Flow_toship",   "src": "Task_assign",  "tgt": "GW_shipper" },
+    { "id": "Flow_sh_no",    "src": "GW_shipper",   "tgt": "Task_refund",  "name": "Không (15p)" },
+    { "id": "Flow_sh_yes",   "src": "GW_shipper",   "tgt": "Task_pickup",  "name": "Có" },
+    { "id": "Flow_todeliv",  "src": "Task_pickup",  "tgt": "GW_delivered" },
+    { "id": "Flow_dl_no",    "src": "GW_delivered", "tgt": "Task_fail",    "name": "Không" },
+    { "id": "Flow_tofail",   "src": "Task_fail",    "tgt": "End_failed" },
+    { "id": "Flow_dl_yes",   "src": "GW_delivered", "tgt": "Task_receive", "name": "Có" },
+    { "id": "Flow_todone",   "src": "Task_receive", "tgt": "End_done" }
+  ]
+}

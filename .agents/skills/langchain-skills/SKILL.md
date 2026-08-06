@@ -1,3 +1,8 @@
+---
+name: langchain-skills
+description: Introduce and guide Agents on LangChain and Deep Agents Development. Use this skill first when performing any tasks related to LangChain, LangGraph, or Deep Agents.
+---
+
 # LangChain + Deep Agents Development Guide
 
 This project uses skills that contain up-to-date patterns and working reference scripts.

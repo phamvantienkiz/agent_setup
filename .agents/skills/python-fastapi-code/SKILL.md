@@ -1,5 +1,5 @@
 ---
-name: python-fastapi-clean-code
+name: python-fastapi-code
 description: >
   Skill hướng dẫn viết code Python và FastAPI chất lượng cao, áp dụng Clean Code, SOLID, và Design Patterns.
   Sử dụng skill này bất cứ khi nào người dùng yêu cầu:

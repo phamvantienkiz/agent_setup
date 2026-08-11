@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "docs-langchain": {
+      "serverUrl": "https://docs.langchain.com/mcp"
+    },
+    "nvidia-cuda-docs": {
+      "serverUrl": "https://api.copilot.nsight.ngc.nvidia.com/mcp/cuda-docs"
+    }
+  }
+}

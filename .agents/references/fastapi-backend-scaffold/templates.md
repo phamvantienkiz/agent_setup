@@ -13,6 +13,7 @@ The snippets below are the standard templates. Read this file when the agent act
 - [app/main.py](#appmainpy)
 - [app/core/config.py](#appcoreconfigpy)
 - [app/core/logging.py](#appcoreloggingpy)
+- [app/middlewares](#appmiddlewares)
 - [app/db (session.py & base.py)](#appdb-sessionpy--basepy)
 - [app/api/deps.py](#appapidepspy)
 - [app/api/v1/router.py](#appapiv1routerpy)
@@ -142,8 +143,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 # --- Database ---
 DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/<project-name>
 
-# --- CORS ---
+# --- CORS (used by app/middlewares/cors.py) ---
 BACKEND_CORS_ORIGINS=["http://localhost:3000"]
+
+# --- Rate limiting (used by app/middlewares/rate_limit.py) ---
+RATE_LIMIT_PER_MINUTE=120
 ```
 
 ---
@@ -194,7 +198,7 @@ uvicorn app.main:app --reload
 uv run uvicorn app.main:app --reload
 \`\`\`
 
-Runs at `http://localhost:8000` by default, docs at `/docs`.
+Runs at `http://localhost:8000` by default, docs at `/docs`. Every response includes an `X-Request-ID` and `X-Process-Time` header (see `app/middlewares/`).
 
 ## Running tests
 
@@ -226,6 +230,7 @@ See `docs/` or the `fastapi-backend-scaffold` skill for full details. Summary:
 app/
 ├── main.py # FastAPI entrypoint
 ├── api/ # controller layer (routers, deps)
+├── middlewares/ # cross-cutting: CORS, request-id, logging, rate limit, error handling
 ├── core/ # config, security, logging
 ├── models/ # SQLAlchemy models
 ├── schemas/ # Pydantic schemas
@@ -233,7 +238,7 @@ app/
 ├── services/ # business logic
 ├── db/ # session/engine
 ├── dependencies/ # business-level dependencies
-├── exceptions/ # custom exceptions
+├── exceptions/ # custom exceptions + typed handlers
 └── utils/ # pure helpers
 \`\`\`
 ```
@@ -322,12 +327,12 @@ volumes:
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.logging import setup_logging
 from app.exceptions.handlers import register_exception_handlers
+from app.middlewares import register_middlewares
 
 
 @asynccontextmanager
@@ -345,15 +350,16 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.BACKEND_CORS_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    # All cross-cutting concerns (CORS, request-id, logging, rate limit,
+    # global error handling) are wired here in one place — never add
+    # app.add_middleware(...) calls anywhere else.
+    register_middlewares(app)
 
+    # Typed handlers for exceptions our own code raises on purpose
+    # (e.g. NotFoundError -> 404). Complements, doesn't duplicate,
+    # the catch-all in app/middlewares/error_handler.py.
     register_exception_handlers(app)
+
     app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
     return app
@@ -382,6 +388,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     BACKEND_CORS_ORIGINS: list[str] = []
+    RATE_LIMIT_PER_MINUTE: int = 120
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -423,6 +430,201 @@ def setup_logging() -> None:
             "root": {"level": "INFO", "handlers": ["console", "file"]},
         }
     )
+
+
+def get_logger(name: str) -> logging.Logger:
+    """Used across the app — notably by app/middlewares/logging.py and
+    app/middlewares/error_handler.py — so every component logs through
+    the same configured handlers."""
+    return logging.getLogger(name)
+```
+
+---
+
+## app/middlewares
+
+Full, complete middleware layer. `__init__.py` is the only file that ever calls `app.add_middleware(...)`; every other file just defines one middleware class or one piece of config.
+
+`app/middlewares/__init__.py`
+
+```python
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.middlewares.cors import get_cors_config
+from app.middlewares.error_handler import ErrorHandlingMiddleware
+from app.middlewares.logging import RequestLoggingMiddleware
+from app.middlewares.rate_limit import RateLimitMiddleware
+from app.middlewares.request_id import RequestIDMiddleware
+
+
+def register_middlewares(app: FastAPI) -> None:
+    """Single place that wires every cross-cutting middleware into the app.
+
+    Order matters: Starlette wraps middleware in reverse registration
+    order, so the FIRST one added here becomes the OUTERMOST wrapper —
+    it sees a request first and a response last. ErrorHandlingMiddleware
+    must be outermost so it can catch failures raised by any middleware
+    registered after it.
+    """
+    app.add_middleware(ErrorHandlingMiddleware)              # outermost: catches everything below
+    app.add_middleware(CORSMiddleware, **get_cors_config())
+    app.add_middleware(RequestLoggingMiddleware)
+    app.add_middleware(RateLimitMiddleware)
+    app.add_middleware(RequestIDMiddleware)                  # innermost: runs closest to the route
+```
+
+`app/middlewares/request_id.py`
+
+```python
+import uuid
+
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import Response
+
+REQUEST_ID_HEADER = "X-Request-ID"
+
+
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    """Assigns a unique id to every request so it can be traced across
+    logs, error reports, and downstream service calls."""
+
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        request_id = request.headers.get(REQUEST_ID_HEADER) or str(uuid.uuid4())
+        request.state.request_id = request_id
+
+        response = await call_next(request)
+        response.headers[REQUEST_ID_HEADER] = request_id
+        return response
+```
+
+`app/middlewares/logging.py`
+
+```python
+import time
+
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import Response
+
+from app.core.logging import get_logger
+
+logger = get_logger("app.access")
+
+
+class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    """Logs one line per request: method, path, status code, and
+    duration. Tags each line with the request id set by
+    RequestIDMiddleware so a single request can be traced end-to-end."""
+
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        start = time.perf_counter()
+        response = await call_next(request)
+        duration_ms = (time.perf_counter() - start) * 1000
+
+        request_id = getattr(request.state, "request_id", "-")
+        logger.info(
+            "%s %s -> %s (%.2fms) [request_id=%s]",
+            request.method,
+            request.url.path,
+            response.status_code,
+            duration_ms,
+            request_id,
+        )
+        response.headers["X-Process-Time"] = f"{duration_ms:.2f}ms"
+        return response
+```
+
+`app/middlewares/error_handler.py`
+
+```python
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
+
+from app.core.logging import get_logger
+
+logger = get_logger("app.errors")
+
+
+class ErrorHandlingMiddleware(BaseHTTPMiddleware):
+    """Last-resort safety net. Registered as the outermost middleware
+    (see app/middlewares/__init__.py) so it catches anything that
+    escapes route handlers, dependencies, or other middleware —
+    including bugs never anticipated by exceptions/handlers.py.
+    Never leaks a raw traceback to the client."""
+
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        try:
+            return await call_next(request)
+        except Exception:
+            request_id = getattr(request.state, "request_id", "-")
+            logger.exception("Unhandled exception [request_id=%s]", request_id)
+            return JSONResponse(
+                status_code=500,
+                content={"detail": "Internal server error", "request_id": request_id},
+            )
+```
+
+`app/middlewares/cors.py`
+
+```python
+from app.core.config import settings
+
+
+def get_cors_config() -> dict:
+    """Centralizes CORS policy so it's configured in one place instead
+    of hardcoded inline in main.py. Consumed by
+    app.add_middleware(CORSMiddleware, **get_cors_config())."""
+    return {
+        "allow_origins": settings.BACKEND_CORS_ORIGINS,
+        "allow_credentials": True,
+        "allow_methods": ["*"],
+        "allow_headers": ["*"],
+    }
+```
+
+`app/middlewares/rate_limit.py`
+
+```python
+import time
+from collections import defaultdict
+
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
+
+from app.core.config import settings
+
+WINDOW_SECONDS = 60
+
+
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    """Simple fixed-window rate limiter keyed by client IP. In-memory —
+    fine for a single instance / local dev. For multi-instance
+    production, swap `_hits` for a Redis-backed counter (e.g. INCR +
+    EXPIRE) without changing how this middleware is registered."""
+
+    def __init__(self, app):
+        super().__init__(app)
+        self._hits: dict[str, list[float]] = defaultdict(list)
+
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        client_ip = request.client.host if request.client else "unknown"
+        now = time.time()
+
+        window = self._hits[client_ip]
+        window[:] = [t for t in window if now - t < WINDOW_SECONDS]
+
+        if len(window) >= settings.RATE_LIMIT_PER_MINUTE:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Too many requests, please try again later."},
+            )
+
+        window.append(now)
+        return await call_next(request)
 ```
 
 ---
@@ -504,7 +706,7 @@ def health_check() -> dict:
 
 ## Full resource example: items
 
-Illustrates the standard `models → schemas → repositories → services → api/v1/endpoints` flow for a new resource. Copy this pattern for every other resource.
+Illustrates the standard `models → schemas → repositories → services → api/v1/endpoints` flow for a new resource. Copy this pattern for every other resource. Note this layer never touches `app/middlewares/` — middleware applies transparently to every route without any per-endpoint wiring.
 
 `app/models/item.py`
 
@@ -668,6 +870,15 @@ def test_health(client):
     response = client.get("/api/v1/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+```
+
+`tests/middlewares/test_request_id.py`
+
+```python
+def test_response_has_request_id_and_timing_headers(client):
+    response = client.get("/api/v1/health")
+    assert "X-Request-ID" in response.headers
+    assert "X-Process-Time" in response.headers
 ```
 
 ---

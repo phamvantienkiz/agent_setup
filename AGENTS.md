@@ -6,18 +6,9 @@
 
 ## 1. Project Context
 
-<!-- CUSTOMIZE THIS SECTION FOR YOUR PROJECT -->
-
-- **Project Name**: [Your Project Name]
-- **Stack**: [e.g., Node.js, FastAPI, TypeScript, PostgreSQL]
-- **Current Goal**: [e.g., Build user authentication module]
-- **Active Branch**: [e.g., feat/auth]
-- **Key Docs**: [e.g., /docs/architecture.md, /docs/api-spec.md]
-- **Execution Commands**:
-  - Run: `npm run dev`
-  - Test: `npm run test`
-  - Build: `npm run build`
-- **Infrastructure Context**: Local MCP servers available via `.agents/mcp_config.json`.
+- **Project Name**: Agent setup and configuration
+- **Current Goal**: Agent setup and configuration
+- **Infrastructure Context**: MCP servers available via `.agents/mcp_config.json`.
 
 ---
 
@@ -48,93 +39,33 @@
 
 ---
 
-## 3. Workflow Orchestration
+## 3. Environment Isolation & Script Execution Rules
 
-### 1. Goal-Driven Plan Mode
+- **Strict Environment Isolation:** NEVER install packages, dependencies, or toolchains into the global system environment, regardless of language or stack (Python, Node.js, or any other). All installations and executions MUST stay scoped to the current workspace.
+- **Verification Before Execution:** Before running any install, build, or script command, verify that the project-local environment exists and is being used. If it is missing, create it first.
+- **No Global Scope Spillage:** Any command that risks altering the host machine's global configurations, system PATH, or environment variables is strictly forbidden.
 
-- Enter `/plan` mode for ANY non-trivial task involving 3+ steps or architectural decisions.
-- Transform tasks into verifiable goals with strict success criteria before touching any file.
-- Write your step-by-step execution plan to `tasks/todo.md` using the following exact structure:
+### Python
 
-```
-1. [Step Description] → verify: [Specific check, command, or test behavior]
+- **Mandatory Use of `uv` or `.venv`:** All package installations and script executions MUST happen within an isolated virtual environment (`.venv`) located inside the current workspace.
+- Use the `uv run` / `uv pip` toolchain (which handles isolation automatically), or activate `.venv` first. If `.venv` is missing, create it (`uv venv` or `python -m venv .venv`) before proceeding.
+- Never run bare `pip install` or `python script.py` against the global interpreter.
 
-2. [Step Description] → verify: [Specific check, command, or test behavior]
-```
+### Node.js / JavaScript / TypeScript
 
-- Check in and verify the plan with the user before starting implementation.
-- If something goes sideways during execution, **STOP and re-plan immediately** — do not force a broken approach.
+- Install dependencies locally to the project (`node_modules`) using the package manager already in use (detect via lockfile: `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lockb`). Do not switch package managers.
+- NEVER use global installs (`npm install -g`, `yarn global add`, `pnpm add -g`). Run one-off CLI tools via `npx` / `pnpm dlx` / `bunx` instead.
 
-### 2. Autonomous Bug Fixing
+### Other Stacks
 
-- When given a bug report or error log, actively analyze and fix it without hand-holding.
-- Point out the root cause based on errors or failing tests, then implement the minimal surgical fix.
-- Go fix failing CI/CD or local test scripts autonomously.
-
-### 3. Progressive Skill Discovery
-
-- Proactively discover and leverage inherent workspace skills defined inside `.agents/skills/`.
-- Trust the progressive disclosure mechanism; trigger skills explicitly using slash commands (e.g., `/spec-gen`) or by attaching them via `@.agents/skills/` when required.
-
-### 4. Subagent & Infrastructure Automation
-
-- Use subagents liberally to offload research, exploration, or parallel data analysis to keep the main context clean.
-- Subagents must write their intermediate findings back to specific files rather than flooding the active chat window.
-- Monitor automated workspace hooks (`/hooks`) to ensure linting, formatting, or validation occurs naturally during file mutations.
-- Leverage Model Context Protocol via `/mcp` to interact with external databases or local system tools securely.
-
-### 5. Self-Improvement Loop
-
-- After receiving **ANY correction** from the user, immediately update `tasks/lessons.md` with the failure pattern.
-- Formulate strict rules for yourself to prevent repeating the same technical or logical mistake.
-- Review `tasks/lessons.md` at the start of every single session to reinforce behavioral updates.
+- Apply the same principle to any other ecosystem (Go, Rust, Java, etc.): use project-scoped dependency management (e.g., `go.mod`, `Cargo.toml`, wrapper scripts) and never modify system-wide installations.
+- If a task seems to require a global install or system-level change, **STOP** and ask the user first.
 
 ---
 
-## 4. Session Rules & Context Management
+## 4. Pre-Completion Checklist
 
-### Starting a Session
-
-1. Read this `AGENTS.md` file fully to align behavioral constraints.
-2. Read `tasks/lessons.md` to review past mistakes and accumulated patterns.
-3. Check `tasks/todo.md` for open goals, success criteria, or remaining tasks.
-4. Briefly summarize the active branch and current system state to the user before working.
-
-### During a Session
-
-- Explicitly use the `@` prefix to reference target files, directories, or skills — never refer to context vaguely.
-- When analyzing large directories, output structural overviews or intermediate notes to files instead of overloading the live chat context.
-- For large-scale refactoring or complex multi-file visual management, proactively prepare the session context for a seamless export to the Antigravity 2.0 desktop environment.
-
-### Ending a Session
-
-- Provide a high-level summary of completed tasks and modified architectural components.
-- Update `tasks/todo.md` with remaining goals, outstanding checkable items, and review outcomes.
-- Commit all finalized changes using clean conventional commit messages.
-
----
-
-## 5. Code Standards & File Organization
-
-### Development Rules
-
-- **Commit Checkpoints Often**: Maintain a clean git state to enable safe experimentation and easy rollbacks.
-- **No Laziness**: Identify and resolve root causes; temporary patches or quick hacks are strictly forbidden.
-- **Explicit Error Handling**: Handle errors explicitly; zero silent failures or unhandled rejections allowed.
-- **Ask Before Destruction**: Always request explicit user confirmation before executing any destructive action, dropping tables, or deleting files.
-- **No Hidden Logs**: Never leave `console.log`, debug statements, or temporary test scripts in committed code.
-
-### File Layout Customization
-
-- All AI-generated markdown notes, architectural reviews, and session summaries → `/docs/ai/`.
-- All active plans, verification criteria, and learned behaviors → `/tasks/`.
-- Maintain strict separation of components: do not scatter generated files across the root directory.
-
----
-
-## 6. Pre-Commit Verification Loop
-
-Before declaring any task or goal complete, you must execute the following self-check loop and prove correctness:
+Before declaring any task done, verify every item:
 
 - [ ] **Surgical Check**: Does every modified line trace directly back to the core request without unnecessary changes?
 - [ ] **Simplicity Check**: Is the solution as minimal and straightforward as possible, avoiding over-engineering?
@@ -142,3 +73,13 @@ Before declaring any task or goal complete, you must execute the following self-
 - [ ] **Cleanliness Check**: Have all temporary debug files, logs, or dangling scripts been cleaned up?
 - [ ] **Documentation**: Are all JSDoc/docstrings updated, and have `tasks/todo.md` and `tasks/lessons.md` been synchronized?
 - [ ] **Peer Standard**: Would a rigorous Staff Engineer approve this precise diff?
+
+---
+
+## 5. Working Rules
+
+- **Commit Checkpoints Often**: Maintain a clean git state to enable safe experimentation and easy rollbacks.
+- **No Laziness**: Identify and resolve root causes; temporary patches or quick hacks are strictly forbidden.
+- **Explicit Error Handling**: Handle errors explicitly; zero silent failures or unhandled rejections allowed.
+- **Ask Before Destruction**: Always request explicit user confirmation before executing any destructive action, dropping tables, or deleting files.
+- **No Hidden Logs**: Never leave `console.log`, debug statements, or temporary test scripts in committed code.

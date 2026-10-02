@@ -1,26 +1,39 @@
 ---
 name: python-fastapi-code
 description: >
-  Skill hướng dẫn viết code Python và FastAPI chất lượng cao, áp dụng Clean Code, SOLID, và Design Patterns.
-  Sử dụng skill này bất cứ khi nào người dùng yêu cầu:
-  - Viết hoặc review code Python backend (FastAPI, SQLAlchemy, Pydantic, async/await)
-  - Áp dụng các nguyên lý Clean Code trong Python (đặt tên, hàm, class, comment)
-  - Áp dụng SOLID trong Python/FastAPI (SRP, OCP, LSP, ISP, DIP)
-  - Thiết kế kiến trúc FastAPI (layered architecture, project structure, folder layout)
-  - Áp dụng Design Patterns trong Python/FastAPI (Repository, Service Layer, Factory, Strategy, Observer, Dependency Injection...)
-  - Tổ chức project FastAPI, tách layer router/service/repository/schema
-  - Code review và refactor code Python backend
-  - Xử lý async/await, error handling, validation với Pydantic trong FastAPI
-  - Viết unit test, integration test cho FastAPI application
-
-  LUÔN dùng skill này khi thấy bất kỳ đoạn code Python backend nào cần cải thiện,
-  hoặc khi người dùng hỏi về cách cấu trúc, tổ chức, hay viết code Python/FastAPI tốt hơn.
+  Senior Python & FastAPI engineering skill for building high-performance, clean, and production-grade APIs.
+  Áp dụng Clean Code (PEP 8), SOLID principles, Design Patterns, Pydantic V2, async SQLAlchemy, JWT authentication, WebSockets, error handling, và testing với pytest-asyncio/httpx.
+  Kích hoạt khi người dùng yêu cầu:
+  - Viết hoặc review code Python backend (FastAPI, async SQLAlchemy, Pydantic V2, async/await)
+  - Xây dựng API endpoints, router, validation schemas, JWT/OAuth2 auth, background tasks, WebSockets
+  - Áp dụng Clean Code & SOLID trong Python/FastAPI (SRP, OCP, LSP, ISP, DIP)
+  - Áp dụng Design Patterns (Repository, Service Layer, Factory, Strategy, Dependency Injection via Depends)
+  - Tách layer router/service/repository/schema/model
+  - Viết unit test và integration test bất đồng bộ (pytest-asyncio, httpx)
+  - Refactor, tối ưu hiệu năng hoặc migrate code sang FastAPI
 ---
 
-# Python & FastAPI Clean Code Skill
+# Python & FastAPI Clean Code & Expert Skill
 
-Skill này cung cấp hướng dẫn toàn diện để viết code Python backend chất lượng cao với FastAPI,
-áp dụng Clean Code, SOLID principles, và Design Patterns.
+Skill này cung cấp hướng dẫn toàn diện của Senior Engineer để viết code Python backend chất lượng cao với FastAPI,
+áp dụng Clean Code, SOLID principles, Design Patterns, Pydantic V2, và Async SQLAlchemy.
+
+## Nguyên tắc & Ràng buộc cốt lõi (MUST DO / MUST NOT DO)
+
+### MUST DO (Bắt buộc)
+- **Type hints toàn diện**: Tất cả function signatures, arguments và return types đều phải có type hint rõ ràng.
+- **Pydantic V2 syntax**: Dùng `model_config = ConfigDict(...)`, `@field_validator`, `@model_validator`.
+- **Dependency Injection**: Dùng cú pháp `Annotated[..., Depends(...)]` cho tất cả dependencies.
+- **Async/Await nhất quán**: Dùng async/await cho toàn bộ I/O operations (DB, HTTP calls, Redis). Chạy tác vụ CPU-heavy qua `asyncio.to_thread`.
+- **Modern Python 3.10+ typing**: Dùng `X | None` thay vì `Optional[X]`, dùng `list[str]` thay vì `List[str]`.
+- **HTTP Status Codes chuẩn REST**: Trả về đúng status code (201 Created, 204 No Content, 404 Not Found, 422 Unprocessable).
+
+### MUST NOT DO (Tuyệt đối tránh)
+- **Cấm gọi blocking/sync I/O** bên trong hàm `async def` (như `time.sleep()`, synchronous DB session, requests sync).
+- **Cấm dùng cú pháp Pydantic V1 lỗi thời**: `@validator`, `class Config`.
+- **Cấm lưu mật khẩu dạng plain text**: Luôn hash bằng bcrypt/passlib/argon2.
+- **Cấm trả về dữ liệu nhạy cảm**: Password hash, internal secrets không bao giờ được nằm trong response schema.
+- **Cấm hardcode cấu hình**: Tất cả config phải load từ `pydantic-settings` qua biến môi trường (.env).
 
 ## Cách sử dụng skill này
 
@@ -636,10 +649,20 @@ async def test_create_user_sends_welcome_email():
 
 ---
 
-## Files tham khảo chi tiết
+## Files tham khảo chi tiết (Internal References)
 
-- `.agents/references/python-fastapi-code/solid-principles.md` — Ví dụ đầy đủ SOLID với FastAPI
-- `.agents/references/python-fastapi-code/design-patterns.md` — Repository, Factory, Strategy, Observer, Unit of Work
-- `.agents/references/python-fastapi-code/project-structure.md` — Project structure, config, migrations
+Tất cả các tài liệu hướng dẫn chi tiết nằm tự chứa trong thư mục `references/` của skill này:
 
-Đọc file tương ứng khi cần ví dụ chi tiết hoặc khi xử lý yêu cầu phức tạp.
+| Chủ đề | File tham khảo | Nội dung chi tiết |
+|:---|:---|:---|
+| **Pydantic V2** | `references/pydantic-v2.md` | Validation schemas, model_config, field_validator, serialization |
+| **Async SQLAlchemy** | `references/async-sqlalchemy.md` | Async engine, session management, async CRUD patterns |
+| **Authentication & Security** | `references/authentication.md` | JWT token flow, OAuth2 password bearer, get_current_user |
+| **Endpoints & Routing** | `references/endpoints-routing.md` | APIRouter, dependency injection, path/query params |
+| **Async Testing** | `references/testing-async.md` | pytest-asyncio, httpx AsyncClient, fixtures, mocking |
+| **Django Migration** | `references/migration-from-django.md` | Chuyển đổi từ Django / Django REST Framework sang FastAPI |
+| **Design Patterns** | `references/design-patterns.md` | Repository, Factory, Strategy, Observer, Unit of Work |
+| **SOLID Principles** | `references/solid-principles.md` | Ví dụ cụ thể từng nguyên lý SOLID trong FastAPI |
+| **Project Structure** | `references/project-structure.md` | Chi tiết cấu trúc phân lớp Router -> Service -> Repository |
+
+Đọc file tương ứng khi cần ví dụ chi tiết hoặc khi xử lý yêu cầu kỹ thuật phức tạp.

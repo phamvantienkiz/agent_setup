@@ -1,4 +1,4 @@
----
+﻿---
 name: stm32-embedded-workflow
 description: Act as a senior embedded engineer for STM32 assignments and projects. Takes a plain-language problem statement and produces a complete design dossier (requirement analysis, peripheral selection, pin mapping verified against ST PDFs, clock/timer math, a step-by-step STM32CubeMX configuration checklist, register-level rationale, and a bring-up/debug plan) plus a reference main.c. Use this skill whenever the user mentions STM32, CubeMX, CubeIDE, HAL drivers, a Discovery/Nucleo/Eval board, a reference manual or datasheet lookup, GPIO/EXTI/TIM/PWM/ADC/DAC/UART/I2C/SPI/DMA/RTC configuration, an embedded lab exercise, or asks "how do I wire/configure/implement X on this board" — even if they do not name the workflow explicitly. Also use it when the user just drops a problem statement file and expects analysis before code.
 ---
@@ -44,7 +44,7 @@ the workspace (with document name + page number cited) or explicitly flagged as
 ```
 
 If `docs/boards/` does not exist, create it and tell the user which PDFs to drop in,
-using the download list in `.agents/references/stm32-embedded-workflow/references/boards/STM32F429I-DISC1.md`.
+using the download list in `references/boards/STM32F429I-DISC1.md`.
 
 ---
 
@@ -55,14 +55,14 @@ phases 1–5 are done properly so the user can configure the chip confidently.
 
 | Phase | What you produce                                                | Reference file to read first                                                                                                                            |
 | ----- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | Requirement analysis table (I/O, timing, state, done-criteria)  | `.agents/references/stm32-embedded-workflow/references/01-requirements-analysis.md`                                                                     |
-| 2     | Abstract peripheral selection + processing model (poll/IRQ/DMA) | `.agents/references/stm32-embedded-workflow/references/01-requirements-analysis.md` — **§ peripheral selection and processing model sections** (same file as Phase 1; skip the requirement-analysis section already read) |
-| 3     | Concrete pin map, verified against board UM + schematic         | `.agents/references/stm32-embedded-workflow/references/02-pdf-navigation.md`, `.agents/references/stm32-embedded-workflow/references/boards/<board>.md` |
-| 4     | Register/AF/interrupt facts pulled from datasheet + RM          | `.agents/references/stm32-embedded-workflow/references/02-pdf-navigation.md`                                                                            |
-| 5     | Clock tree + PSC/ARR/baud/sampling math, shown step by step     | `.agents/references/stm32-embedded-workflow/references/03-clock-and-timing.md`                                                                          |
-| 6     | CubeMX click-by-click checklist                                 | `.agents/references/stm32-embedded-workflow/references/04-cubemx-config.md`                                                                             |
-| 7     | `main.c` + explanation of every non-obvious line                | `.agents/references/stm32-embedded-workflow/references/05-hal-code-patterns.md`                                                                         |
-| 8     | Bring-up order, verification steps, failure decision tree       | `.agents/references/stm32-embedded-workflow/references/06-debug-playbook.md`                                                                            |
+| 1     | Requirement analysis table (I/O, timing, state, done-criteria)  | `references/01-requirements-analysis.md`                                                                     |
+| 2     | Abstract peripheral selection + processing model (poll/IRQ/DMA) | `references/01-requirements-analysis.md` — **§ peripheral selection and processing model sections** (same file as Phase 1; skip the requirement-analysis section already read) |
+| 3     | Concrete pin map, verified against board UM + schematic         | `references/02-pdf-navigation.md`, `references/boards/<board>.md` |
+| 4     | Register/AF/interrupt facts pulled from datasheet + RM          | `references/02-pdf-navigation.md`                                                                            |
+| 5     | Clock tree + PSC/ARR/baud/sampling math, shown step by step     | `references/03-clock-and-timing.md`                                                                          |
+| 6     | CubeMX click-by-click checklist                                 | `references/04-cubemx-config.md`                                                                             |
+| 7     | `main.c` + explanation of every non-obvious line                | `references/05-hal-code-patterns.md`                                                                         |
+| 8     | Bring-up order, verification steps, failure decision tree       | `references/06-debug-playbook.md`                                                                            |
 
 Read a reference file when you reach its phase, not all at once — that is what keeps
 context free for the PDF extracts, which are the expensive part.
@@ -74,7 +74,7 @@ context free for the PDF extracts, which are the expensive part.
 1. Locate the problem statement. Look for `docs/tasks/*/input.md`, a file the user attached,
    or the text of their message. If the user has not used the template, restate the
    problem in the template's shape yourself and ask them to confirm only the parts you
-   had to guess. The template lives at `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-problem-input.md`.
+   had to guess. The template lives at `assets/TEMPLATE-problem-input.md`.
 2. Identify the board. If `input.md` names one, use it. Otherwise ask — one question,
    not a questionnaire.
 3. Check `docs/boards/<board>/.index/` exists. If not, build it (see below). This costs
@@ -91,9 +91,9 @@ These documents are enormous — RM0090 is ~1750 pages, containing complex block
 
 However, even though you can process large files, reading massive PDFs without focus can overwhelm your reasoning and clutter the context window. To avoid this:
 
-1. **Never read a PDF blindly.** Always consult `.agents/references/stm32-embedded-workflow/references/02-pdf-navigation.md` first. It contains a lookup table mapping "the question in your head" to "which document and which section" you need.
+1. **Never read a PDF blindly.** Always consult `references/02-pdf-navigation.md` first. It contains a lookup table mapping "the question in your head" to "which document and which section" you need.
 2. **Read with targeted intent.** When you use `view_file` to open a PDF, state explicitly in your thought process what specific table, section, or block diagram you are looking for (e.g., "I am looking for the Alternate Function mapping table for USART1").
-3. **Cache your findings.** If a board fact is already recorded and cited in `.agents/references/stm32-embedded-workflow/references/boards/<board>.md`, trust that file and skip the lookup — but only for facts that carry a citation there.
+3. **Cache your findings.** If a board fact is already recorded and cited in `references/boards/<board>.md`, trust that file and skip the lookup — but only for facts that carry a citation there.
 
 By knowing exactly what you are looking for before invoking `view_file`, your native VLM capabilities will pinpoint the structural data (tables, pins, graphs) accurately and efficiently.
 
@@ -145,7 +145,7 @@ Produce exactly four files under `docs/tasks/<task-id>/output/`:
 
 ### 1. `<task-id>-cubemx-config.md`
 
-Follow `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-cubemx-config.md` section by section. This is the main actionable deliverable — the user reads this to configure CubeMX and map pins without reopening any PDF.
+Follow `assets/TEMPLATE-cubemx-config.md` section by section. This is the main actionable deliverable — the user reads this to configure CubeMX and map pins without reopening any PDF.
 
 Non-negotiable properties:
 - The CubeMX section is a literal click-path checklist, in the order the tool requires, not prose. Include the values to type into each field. Allocate maximum detail and resources to this section.
@@ -154,7 +154,7 @@ Non-negotiable properties:
 
 ### 2. `<task-id>-theory-and-concepts.md`
 
-Follow `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-theory-and-concepts.md`. This file isolates the educational and theoretical components to avoid cluttering the configuration checklist.
+Follow `assets/TEMPLATE-theory-and-concepts.md`. This file isolates the educational and theoretical components to avoid cluttering the configuration checklist.
 
 Non-negotiable properties:
 - Every hardware fact carries a citation in the form `[UM1670 p.23]` or `[RM0090 §12.3, p.382]`.
@@ -163,7 +163,7 @@ Non-negotiable properties:
 
 ### 3. `<task-id>-main.c`
 
-Follow `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-main.c`. This is _reference_ code, written to be read and
+Follow `assets/TEMPLATE-main.c`. This is _reference_ code, written to be read and
 retyped, not pasted blindly:
 
 - Place code in the correct `/* USER CODE BEGIN X */ ... /* USER CODE END X */` blocks
@@ -184,7 +184,7 @@ If the task is large enough that `main.c` alone is unwieldy, you may also emit
 
 ### 4. `<task-id>-run-and-test.md`
 
-Follow `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-run-and-test.md`. This file provides a step-by-step guide for bringing up, running, testing, and debugging the code on the hardware.
+Follow `assets/TEMPLATE-run-and-test.md`. This file provides a step-by-step guide for bringing up, running, testing, and debugging the code on the hardware.
 
 Non-negotiable properties:
 - Include steps to Build, Flash, and Resume debugging.
@@ -205,7 +205,7 @@ Non-negotiable properties:
   interrupts, interrupts before DMA, `HAL_GetTick()` before a hardware timer, a hardware
   timer before an RTOS. Escalate only when the requirement forces it, and say what forced it.
 - **Warn about the classic traps** relevant to the current task. The board reference
-  file lists the ones specific to each board; `.agents/references/stm32-embedded-workflow/references/06-debug-playbook.md` lists
+  file lists the ones specific to each board; `references/06-debug-playbook.md` lists
   the generic ones.
 - **Never invent a HAL function name.** If unsure whether `HAL_XXX_Yyy()` exists, search
   the HAL description PDF or the user's `Drivers/STM32F4xx_HAL_Driver/Inc/` headers, which
@@ -217,23 +217,23 @@ Non-negotiable properties:
 
 | Path                                                                                | Read when                                         |
 | ----------------------------------------------------------------------------------- | ------------------------------------------------- |
-| `.agents/references/stm32-embedded-workflow/references/01-requirements-analysis.md` | Phase 1–2: turning prose into peripherals         |
-| `.agents/references/stm32-embedded-workflow/references/02-pdf-navigation.md`        | Phase 3–4: which document answers which question  |
-| `.agents/references/stm32-embedded-workflow/references/03-clock-and-timing.md`      | Phase 5: clock tree and all the formulas          |
-| `.agents/references/stm32-embedded-workflow/references/04-cubemx-config.md`         | Phase 6: the click-by-click checklist and traps   |
-| `.agents/references/stm32-embedded-workflow/references/05-hal-code-patterns.md`     | Phase 7: HAL idioms, ISR rules, code skeletons    |
-| `.agents/references/stm32-embedded-workflow/references/06-debug-playbook.md`        | Phase 8: bring-up order and failure decision tree |
-| `.agents/references/stm32-embedded-workflow/references/boards/STM32F429I-DISC1.md`  | Any task on that board — read at Phase 3          |
-| `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-problem-input.md`       | Give to the user for writing problem statements   |
-| `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-cubemx-config.md`       | The required shape of the configuration output    |
-| `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-theory-and-concepts.md` | The required shape of the theory output           |
-| `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-main.c`                 | The required shape of the code output             |
-| `.agents/references/stm32-embedded-workflow/assets/TEMPLATE-run-and-test.md`        | The required shape of the run and test output     |
+| `references/01-requirements-analysis.md` | Phase 1–2: turning prose into peripherals         |
+| `references/02-pdf-navigation.md`        | Phase 3–4: which document answers which question  |
+| `references/03-clock-and-timing.md`      | Phase 5: clock tree and all the formulas          |
+| `references/04-cubemx-config.md`         | Phase 6: the click-by-click checklist and traps   |
+| `references/05-hal-code-patterns.md`     | Phase 7: HAL idioms, ISR rules, code skeletons    |
+| `references/06-debug-playbook.md`        | Phase 8: bring-up order and failure decision tree |
+| `references/boards/STM32F429I-DISC1.md`  | Any task on that board — read at Phase 3          |
+| `assets/TEMPLATE-problem-input.md`       | Give to the user for writing problem statements   |
+| `assets/TEMPLATE-cubemx-config.md`       | The required shape of the configuration output    |
+| `assets/TEMPLATE-theory-and-concepts.md` | The required shape of the theory output           |
+| `assets/TEMPLATE-main.c`                 | The required shape of the code output             |
+| `assets/TEMPLATE-run-and-test.md`        | The required shape of the run and test output     |
 
 ## Adding a new board
 
 When the user starts using a different board, create
-`.agents/references/stm32-embedded-workflow/references/boards/<BOARD-NAME>.md` following the structure of the F429 file: a
+`references/boards/<BOARD-NAME>.md` following the structure of the F429 file: a
 documentation index, a verified resource table with citations, a pin-consumption
 warning list, and a board-specific traps section. Populate it as you make lookups, so
 the second task on that board is much cheaper than the first.

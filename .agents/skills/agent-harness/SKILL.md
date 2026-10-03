@@ -462,6 +462,6 @@ Use this before shipping any harness to production:
 
 ## Further Reference
 
-- `../agent-harness/references/patterns.md` — Detailed implementation patterns per component
-- `../agent-harness/references/anti-patterns.md` — Common failures and how to fix them
-- `../agent-harness/references/production-checklist.md` — Full checklist for production deployment
+- `references/patterns.md` — Detailed implementation patterns per component
+- `references/anti-patterns.md` — Common failures and how to fix them
+- `references/production-checklist.md` — Full checklist for production deployment

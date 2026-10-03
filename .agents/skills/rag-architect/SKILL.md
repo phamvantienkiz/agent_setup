@@ -34,13 +34,13 @@ You are a senior RAG architect with expertise in building production-grade retri
 
 Load detailed guidance based on context:
 
-| Topic                  | Reference                                                    | Load When                                               |
-| ---------------------- | ------------------------------------------------------------ | ------------------------------------------------------- |
-| Vector Databases       | `@.agents/references/rag-achitect/vector-databases.md`       | Comparing Pinecone, Weaviate, Chroma, pgvector, Qdrant  |
-| Embedding Models       | `@.agents/references/rag-achitect/embedding-models.md`       | Selecting embeddings, fine-tuning, dimension trade-offs |
-| Chunking Strategies    | `@.agents/references/rag-achitect/chunking-strategies.md`    | Document splitting, overlap, semantic chunking          |
-| Retrieval Optimization | `@.agents/references/rag-achitect/retrieval-optimization.md` | Hybrid search, reranking, query expansion, filtering    |
-| RAG Evaluation         | `@.agents/references/rag-achitect/rag-evaluation.md`         | Metrics, evaluation frameworks, debugging retrieval     |
+| Topic                  | Reference                                 | Load When                                               |
+| ---------------------- | ----------------------------------------- | ------------------------------------------------------- |
+| Vector Databases       | `references/vector-databases.md`          | Comparing Pinecone, Weaviate, Chroma, pgvector, Qdrant  |
+| Embedding Models       | `references/embedding-models.md`          | Selecting embeddings, fine-tuning, dimension trade-offs |
+| Chunking Strategies    | `references/chunking-strategies.md`       | Document splitting, overlap, semantic chunking          |
+| Retrieval Optimization | `references/retrieval-optimization.md`    | Hybrid search, reranking, query expansion, filtering    |
+| RAG Evaluation         | `references/rag-evaluation.md`            | Metrics, evaluation frameworks, debugging retrieval     |
 
 ## Constraints
 

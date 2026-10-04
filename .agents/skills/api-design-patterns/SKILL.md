@@ -611,3 +611,29 @@ Before shipping any API endpoint, verify:
 | 429  | Too Many Requests     | Rate limit exceeded                     |
 | 500  | Internal Server Error | Server-side bug                         |
 | 503  | Service Unavailable   | Server is down or overloaded            |
+
+---
+
+## Integration with System Design & 3-Layer Documentation
+
+This skill serves as the detailed API specification specialist in the engineering lifecycle.
+
+### 1. Inbound Handoff from `system-design`
+When an architecture design exposes public or internal APIs, `system-design` produces an **API Surface Summary**:
+- **Context & Consumers**: Target callers (Mobile, SPA, 3rd party webhooks).
+- **Protocols & Auth**: REST / WebSocket, JWT / OAuth2 / API Key.
+- **Endpoints Matrix**: HTTP Method, Route path, latency targets, caching rules.
+- **Identified Constraints**: Async job offloading, high-volume cursor pagination, partial payload requirements.
+
+`api-design-patterns` consumes this summary and applies the 7 patterns to create complete, production-grade API specifications.
+
+### 2. Output Destinations (3-Layer Documentation Standard)
+In accordance with the project's [documentation](../documentation/SKILL.md) skill:
+
+- **System-Wide API Invariants**:
+  - File: `docs/architecture/08-integration-architecture.md`
+  - Content: Global response envelope (`{ data, meta, error }`), standard pagination parameters (`?page=&limit=`), global error code catalog, auth header conventions, rate limit headers.
+- **Release-Specific Endpoint Specifications**:
+  - File: `docs/implementation/{release}/api/vX.md` (e.g. `docs/implementation/release-1/api/v1.md`)
+  - Content: Full parameter definitions, request body schemas, response payloads, query filters, field selectors, and async job polling routes for that milestone.
+

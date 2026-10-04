@@ -15,6 +15,25 @@ This skill provides an authoritative, comprehensive framework enforcing Robert C
 
 ---
 
+## 0. The Supreme Immutable Rule (Absolute Priority)
+
+> [!CAUTION]
+> ### ⚠️ THE SUPREME & IMMUTABLE RULE — OVERRIDES ALL OTHER PRINCIPLES
+> **This is the highest-priority, non-negotiable, and immutable principle. Whenever any conflict arises or adhering to other coding conventions would over-complicate or fragment the logic, ALL OTHER CODING RULES (including SOLID, Clean Architecture, Design Patterns, and the 66 Clean Code heuristics below) MUST BE BYPASSED in favor of this rule:**
+>
+> > *"Good code is code that is simple, readable, runnable, testable, and explainable to understand. It is far better to have a single large function that is easy to comprehend—where reading it allows you to explain its full functionality and logic immediately—than a 'clean code' function of just a few lines that merely calls several other functions, which in turn call several other functions, branching into multiple objects, with those objects further inheriting from various other things, and so forth. The same applies to comments: as long as a comment is easy to understand, that is enough; it does not need to be verbose, nor does it need to be terse—sufficient to understand is all that matters."*
+
+### Key Mandates of the Supreme Rule:
+1. **Simplicity & Comprehension Over Premature Abstraction:**
+   - Never shatter a function into multiple call layers, nested helper functions, or complex class inheritance hierarchies merely to achieve an arbitrary line-count target (e.g., "keep functions under 15 lines").
+   - A single cohesive, sequential function that is straightforward to read, understand, debug, and explain is far superior to fractured indirection and artificial abstraction.
+2. **Pragmatic Comments:**
+   - Do not dogmatically ban or restrict comments. Any comment that makes the logic, intention, or business edge case immediately clear to the reader is good and welcome. It does not need to be overly verbose, nor does it need to be artificially terse—sufficient clarity is the sole metric.
+3. **Absolute Override Authority:**
+   - If applying any Clean Code rule (such as strict SLAP, function splitting, SRP micro-separation, or pattern abstraction) increases cognitive load, indirection, or debugging difficulty, **STOP immediately and preserve the simple, direct implementation**.
+
+---
+
 ## 1. Core Philosophy: The Boy Scout Rule
 
 You do not have to make every module perfect in one massive rewrite. You simply have to make it **a little bit better** every single time you touch it.
@@ -214,6 +233,7 @@ For comprehensive theory, anti-patterns, and realistic before/after code transfo
 
 ## 8. AI Behavior & Reporting Standards
 
+- **Always respect the Supreme Immutable Rule first**: Prioritize simplicity, comprehensibility, runnability, testability, and explainability above all else. Never artificially splinter code into nested calls or deep inheritance trees in the name of "clean code".
 - When reviewing code, identify violations by rule number (e.g., "G5 violation: duplicated logic", "F3 violation: boolean flag argument").
 - When fixing or editing code, report what was fixed with citations (e.g., "Fixed: extracted magic number to `SECONDS_PER_DAY` (G25)").
 - When writing new code, adhere strictly to the 6-step Operating Loop, placing code by architectural role and verifying with tests before declaring completion.

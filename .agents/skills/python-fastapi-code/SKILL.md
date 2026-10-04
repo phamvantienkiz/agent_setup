@@ -252,7 +252,7 @@ async def create_user(
     return await service.create_user(user)
 ```
 
-> Xem chi tiết triển khai đầy đủ tại: `.agents/references/python-fastapi-code/solid-principles.md`
+> Xem chi tiết triển khai đầy đủ tại: `references/solid-principles.md`
 
 ### O - Open/Closed Principle (OCP)
 
@@ -516,7 +516,7 @@ async def create_user(
     ...
 ```
 
-> Xem chi tiết: `.agents/references/python-fastapi-code/design-patterns.md`
+> Xem chi tiết: `references/design-patterns.md`
 
 ---
 

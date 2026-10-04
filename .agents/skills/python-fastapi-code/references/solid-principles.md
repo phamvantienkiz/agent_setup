@@ -1,8 +1,8 @@
-# SOLID Principles — Ví dụ đầy đủ với FastAPI
+# SOLID Principles — Comprehensive Guide with FastAPI
 
 ## S — Single Responsibility Principle (SRP)
 
-Cấu trúc 3 layer chuẩn cho một feature:
+Standard 3-layer architecture for a feature:
 
 ```python
 # ===== schemas.py =====
@@ -43,7 +43,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 class UserRepository:
-    """Chỉ chịu trách nhiệm: truy vấn database liên quan đến User."""
+    """Sole responsibility: database queries related to User."""
 
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -80,14 +80,14 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"])
 
 class UserService:
-    """Chỉ chịu trách nhiệm: business logic liên quan đến User."""
+    """Sole responsibility: business logic related to User."""
 
     def __init__(self, user_repo: UserRepository, email_service: EmailService):
         self.user_repo = user_repo
         self.email_service = email_service
 
     async def register_user(self, data: UserCreate) -> User:
-        """Đăng ký user mới: validate → hash password → save → send email."""
+        """Register a new user: validate -> hash password -> save -> send email."""
         if await self.user_repo.exists_by_email(data.email):
             raise EmailAlreadyExistsError(data.email)
 
@@ -113,7 +113,7 @@ async def create_user(
     data: UserCreate,
     service: UserService = Depends(get_user_service)
 ):
-    """Chỉ chịu trách nhiệm: nhận HTTP request, trả HTTP response."""
+    """Sole responsibility: handle HTTP request, return HTTP response."""
     return await service.register_user(data)
 
 @router.get("/{user_id}", response_model=UserResponse)
@@ -131,12 +131,12 @@ async def get_user(
 Pattern: Abstract base class + concrete implementations.
 
 ```python
-# Scenario: Hệ thống payment hỗ trợ nhiều provider
+# Scenario: Payment system supporting multiple providers
 
 from abc import ABC, abstractmethod
 from decimal import Decimal
 
-# Abstract interface — đóng để modify
+# Abstract interface — closed for modification
 class PaymentGateway(ABC):
     @abstractmethod
     async def charge(self, amount: Decimal, currency: str, token: str) -> PaymentResult:
@@ -146,7 +146,7 @@ class PaymentGateway(ABC):
     async def refund(self, transaction_id: str, amount: Decimal) -> RefundResult:
         ...
 
-# Concrete implementations — mở để extend
+# Concrete implementations — open for extension
 class StripeGateway(PaymentGateway):
     def __init__(self, api_key: str):
         self._client = stripe.AsyncClient(api_key)
@@ -162,33 +162,33 @@ class StripeGateway(PaymentGateway):
     async def refund(self, transaction_id: str, amount: Decimal) -> RefundResult:
         ...
 
-class VNPayGateway(PaymentGateway):
+class PayPalGateway(PaymentGateway):
     async def charge(self, amount: Decimal, currency: str, token: str) -> PaymentResult:
-        # VNPay-specific implementation
+        # PayPal-specific implementation
         ...
 
-# Service không cần thay đổi khi thêm provider mới
+# Service remains unchanged when adding new providers
 class OrderService:
     def __init__(self, payment_gateway: PaymentGateway):
         self.payment = payment_gateway
 
     async def checkout(self, order: Order, token: str) -> PaymentResult:
-        return await self.payment.charge(order.total, "VND", token)
+        return await self.payment.charge(order.total, "USD", token)
 
-# FastAPI DI: chọn gateway qua config
+# FastAPI DI: select gateway via config
 def get_payment_gateway() -> PaymentGateway:
     if settings.payment_provider == "stripe":
         return StripeGateway(settings.stripe_api_key)
-    elif settings.payment_provider == "vnpay":
-        return VNPayGateway(settings.vnpay_config)
-    raise ValueError(f"Unsupported: {settings.payment_provider}")
+    elif settings.payment_provider == "paypal":
+        return PayPalGateway(settings.paypal_config)
+    raise ValueError(f"Unsupported provider: {settings.payment_provider}")
 ```
 
 ---
 
 ## L — Liskov Substitution Principle (LSP)
 
-Subclasses phải fulfill cùng contract với superclass.
+Subclasses must fulfill the same contract as the superclass without altering expected behavior.
 
 ```python
 from abc import ABC, abstractmethod
@@ -196,18 +196,18 @@ from abc import ABC, abstractmethod
 class UserRepositoryInterface(ABC):
     @abstractmethod
     async def get_by_id(self, user_id: int) -> Optional[User]:
-        """Returns User hoặc None — không raise exception nếu không tìm thấy."""
+        """Returns User or None — does not raise an exception if not found."""
         ...
 
     @abstractmethod
     async def save(self, user: User) -> User:
-        """Saves và returns user đã được persist. Raises PersistenceError nếu fail."""
+        """Saves and returns the persisted user. Raises PersistenceError on failure."""
         ...
 
 # Production implementation
 class SQLUserRepository(UserRepositoryInterface):
     async def get_by_id(self, user_id: int) -> Optional[User]:
-        # Returns User | None — đúng contract
+        # Returns User | None — conforms strictly to contract
         result = await self.db.execute(select(User).where(User.id == user_id))
         return result.scalar_one_or_none()
 
@@ -216,14 +216,14 @@ class SQLUserRepository(UserRepositoryInterface):
         await self.db.flush()
         return user
 
-# Test implementation — LSP: hoàn toàn substitutable
+# Test implementation — LSP: fully substitutable
 class InMemoryUserRepository(UserRepositoryInterface):
     def __init__(self):
         self._store: dict[int, User] = {}
         self._id_counter = 1
 
     async def get_by_id(self, user_id: int) -> Optional[User]:
-        return self._store.get(user_id)  # đúng contract: User | None
+        return self._store.get(user_id)  # conforms to contract: User | None
 
     async def save(self, user: User) -> User:
         if not user.id:
@@ -232,7 +232,7 @@ class InMemoryUserRepository(UserRepositoryInterface):
         self._store[user.id] = user
         return user
 
-# Service hoạt động với cả 2 implementations
+# Service works identically with both implementations
 service = UserService(repo=SQLUserRepository(db))       # production
 service = UserService(repo=InMemoryUserRepository())    # testing
 ```
@@ -242,7 +242,7 @@ service = UserService(repo=InMemoryUserRepository())    # testing
 ## I — Interface Segregation Principle (ISP)
 
 ```python
-# Scenario: Một số clients chỉ cần đọc, một số cần ghi, một số cần cả hai
+# Scenario: Some clients need read-only access, some need write access, some need both
 
 class UserReader(ABC):
     @abstractmethod
@@ -262,7 +262,7 @@ class UserDeleter(ABC):
     @abstractmethod
     async def delete(self, user_id: int) -> None: ...
 
-# Full implementation implements tất cả
+# Full implementation satisfies all interfaces
 class UserRepository(UserReader, UserWriter, UserDeleter):
     async def get_by_id(self, user_id: int) -> Optional[User]: ...
     async def list_active(self, skip: int, limit: int) -> list[User]: ...
@@ -270,12 +270,12 @@ class UserRepository(UserReader, UserWriter, UserDeleter):
     async def update(self, user_id: int, data: UserUpdate) -> User: ...
     async def delete(self, user_id: int) -> None: ...
 
-# Analytics service chỉ cần đọc
+# Analytics service only requires read capability
 class UserAnalyticsService:
-    def __init__(self, user_reader: UserReader):  # ISP: chỉ inject interface cần dùng
+    def __init__(self, user_reader: UserReader):  # ISP: inject only the required interface
         self.reader = user_reader
 
-# Admin service cần tất cả
+# Admin service requires all capabilities
 class UserAdminService:
     def __init__(self, repo: UserRepository):
         self.repo = repo
@@ -286,7 +286,7 @@ class UserAdminService:
 ## D — Dependency Inversion Principle (DIP)
 
 ```python
-# Scenario: Email service với multiple providers
+# Scenario: Email service supporting multiple providers
 
 class EmailServiceInterface(ABC):
     @abstractmethod
@@ -310,14 +310,14 @@ class SendgridEmailService(EmailServiceInterface):
         await self._client.send(message)
 
 class MockEmailService(EmailServiceInterface):
-    """For testing — không thực sự gửi email."""
+    """For testing — does not actually send emails."""
     def __init__(self):
         self.sent_emails: list[dict] = []
 
     async def send_welcome(self, to_email: str, username: str) -> None:
         self.sent_emails.append({"type": "welcome", "to": to_email})
 
-# Service depend on abstraction, không phải concrete class
+# Service depends on abstractions, never on concrete classes
 class UserService:
     def __init__(
         self,
@@ -327,7 +327,7 @@ class UserService:
         self.user_repo = user_repo
         self.email_service = email_service
 
-# dependencies.py — wire up concretes
+# dependencies.py — wire up concrete implementations
 def get_email_service() -> EmailServiceInterface:
     return SendgridEmailService(
         api_key=settings.sendgrid_api_key,

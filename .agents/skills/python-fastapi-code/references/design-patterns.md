@@ -1,8 +1,8 @@
-# Design Patterns — Ví dụ đầy đủ với FastAPI/Python
+# Design Patterns — Comprehensive Guide with FastAPI & Python
 
 ## 1. Repository Pattern
 
-Tách biệt database access logic. Cho phép thay đổi ORM/DB mà không ảnh hưởng business logic.
+Decouples database access logic. Enables changing the underlying ORM or database without impacting business logic.
 
 ```python
 from typing import Generic, TypeVar, Type, Optional, List
@@ -77,13 +77,13 @@ class UserRepository(BaseRepository[User]):
 
 ## 2. Unit of Work Pattern
 
-Đảm bảo nhiều operations được thực hiện trong cùng một transaction.
+Ensures multiple repository operations execute within a single transactional boundary.
 
 ```python
 from contextlib import asynccontextmanager
 
 class UnitOfWork:
-    """Quản lý transaction boundary cho multiple repositories."""
+    """Manages transactional boundaries across multiple repositories."""
 
     def __init__(self, session_factory):
         self._session_factory = session_factory
@@ -105,7 +105,7 @@ class UnitOfWork:
     async def rollback(self) -> None:
         await self._session.rollback()
 
-# Usage trong service
+# Usage in service
 class OrderService:
     def __init__(self, uow: UnitOfWork):
         self.uow = uow
@@ -116,7 +116,7 @@ class OrderService:
             if not user:
                 raise UserNotFoundError(user_id)
 
-            # Cả hai operations trong cùng transaction
+            # Both operations execute in the same transaction
             order = await uow.orders.create({"user_id": user_id, "items": items})
             await uow.users.update(user_id, {"last_order_at": datetime.now()})
 
@@ -128,7 +128,7 @@ class OrderService:
 
 ## 3. Factory Pattern
 
-Tạo objects mà không cần biết class cụ thể. Hữu ích cho multiple implementations.
+Creates objects without requiring the caller to specify the exact concrete class. Useful for swapping implementations based on runtime configuration.
 
 ```python
 from enum import Enum
@@ -141,7 +141,7 @@ class StorageType(str, Enum):
 class StorageServiceInterface(ABC):
     @abstractmethod
     async def upload(self, file: bytes, filename: str) -> str:
-        """Returns public URL của file đã upload."""
+        """Returns the public URL of the uploaded file."""
         ...
 
     @abstractmethod
@@ -160,6 +160,7 @@ class S3StorageService(StorageServiceInterface):
     def __init__(self, bucket: str, region: str):
         self._s3 = boto3.client("s3", region_name=region)
         self._bucket = bucket
+        self._region = region
 
     async def upload(self, file: bytes, filename: str) -> str:
         await asyncio.to_thread(
@@ -181,7 +182,7 @@ def create_storage_service(config: Settings) -> StorageServiceInterface:
     raise ValueError(f"Unsupported storage type: {config.storage_type}")
 
 # FastAPI DI
-@lru_cache  # singleton - chỉ tạo một lần
+@lru_cache  # Singleton - instantiate once
 def get_storage_service() -> StorageServiceInterface:
     return create_storage_service(get_settings())
 ```
@@ -190,7 +191,7 @@ def get_storage_service() -> StorageServiceInterface:
 
 ## 4. Strategy Pattern
 
-Định nghĩa family of algorithms, đóng gói từng cái, cho phép swap lúc runtime.
+Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.
 
 ```python
 # Scenario: Multiple discount strategies
@@ -198,7 +199,7 @@ def get_storage_service() -> StorageServiceInterface:
 class DiscountStrategy(ABC):
     @abstractmethod
     def calculate(self, order_total: Decimal, user: User) -> Decimal:
-        """Returns discount amount (không phải percentage)."""
+        """Returns discount amount (fixed amount, not percentage)."""
         ...
 
 class NoDiscount(DiscountStrategy):
@@ -225,7 +226,7 @@ class VoucherDiscount(DiscountStrategy):
             return Decimal("0")
         return min(self._voucher.discount_amount, order_total)
 
-# Context sử dụng strategy
+# Context executing the strategy
 class OrderCalculator:
     def __init__(self, discount_strategy: DiscountStrategy):
         self._strategy = discount_strategy
@@ -242,7 +243,7 @@ async def checkout(
     current_user: User = Depends(get_current_user),
     voucher_repo: VoucherRepository = Depends(get_voucher_repo),
 ):
-    # Chọn strategy dựa trên context
+    # Select strategy based on context
     if voucher_code:
         voucher = await voucher_repo.get_valid_voucher(voucher_code, current_user.id)
         if voucher:
@@ -263,7 +264,7 @@ async def checkout(
 
 ## 5. Observer Pattern
 
-Một object thay đổi → nhiều objects được notify. Hữu ích cho event-driven systems.
+When an object changes state, all registered observers are notified. Ideal for decoupled, event-driven architectures.
 
 ```python
 # Scenario: User events trigger multiple side effects
@@ -280,7 +281,7 @@ class UserCreatedEvent:
 EventHandler = Callable[[any], Awaitable[None]]
 
 class EventBus:
-    """Simple in-process event bus."""
+    """Simple in-process asynchronous event bus."""
 
     def __init__(self):
         self._handlers: dict[type, list[EventHandler]] = {}
@@ -304,13 +305,13 @@ async def create_user_profile(event: UserCreatedEvent) -> None:
 async def notify_admin(event: UserCreatedEvent) -> None:
     await notification_service.notify_new_user(event.user_id)
 
-# Wire up handlers (ví dụ trong main.py hoặc startup event)
+# Wire up handlers (e.g. in main.py or lifespan startup event)
 event_bus = EventBus()
 event_bus.subscribe(UserCreatedEvent, send_welcome_email)
 event_bus.subscribe(UserCreatedEvent, create_user_profile)
 event_bus.subscribe(UserCreatedEvent, notify_admin)
 
-# Service publish event
+# Service publishes event without knowing who handles it
 class UserService:
     def __init__(self, user_repo: UserRepository, event_bus: EventBus):
         self.user_repo = user_repo
@@ -319,7 +320,7 @@ class UserService:
     async def register_user(self, data: UserCreate) -> User:
         user = await self.user_repo.create(data)
 
-        # Publish event — service không cần biết ai xử lý
+        # Publish event — completely decoupled
         await self.event_bus.publish(UserCreatedEvent(
             user_id=user.id,
             email=user.email,
@@ -330,9 +331,9 @@ class UserService:
 
 ---
 
-## 6. Decorator Pattern (Python native)
+## 6. Decorator Pattern (Python Native)
 
-Thêm behavior vào function/method mà không thay đổi code gốc.
+Attaches additional behavior to a function or method transparently without modifying the original implementation.
 
 ```python
 import functools
@@ -405,12 +406,12 @@ class ExternalApiService:
 
 ---
 
-## 7. Singleton Pattern (qua FastAPI lifespan + lru_cache)
+## 7. Singleton Pattern (via FastAPI Lifespan + lru_cache)
 
 ```python
-# Đừng dùng class Singleton truyền thống. Dùng lru_cache hoặc FastAPI lifespan.
+# Avoid traditional Singleton classes. Use lru_cache or FastAPI lifespan instead.
 
-# Cách 1: lru_cache cho stateless singletons
+# Approach 1: lru_cache for stateless singletons
 from functools import lru_cache
 from pydantic_settings import BaseSettings
 
@@ -425,7 +426,7 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     return Settings()
 
-# Cách 2: FastAPI lifespan cho stateful singletons (DB pool, Redis, etc.)
+# Approach 2: FastAPI lifespan for stateful singletons (DB pool, Redis, HTTP clients)
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -447,15 +448,15 @@ app = FastAPI(lifespan=lifespan)
 
 ## 8. Facade Pattern
 
-Cung cấp interface đơn giản cho hệ thống phức tạp.
+Provides a unified, simplified interface to a complex subsystem.
 
 ```python
-# Scenario: Checkout process gọi nhiều services
+# Scenario: Checkout workflow involving multiple coordinating services
 
 class CheckoutFacade:
     """
-    Simplify checkout process bằng cách đóng gói coordination giữa các services.
-    Clients chỉ gọi một method thay vì phải biết flow phức tạp bên trong.
+    Simplifies the checkout process by orchestrating interactions across multiple services.
+    Clients call a single entry point rather than orchestrating complex multi-step workflows.
     """
 
     def __init__(
@@ -479,8 +480,8 @@ class CheckoutFacade:
         shipping_address: Address
     ) -> CheckoutResult:
         """
-        Facade method — client chỉ cần gọi cái này.
-        Bên trong tự xử lý validate cart → reserve stock → charge → create order → notify.
+        Facade method — client only interacts with this method.
+        Internally coordinates: validate cart -> reserve stock -> charge -> create order -> notify.
         """
         # 1. Validate cart
         cart = await self._cart.get_and_validate(user_id)
@@ -509,7 +510,7 @@ class CheckoutFacade:
             await self._inventory.release(reservation)
             raise
 
-# FastAPI endpoint — sử dụng facade, rất gọn
+# FastAPI endpoint — leverages facade, keeping the route handler lean
 @router.post("/checkout")
 async def checkout(
     request: CheckoutRequest,

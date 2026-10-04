@@ -2,53 +2,52 @@
 name: python-fastapi-code
 description: >
   Senior Python & FastAPI engineering skill for building high-performance, clean, and production-grade APIs.
-  Áp dụng Clean Code (PEP 8), SOLID principles, Design Patterns, Pydantic V2, async SQLAlchemy, JWT authentication, WebSockets, error handling, và testing với pytest-asyncio/httpx.
-  Kích hoạt khi người dùng yêu cầu:
-  - Viết hoặc review code Python backend (FastAPI, async SQLAlchemy, Pydantic V2, async/await)
-  - Xây dựng API endpoints, router, validation schemas, JWT/OAuth2 auth, background tasks, WebSockets
-  - Áp dụng Clean Code & SOLID trong Python/FastAPI (SRP, OCP, LSP, ISP, DIP)
-  - Áp dụng Design Patterns (Repository, Service Layer, Factory, Strategy, Dependency Injection via Depends)
-  - Tách layer router/service/repository/schema/model
-  - Viết unit test và integration test bất đồng bộ (pytest-asyncio, httpx)
-  - Refactor, tối ưu hiệu năng hoặc migrate code sang FastAPI
+  Enforces Clean Code (PEP 8), SOLID principles, Design Patterns, Pydantic V2, async SQLAlchemy, JWT authentication, WebSockets, error handling, and testing with pytest-asyncio/httpx.
+  Trigger when the user asks to:
+  - Write or review Python backend code (FastAPI, async SQLAlchemy, Pydantic V2, async/await)
+  - Build API endpoints, routers, validation schemas, JWT/OAuth2 auth, background tasks, WebSockets
+  - Apply Clean Code & SOLID in Python/FastAPI (SRP, OCP, LSP, ISP, DIP)
+  - Apply Design Patterns (Repository, Service Layer, Factory, Strategy, Dependency Injection via Depends)
+  - Separate layers: router/service/repository/schema/model
+  - Write async unit and integration tests (pytest-asyncio, httpx)
+  - Refactor, optimize performance, or migrate code to FastAPI
 ---
 
 # Python & FastAPI Clean Code & Expert Skill
 
-Skill này cung cấp hướng dẫn toàn diện của Senior Engineer để viết code Python backend chất lượng cao với FastAPI,
-áp dụng Clean Code, SOLID principles, Design Patterns, Pydantic V2, và Async SQLAlchemy.
+This skill provides comprehensive senior-engineering guidance for writing high-quality Python backend code with FastAPI, applying Clean Code, SOLID principles, Design Patterns, Pydantic V2, and Async SQLAlchemy.
 
-## Nguyên tắc & Ràng buộc cốt lõi (MUST DO / MUST NOT DO)
+## Core Principles & Constraints (MUST DO / MUST NOT DO)
 
-### MUST DO (Bắt buộc)
-- **Type hints toàn diện**: Tất cả function signatures, arguments và return types đều phải có type hint rõ ràng.
-- **Pydantic V2 syntax**: Dùng `model_config = ConfigDict(...)`, `@field_validator`, `@model_validator`.
-- **Dependency Injection**: Dùng cú pháp `Annotated[..., Depends(...)]` cho tất cả dependencies.
-- **Async/Await nhất quán**: Dùng async/await cho toàn bộ I/O operations (DB, HTTP calls, Redis). Chạy tác vụ CPU-heavy qua `asyncio.to_thread`.
-- **Modern Python 3.10+ typing**: Dùng `X | None` thay vì `Optional[X]`, dùng `list[str]` thay vì `List[str]`.
-- **HTTP Status Codes chuẩn REST**: Trả về đúng status code (201 Created, 204 No Content, 404 Not Found, 422 Unprocessable).
+### MUST DO
+- **Comprehensive Type Hints**: All function signatures, arguments, and return types must have explicit type hints.
+- **Pydantic V2 Syntax**: Use `model_config = ConfigDict(...)`, `@field_validator`, `@model_validator`.
+- **Dependency Injection**: Use `Annotated[..., Depends(...)]` syntax for all dependencies.
+- **Right Concurrency Model**: Use `async def` with `await` for all I/O operations (DB, HTTP calls, Redis). Keep pure in-memory computations, validations, and utility functions as synchronous `def` to avoid coroutine overhead. Offload CPU-heavy tasks via `asyncio.to_thread` or standard `def` endpoints.
+- **Modern Python 3.10+ Typing**: Use `X | None` instead of `Optional[X]`, use `list[str]` instead of `List[str]`.
+- **Standard REST HTTP Status Codes**: Return appropriate status codes (201 Created, 204 No Content, 404 Not Found, 422 Unprocessable Entity).
 
-### MUST NOT DO (Tuyệt đối tránh)
-- **Cấm gọi blocking/sync I/O** bên trong hàm `async def` (như `time.sleep()`, synchronous DB session, requests sync).
-- **Cấm dùng cú pháp Pydantic V1 lỗi thời**: `@validator`, `class Config`.
-- **Cấm lưu mật khẩu dạng plain text**: Luôn hash bằng bcrypt/passlib/argon2.
-- **Cấm trả về dữ liệu nhạy cảm**: Password hash, internal secrets không bao giờ được nằm trong response schema.
-- **Cấm hardcode cấu hình**: Tất cả config phải load từ `pydantic-settings` qua biến môi trường (.env).
+### MUST NOT DO
+- **Never perform blocking/sync I/O** inside an `async def` function (e.g., `time.sleep()`, synchronous DB sessions, synchronous requests).
+- **Never use deprecated Pydantic V1 syntax**: `@validator`, `class Config`.
+- **Never store plaintext passwords**: Always hash using bcrypt/passlib/argon2.
+- **Never return sensitive data**: Password hashes and internal secrets must never be exposed in response schemas.
+- **Never hardcode configurations**: All configurations must be loaded from `pydantic-settings` via environment variables (.env).
 
-## Cách sử dụng skill này
+## How to Use This Skill
 
-1. Xác định loại yêu cầu → đọc phần tương ứng bên dưới
-2. Với yêu cầu phức tạp (kiến trúc project, multiple patterns) → đọc thêm file reference liên quan
-3. Luôn ưu tiên code Pythonic, type-safe, testable
+1. Identify the request type -> read the corresponding section below.
+2. For complex requirements (project architecture, multiple design patterns) -> consult the relevant reference files.
+3. Always prioritize Pythonic, type-safe, and testable code.
 
-## Nguyên tắc cốt lõi (đọc trước tiên)
+## Core Philosophy (Read First)
 
-### Thứ tự ưu tiên khi viết code
+### Priority Order When Writing Code
 
-1. **Readable** (dễ đọc) > Clever (khéo léo)
-2. **Explicit** (tường minh) > Implicit (ngầm hiểu)
-3. **Simple** (đơn giản) > Complex (phức tạp)
-4. **Testable** (có thể test) > Tightly coupled (kết hợp chặt)
+1. **Readable** > Clever
+2. **Explicit** > Implicit
+3. **Simple** > Complex
+4. **Testable** > Tightly coupled
 
 ---
 
@@ -78,15 +77,15 @@ class UserService:
         pass
 ```
 
-### Naming - Nguyên tắc đặt tên tốt
+### Naming - Good Naming Practices
 
 ```python
-# BAD: tên mơ hồ, viết tắt khó hiểu
+# BAD: ambiguous names, obscure abbreviations
 def proc_usr(u, f=False):
     d = get_d()
     ...
 
-# GOOD: tên mô tả rõ ý định
+# GOOD: descriptive name revealing intent
 def process_user_registration(user: UserCreate, send_welcome_email: bool = False) -> User:
     database_session = get_database_session()
     ...
@@ -101,10 +100,10 @@ if user.age > LEGAL_AGE:
     ...
 ```
 
-### Functions - Nguyên tắc viết hàm sạch
+### Functions - Clean Function Guidelines
 
 ```python
-# BAD: hàm làm quá nhiều việc, nhiều tham số
+# BAD: function does too many things, too many parameters
 def create_user(name, email, password, role, send_email, log_action, notify_admin):
     # validation
     # hash password
@@ -114,7 +113,7 @@ def create_user(name, email, password, role, send_email, log_action, notify_admi
     # notify
     ...
 
-# GOOD: mỗi hàm một trách nhiệm, dùng dataclass/Pydantic cho nhiều tham số
+# GOOD: single responsibility per function, use dataclass/Pydantic for multiple parameters
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
@@ -122,20 +121,20 @@ class UserCreate(BaseModel):
     role: UserRole = UserRole.USER
 
 async def create_user(user_data: UserCreate) -> User:
-    """Tạo user mới và trả về user đã được lưu."""
+    """Create a new user and return the persisted user record."""
     hashed_password = hash_password(user_data.password)
     user = await user_repository.save(user_data, hashed_password)
     await email_service.send_welcome(user.email)
     return user
 ```
 
-### Type Hints - Bắt buộc trong Python/FastAPI
+### Type Hints - Required in Python/FastAPI
 
 ```python
 from typing import Optional, List, Dict, Any
 from collections.abc import Sequence
 
-# Luôn annotate function signatures
+# Always annotate function signatures
 async def get_users(
     skip: int = 0,
     limit: int = 20,
@@ -143,53 +142,53 @@ async def get_users(
 ) -> List[User]:
     ...
 
-# Dùng TypeAlias cho type phức tạp
+# Use TypeAlias for complex types
 UserId = int
 UserDict = Dict[str, Any]
 
-# Python 3.10+: dùng X | Y thay vì Optional[X]
+# Python 3.10+: use X | Y instead of Optional[X]
 def find_user(user_id: int) -> User | None:
     ...
 ```
 
-### Comments và Docstrings
+### Comments and Docstrings
 
 ```python
-# BAD: comment giải thích "what" (code đã nói rõ)
-# Tăng i lên 1
+# BAD: comment explains "what" (code is already self-explanatory)
+# Increment i by 1
 i += 1
 
-# GOOD: comment giải thích "why"
-# Delay 100ms để tránh rate limiting của external API
+# GOOD: comment explains "why"
+# Delay 100ms to avoid rate limiting from external API
 await asyncio.sleep(0.1)
 
-# GOOD: docstring cho public API
+# GOOD: docstring for public API
 async def calculate_discount(
     user: User,
     order_total: float
 ) -> float:
     """
-    Tính giảm giá dựa trên hạng thành viên của user.
+    Calculate discount based on the user's membership tier.
 
     Args:
-        user: User object với membership_tier
-        order_total: Tổng giá trị đơn hàng (VND)
+        user: User object with membership_tier
+        order_total: Total order amount (USD)
 
     Returns:
-        Số tiền được giảm (VND), không âm
+        Discount amount (USD), non-negative
 
     Raises:
-        ValueError: Nếu order_total < 0
+        ValueError: If order_total < 0
     """
     if order_total < 0:
-        raise ValueError(f"order_total phải >= 0, nhận được: {order_total}")
+        raise ValueError(f"order_total must be >= 0, got: {order_total}")
     ...
 ```
 
 ### Pythonic Patterns
 
 ```python
-# List comprehension thay vì vòng lặp thủ công
+# List comprehension instead of manual loop
 # BAD
 active_users = []
 for user in users:
@@ -199,11 +198,11 @@ for user in users:
 # GOOD
 active_users = [user for user in users if user.is_active]
 
-# Context managers cho resource management
+# Context managers for resource management
 async with get_db() as db:
     result = await db.execute(query)
 
-# Dataclasses / Pydantic thay vì dict
+# Dataclasses / Pydantic models instead of raw dictionaries
 # BAD
 user = {"name": "Alice", "email": "alice@example.com"}
 
@@ -224,10 +223,10 @@ raise HTTPException(status_code=404, detail="User not found")
 
 ### S - Single Responsibility Principle (SRP)
 
-Mỗi class/module chỉ có một lý do để thay đổi. Trong FastAPI: Router chỉ xử lý HTTP, Service chỉ xử lý business logic, Repository chỉ xử lý database.
+Each class/module should have only one reason to change. In FastAPI: Routers handle only HTTP, Services handle only business logic, Repositories handle only database operations.
 
 ```python
-# BAD: endpoint làm quá nhiều việc
+# BAD: endpoint does too many things
 @router.post("/users")
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     # Validate
@@ -243,7 +242,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(db_user); db.commit()
     return db_user
 
-# GOOD: mỗi layer một trách nhiệm
+# GOOD: each layer has a single responsibility
 @router.post("/users", response_model=UserResponse, status_code=201)
 async def create_user(
     user: UserCreate,
@@ -252,11 +251,11 @@ async def create_user(
     return await service.create_user(user)
 ```
 
-> Xem chi tiết triển khai đầy đủ tại: `references/solid-principles.md`
+> See complete implementation details in: `references/solid-principles.md`
 
 ### O - Open/Closed Principle (OCP)
 
-Mở để extend, đóng để modify. Dùng abstract base classes.
+Open for extension, closed for modification. Use abstract base classes.
 
 ```python
 from abc import ABC, abstractmethod
@@ -276,7 +275,7 @@ class SMSNotification(NotificationChannel):
         # send SMS logic
         ...
 
-# Thêm channel mới không cần sửa code cũ
+# Adding a new channel requires no modification to existing code
 class PushNotification(NotificationChannel):
     async def send(self, recipient: str, message: str) -> bool:
         # push notification logic
@@ -285,7 +284,7 @@ class PushNotification(NotificationChannel):
 
 ### L - Liskov Substitution Principle (LSP)
 
-Subclass phải có thể thay thế superclass mà không làm hỏng behavior.
+Subclasses must be substitutable for their superclasses without breaking behavior.
 
 ```python
 class BaseRepository(ABC):
@@ -302,7 +301,7 @@ class SQLUserRepository(BaseRepository):
     async def get_by_id(self, id: int) -> Optional[User]:
         ...  # implements fully, no narrower exceptions
 
-# In-memory implementation cho testing
+# In-memory implementation for testing
 class InMemoryUserRepository(BaseRepository):
     async def get_by_id(self, id: int) -> Optional[User]:
         ...  # same contract, substitutable
@@ -310,10 +309,10 @@ class InMemoryUserRepository(BaseRepository):
 
 ### I - Interface Segregation Principle (ISP)
 
-Tách interface lớn thành nhiều interface nhỏ, chuyên biệt.
+Split bloated interfaces into smaller, client-specific interfaces.
 
 ```python
-# BAD: interface quá lớn
+# BAD: interface is too bloated
 class UserRepository(ABC):
     @abstractmethod
     async def get(self, id: int): ...
@@ -322,11 +321,11 @@ class UserRepository(ABC):
     @abstractmethod
     async def delete(self, id: int): ...
     @abstractmethod
-    async def get_analytics(self): ...  # không phải mọi repo đều cần
+    async def get_analytics(self): ...  # not every repo needs this
     @abstractmethod
-    async def export_csv(self): ...     # không phải mọi repo đều cần
+    async def export_csv(self): ...     # not every repo needs this
 
-# GOOD: interfaces nhỏ, có thể kết hợp
+# GOOD: small, composable interfaces
 class Readable(ABC):
     @abstractmethod
     async def get_by_id(self, id: int): ...
@@ -345,16 +344,16 @@ class UserRepository(Readable, Writable, Deletable):
 
 ### D - Dependency Inversion Principle (DIP)
 
-Depend on abstractions, not concretions. FastAPI's `Depends()` là DI built-in.
+Depend on abstractions, not concretions. FastAPI's `Depends()` is built-in Dependency Injection.
 
 ```python
-# BAD: service tạo dependency trực tiếp
+# BAD: service creates dependencies directly
 class UserService:
     def __init__(self):
         self.repo = SQLUserRepository()  # tightly coupled!
         self.emailer = SendgridEmailer()  # tightly coupled!
 
-# GOOD: inject abstractions qua constructor
+# GOOD: inject abstractions via constructor
 class UserService:
     def __init__(
         self,
@@ -383,72 +382,81 @@ async def get_user(
 
 ---
 
-## 3. FASTAPI PROJECT STRUCTURE
+## 3. FASTAPI PROJECT STRUCTURE & ARCHITECTURAL PATTERNS
 
-### Cấu trúc khuyến nghị (Domain-based)
+FastAPI supports two architectural styles depending on project scale, both sharing the **same infrastructure invariants** (root is always `backend/`, dependencies via PEP 621 `pyproject.toml` with `uv`/`pip`, and cross-cutting concerns in `app/middlewares/`):
+
+1. **Layered / Technical Slicing Architecture (`fastapi-backend-scaffold`)**:
+   - Best for **microservices**, focused APIs, and small-to-medium backends (< 10 resources).
+   - Organized by technical concern: `app/models/`, `app/schemas/`, `app/repositories/`, `app/services/`, `app/api/v1/endpoints/`.
+2. **Domain-Based / Feature Slicing Architecture (`references/project-structure.md`)**:
+   - Best for **Modular Monoliths**, complex business domains, and Domain-Driven Design (DDD).
+   - Organized by autonomous business features: `app/users/`, `app/auth/`, `app/orders/`.
+
+### Standard Domain-Based Structure (Modular Monolith / DDD)
 
 ```
-fastapi-project/
-├── alembic/                    # Database migrations
-├── src/
-│   ├── main.py                 # App entry point
-│   ├── config.py               # Global settings (Pydantic BaseSettings)
-│   ├── database.py             # DB session, engine setup
-│   ├── exceptions.py           # Global exception handlers
-│   │
-│   ├── users/                  # Feature module
-│   │   ├── __init__.py
-│   │   ├── router.py           # HTTP endpoints ONLY
-│   │   ├── service.py          # Business logic ONLY
-│   │   ├── repository.py       # DB queries ONLY
-│   │   ├── schemas.py          # Pydantic request/response models
-│   │   ├── models.py           # SQLAlchemy ORM models
-│   │   ├── dependencies.py     # FastAPI Depends factories
-│   │   ├── exceptions.py       # Domain-specific exceptions
-│   │   └── constants.py        # Domain constants
-│   │
-│   ├── auth/
-│   │   ├── router.py
-│   │   ├── service.py
-│   │   ├── schemas.py
-│   │   └── dependencies.py     # get_current_user, require_admin, etc.
-│   │
-│   └── common/                 # Shared utilities
-│       ├── base_repository.py  # Generic CRUD base
-│       ├── pagination.py       # Pagination schemas/logic
-│       └── utils.py
-├── tests/
-│   ├── conftest.py             # Fixtures, test DB setup
-│   ├── unit/
-│   │   └── users/
-│   │       ├── test_service.py
-│   │       └── test_repository.py
-│   └── integration/
-│       └── test_users_api.py
-├── pyproject.toml
-└── .env
+repo-root/
+└── backend/
+    ├── .venv/                     # Isolated virtual environment
+    ├── pyproject.toml             # PEP 621 dependencies (uv / pip)
+    ├── .env.example
+    ├── Dockerfile
+    ├── docker-compose.yml
+    ├── migrations/                # Alembic migrations
+    ├── tests/
+    │   ├── conftest.py
+    │   ├── unit/
+    │   └── integration/
+    └── app/
+        ├── main.py                # App entrypoint & lifespan
+        ├── core/                  # Settings (pydantic-settings), security, logging
+        ├── db/                    # Async engine & sessionmaker
+        ├── middlewares/           # CORS, request-id, access logging, error handling
+        ├── common/                # Shared base repo, pagination, utils
+        │
+        ├── users/                 # Feature Domain: Users
+        │   ├── router.py          # HTTP endpoints ONLY
+        │   ├── service.py         # Business logic ONLY
+        │   ├── repository.py      # Async DB queries ONLY
+        │   ├── schemas.py         # Pydantic request/response models
+        │   ├── models.py          # SQLAlchemy ORM models
+        │   └── dependencies.py    # Domain DI
+        │
+        ├── auth/                  # Feature Domain: Auth
+        │   ├── router.py
+        │   ├── service.py
+        │   ├── schemas.py
+        │   └── dependencies.py
+        │
+        └── orders/                # Feature Domain: Orders
+            ├── router.py
+            ├── service.py
+            ├── repository.py
+            ├── schemas.py
+            └── models.py
 ```
 
-### Layer separation rules
+### Layer Separation Rules
 
-| Layer             | Responsibility                | Được phép import                       |
+| Layer             | Responsibility                | Allowed Imports                        |
 | ----------------- | ----------------------------- | -------------------------------------- |
 | `router.py`       | HTTP in/out, status codes     | service, schemas, dependencies         |
 | `service.py`      | Business logic, orchestration | repository, schemas, external services |
 | `repository.py`   | Database queries only         | models, database session               |
 | `schemas.py`      | Request/response validation   | Pydantic only                          |
-| `models.py`       | DB table definition           | SQLAlchemy only                        |
+| `models.py`       | DB table definitions          | SQLAlchemy only                        |
 | `dependencies.py` | DI factory functions          | service, repository, config            |
 
 ---
 
 ## 4. DESIGN PATTERNS IN FASTAPI
 
-Xem chi tiết từng pattern tại file references tương ứng.
+Refer to the corresponding reference files for detailed walkthroughs of each pattern.
 
 ### Repository Pattern
 
-Tách biệt database access khỏi business logic:
+Decouples database access from business logic:
 
 ```python
 class BaseRepository(Generic[T]):
@@ -489,7 +497,7 @@ class UserService:
             raise EmailAlreadyExistsError(email)
 ```
 
-### Dependency Injection Pattern (FastAPI native)
+### Dependency Injection Pattern (FastAPI Native)
 
 ```python
 # dependencies.py
@@ -516,7 +524,7 @@ async def create_user(
     ...
 ```
 
-> Xem chi tiết: `references/design-patterns.md`
+> See details: `references/design-patterns.md`
 
 ---
 
@@ -525,17 +533,17 @@ async def create_user(
 ```python
 # exceptions.py (domain)
 class DomainError(Exception):
-    """Base cho tất cả domain errors."""
+    """Base class for all domain errors."""
     pass
 
 class UserNotFoundError(DomainError):
     def __init__(self, user_id: int):
         self.user_id = user_id
-        super().__init__(f"User {user_id} không tồn tại")
+        super().__init__(f"User {user_id} does not exist")
 
 class EmailAlreadyExistsError(DomainError):
     def __init__(self, email: str):
-        super().__init__(f"Email {email} đã được sử dụng")
+        super().__init__(f"Email {email} is already registered")
 
 # main.py - global exception handlers
 @app.exception_handler(UserNotFoundError)
@@ -558,21 +566,21 @@ async def email_exists_handler(request: Request, exc: EmailAlreadyExistsError):
 ## 6. ASYNC BEST PRACTICES
 
 ```python
-# GOOD: async cho I/O operations
+# GOOD: async for I/O operations
 async def get_user_with_orders(user_id: int) -> UserWithOrders:
-    # Chạy song song thay vì tuần tự
+    # Run concurrently rather than sequentially
     user, orders = await asyncio.gather(
         user_repo.get_by_id(user_id),
         order_repo.get_by_user_id(user_id)
     )
     return UserWithOrders(user=user, orders=orders)
 
-# BAD: blocking call trong async context
+# BAD: blocking call in async context
 async def get_users():
     time.sleep(1)  # BLOCKS event loop!
     users = requests.get(...)  # BLOCKS event loop!
 
-# GOOD: dùng async libraries
+# GOOD: use async libraries
 async def get_users():
     await asyncio.sleep(1)
     async with httpx.AsyncClient() as client:
@@ -588,7 +596,7 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 from datetime import datetime
 from typing import Optional
 
-# Tách biệt request vs response schemas
+# Separate request vs response schemas
 class UserCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
@@ -598,7 +606,7 @@ class UserCreate(BaseModel):
     @classmethod
     def password_strength(cls, v: str) -> str:
         if not any(c.isupper() for c in v):
-            raise ValueError("Password phải có ít nhất 1 chữ hoa")
+            raise ValueError("Password must contain at least 1 uppercase letter")
         return v
 
 class UserResponse(BaseModel):
@@ -609,7 +617,7 @@ class UserResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)  # Pydantic v2
 
-# Không bao giờ expose password trong response!
+# Never expose passwords in response models!
 ```
 
 ---
@@ -649,20 +657,20 @@ async def test_create_user_sends_welcome_email():
 
 ---
 
-## Files tham khảo chi tiết (Internal References)
+## Detailed Reference Guides (Internal References)
 
-Tất cả các tài liệu hướng dẫn chi tiết nằm tự chứa trong thư mục `references/` của skill này:
+All detailed reference documentation is self-contained within the `references/` directory of this skill:
 
-| Chủ đề | File tham khảo | Nội dung chi tiết |
+| Topic | Reference File | Detailed Contents |
 |:---|:---|:---|
 | **Pydantic V2** | `references/pydantic-v2.md` | Validation schemas, model_config, field_validator, serialization |
 | **Async SQLAlchemy** | `references/async-sqlalchemy.md` | Async engine, session management, async CRUD patterns |
 | **Authentication & Security** | `references/authentication.md` | JWT token flow, OAuth2 password bearer, get_current_user |
 | **Endpoints & Routing** | `references/endpoints-routing.md` | APIRouter, dependency injection, path/query params |
 | **Async Testing** | `references/testing-async.md` | pytest-asyncio, httpx AsyncClient, fixtures, mocking |
-| **Django Migration** | `references/migration-from-django.md` | Chuyển đổi từ Django / Django REST Framework sang FastAPI |
+| **Django Migration** | `references/migration-from-django.md` | Migrating from Django / Django REST Framework to FastAPI |
 | **Design Patterns** | `references/design-patterns.md` | Repository, Factory, Strategy, Observer, Unit of Work |
-| **SOLID Principles** | `references/solid-principles.md` | Ví dụ cụ thể từng nguyên lý SOLID trong FastAPI |
-| **Project Structure** | `references/project-structure.md` | Chi tiết cấu trúc phân lớp Router -> Service -> Repository |
+| **SOLID Principles** | `references/solid-principles.md` | Concrete examples for each SOLID principle in FastAPI |
+| **Project Structure** | `references/project-structure.md` | Layered architectural details: Router -> Service -> Repository |
 
-Đọc file tương ứng khi cần ví dụ chi tiết hoặc khi xử lý yêu cầu kỹ thuật phức tạp.
+Read the corresponding reference file when you need comprehensive examples or when handling complex technical requirements.

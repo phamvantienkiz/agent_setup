@@ -36,10 +36,10 @@ dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
     "pydantic-settings>=2.4.0",
-    "sqlalchemy>=2.0.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "asyncpg>=0.30.0",          # async PostgreSQL driver
     "alembic>=1.13.0",
     "python-dotenv>=1.0.0",
-    "psycopg2-binary>=2.9.0",   # drop if not using Postgres
 ]
 
 [project.optional-dependencies]
@@ -47,6 +47,7 @@ dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.24.0",
     "httpx>=0.27.0",
+    "aiosqlite>=0.20.0",        # async SQLite for tests
     "ruff>=0.6.0",
     "mypy>=1.11.0",
 ]
@@ -141,7 +142,7 @@ SECRET_KEY=change-me
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 # --- Database ---
-DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/<project-name>
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/<project-name>
 
 # --- CORS (used by app/middlewares/cors.py) ---
 BACKEND_CORS_ORIGINS=["http://localhost:3000"]
@@ -644,13 +645,17 @@ class Base(DeclarativeBase):
 `app/db/session.py`
 
 ```python
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.core.config import settings
 
-engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_async_engine(settings.DATABASE_URL, pool_pre_ping=True)
+async_session_factory = async_sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autoflush=False,
+)
 ```
 
 ---
@@ -658,17 +663,24 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 ## app/api/deps.py
 
 ```python
-from collections.abc import Generator
+from collections.abc import AsyncGenerator
 
-from app.db.session import SessionLocal
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.session import async_session_factory
 
 
-def get_db() -> Generator:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """Provides an isolated async database session per request."""
+    async with async_session_factory() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
 ```
 
 ---
@@ -748,60 +760,76 @@ class ItemRead(ItemBase):
 `app/repositories/item.py` — repository layer, pure DB access
 
 ```python
-from sqlalchemy.orm import Session
+from collections.abc import Sequence
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.item import Item
 from app.schemas.item import ItemCreate
 
 
-def get(db: Session, item_id: int) -> Item | None:
-    return db.get(Item, item_id)
+async def get(db: AsyncSession, item_id: int) -> Item | None:
+    result = await db.execute(select(Item).where(Item.id == item_id))
+    return result.scalar_one_or_none()
 
 
-def list_all(db: Session, skip: int = 0, limit: int = 100) -> list[Item]:
-    return db.query(Item).offset(skip).limit(limit).all()
+async def list_all(db: AsyncSession, skip: int = 0, limit: int = 100) -> Sequence[Item]:
+    result = await db.execute(select(Item).offset(skip).limit(limit))
+    return result.scalars().all()
 
 
-def create(db: Session, data: ItemCreate) -> Item:
+async def create(db: AsyncSession, data: ItemCreate) -> Item:
     item = Item(**data.model_dump())
     db.add(item)
-    db.commit()
-    db.refresh(item)
+    await db.flush()
+    await db.refresh(item)
     return item
 ```
 
 `app/services/item_service.py` — business logic, knows nothing about HTTP
 
 ```python
-from sqlalchemy.orm import Session
+from collections.abc import Sequence
 
-from app.repositories import item as item_repository
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.exceptions.custom import NotFoundError
+from app.repositories import item as item_repository
 from app.schemas.item import ItemCreate, ItemRead
 
 
-def create_item(db: Session, data: ItemCreate) -> ItemRead:
-    item = item_repository.create(db, data)
+def validate_item_name(name: str) -> None:
+    """Pure in-memory business logic: sync def is optimal here."""
+    if not name.strip():
+        raise ValueError("Item name cannot be empty")
+
+
+async def create_item(db: AsyncSession, data: ItemCreate) -> ItemRead:
+    validate_item_name(data.name)
+    item = await item_repository.create(db, data)
     return ItemRead.model_validate(item)
 
 
-def get_item(db: Session, item_id: int) -> ItemRead:
-    item = item_repository.get(db, item_id)
+async def get_item(db: AsyncSession, item_id: int) -> ItemRead:
+    item = await item_repository.get(db, item_id)
     if item is None:
         raise NotFoundError(f"Item {item_id} not found")
     return ItemRead.model_validate(item)
 
 
-def list_items(db: Session, skip: int = 0, limit: int = 100) -> list[ItemRead]:
-    items = item_repository.list_all(db, skip, limit)
+async def list_items(db: AsyncSession, skip: int = 0, limit: int = 100) -> list[ItemRead]:
+    items = await item_repository.list_all(db, skip, limit)
     return [ItemRead.model_validate(i) for i in items]
 ```
 
 `app/api/v1/endpoints/items.py` — controller
 
 ```python
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db
 from app.schemas.item import ItemCreate, ItemRead
@@ -810,19 +838,29 @@ from app.services import item_service
 router = APIRouter(prefix="/items", tags=["items"])
 
 
-@router.post("", response_model=ItemRead, status_code=201)
-def create_item(data: ItemCreate, db: Session = Depends(get_db)):
-    return item_service.create_item(db, data)
+@router.post("", response_model=ItemRead, status_code=status.HTTP_201_CREATED)
+async def create_item(
+    data: ItemCreate,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    return await item_service.create_item(db, data)
 
 
 @router.get("/{item_id}", response_model=ItemRead)
-def read_item(item_id: int, db: Session = Depends(get_db)):
-    return item_service.get_item(db, item_id)
+async def read_item(
+    item_id: int,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    return await item_service.get_item(db, item_id)
 
 
 @router.get("", response_model=list[ItemRead])
-def list_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return item_service.list_items(db, skip, limit)
+async def list_items(
+    skip: int = 0,
+    limit: int = 100,
+    db: Annotated[AsyncSession, Depends(get_db)] = None,
+):
+    return await item_service.list_items(db, skip, limit)
 ```
 
 `app/exceptions/custom.py`
@@ -852,22 +890,31 @@ def register_exception_handlers(app: FastAPI) -> None:
 ## tests/conftest.py
 
 ```python
-import pytest
-from fastapi.testclient import TestClient
+import pytest_asyncio
+from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 
 
-@pytest.fixture
-def client() -> TestClient:
-    return TestClient(app)
+@pytest_asyncio.fixture
+async def client() -> AsyncClient:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as ac:
+        yield ac
 ```
 
 `tests/api/v1/test_health.py`
 
 ```python
-def test_health(client):
-    response = client.get("/api/v1/health")
+import pytest
+from httpx import AsyncClient
+
+
+@pytest.mark.asyncio
+async def test_health(client: AsyncClient):
+    response = await client.get("/api/v1/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 ```
@@ -875,8 +922,13 @@ def test_health(client):
 `tests/middlewares/test_request_id.py`
 
 ```python
-def test_response_has_request_id_and_timing_headers(client):
-    response = client.get("/api/v1/health")
+import pytest
+from httpx import AsyncClient
+
+
+@pytest.mark.asyncio
+async def test_response_has_request_id_and_timing_headers(client: AsyncClient):
+    response = await client.get("/api/v1/health")
     assert "X-Request-ID" in response.headers
     assert "X-Process-Time" in response.headers
 ```
@@ -885,12 +937,12 @@ def test_response_has_request_id_and_timing_headers(client):
 
 ## migrations (Alembic)
 
-Initialize (run inside the venv, from `backend/`):
+Initialize for async SQLAlchemy (run inside the venv, from `backend/`):
 
 ```bash
-./.venv/bin/alembic init migrations
+./.venv/bin/alembic init -t async migrations
 # or, with uv:
-uv run alembic init migrations
+uv run alembic init -t async migrations
 ```
 
 Then edit `migrations/env.py` to point at the correct metadata and URL:

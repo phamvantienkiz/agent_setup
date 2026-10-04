@@ -17,6 +17,8 @@ This skill defines the **mandatory, non-negotiable standard** for every backend 
 6. Each backend is a **self-contained project**: it has its own `.gitignore`, `README.md`, `Dockerfile`, and `docker-compose.yml` inside `backend/`, not shared with the rest of the repo (unless the user explicitly asks otherwise).
 7. Keep three request-handling layers strictly separated: **api (controller)** — receives the request, validates via schema, calls the service. **services (service)** — business logic. **repositories (repository)** — pure DB access. A layer may only call the layer below it, never upward or skipping a layer (api must never call the repository/DB directly).
 8. **All cross-cutting request/response concerns live in `app/middlewares/`**, never scattered inline inside `main.py` or inside individual endpoints. CORS, request-id, request/response logging, global error catching, and rate limiting are middleware — not controller logic.
+9. **Architecture Dispatching:** By default, use the **Layered Architecture** (`app/models/`, `app/schemas/`, `app/repositories/`, `app/services/`) for microservices and small-to-medium backends. If the user explicitly asks for a **Modular Monolith**, enterprise domain, or **Domain-Driven Design (DDD)**, follow the Domain-based structure defined in `python-fastapi-code/references/project-structure.md` while strictly maintaining the same infrastructure invariants (`backend/` root, PEP 621, and `app/middlewares/`).
+10. **Concurrency & Database I/O:** Use **Async SQLAlchemy** (`create_async_engine`, `AsyncSession`, `asyncpg`) for database access, using `async def` and `await` for I/O operations. Pure in-memory compute, data transformation, validation, and non-I/O endpoints (`/health`) should remain synchronous `def` to avoid coroutine scheduling overhead. Never execute blocking synchronous I/O calls inside an `async def` function.
 
 If the user asks for something that conflicts with the rules above (e.g. "just install it on my machine to save time", "skip the venv", "just add logging directly inside the endpoint"), the agent should briefly restate the reason and propose the correct approach, unless the user explicitly confirms they want otherwise.
 
@@ -26,12 +28,12 @@ Follow in order, don't skip steps:
 
 1. **Check the root.** Identify the root of the current repo/workspace. If `backend/` doesn't exist → `mkdir -p backend`. If it exists and already has content → stop and ask the user whether to overwrite/merge before proceeding.
 2. **Create the full directory tree** per section 2 below (including empty directories that need a `.gitkeep`, e.g. `logs/`).
-3. **Create `backend/pyproject.toml`** with project metadata + core dependencies (`fastapi`, `uvicorn[standard]`, `pydantic-settings`, `sqlalchemy`, `alembic`) + dev dependencies (`pytest`, `pytest-asyncio`, `httpx`, `ruff`). Full sample content is in `references/templates.md#pyprojecttoml`.
+3. **Create `backend/pyproject.toml`** with project metadata + core dependencies (`fastapi`, `uvicorn[standard]`, `pydantic-settings`, `sqlalchemy[asyncio]`, `asyncpg`, `alembic`) + dev dependencies (`pytest`, `pytest-asyncio`, `httpx`, `aiosqlite`, `ruff`). Full sample content is in `references/templates.md#pyprojecttoml`.
 4. **Create and activate the virtualenv** — exact commands per tool/OS are in section 3. After activating: upgrade pip (if using pip) then install the project in editable mode with dev extras.
 5. **Create the scaffold code**: `app/main.py`, `app/core/config.py`, `app/middlewares/` (see section 6), `app/api/v1/router.py`, `app/api/deps.py`, and one sample resource (e.g. `items`) spanning models → schemas → repositories → services → api/v1/endpoints as a template for future resources.
 6. **Create project config files**: `.gitignore`, `README.md`, `.env.example`, `Dockerfile`, `docker-compose.yml`. Sample content in `references/templates.md`.
 7. **Create test skeleton** under `tests/` mirroring the `app/` structure (e.g. `tests/api/v1/test_items.py`, `tests/middlewares/test_request_id.py`), configure pytest in `pyproject.toml` (`[tool.pytest.ini_options]`, `testpaths = ["tests"]`).
-8. **Initialize Alembic** in `backend/migrations/` (`alembic init migrations`, run inside the venv), pointing `sqlalchemy.url` at `app.core.config.settings`.
+8. **Initialize Alembic** in `backend/migrations/` (`alembic init -t async migrations`, run inside the venv), pointing `sqlalchemy.url` at `app.core.config.settings`.
 9. **Verify (mandatory before reporting done):**
    - `uvicorn app.main:app --reload` (run from `backend/`, venv active) starts without errors.
    - A request to any endpoint returns an `X-Request-ID` header and gets logged (confirms the middleware layer is wired up).

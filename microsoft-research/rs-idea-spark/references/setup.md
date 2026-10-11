@@ -1,10 +1,10 @@
-# Idea Spark — Setup (first use only)
+﻿# Idea Spark — Setup (first use only)
 
 Read this once when installing the skill; at run time SKILL.md never needs this file. All API credentials are OPTIONAL and are configured by the user in `.env`; the skill never writes them. Every connector runs without credentials, and an invalid or expired key is dropped in-process the moment the API rejects it (the connector continues keyless and prints one stderr note): arXiv needs none; OpenAlex falls back to the keyless polite pool; Semantic Scholar falls back to keyless pacing (slower, more 429 backoff); OpenReview falls back to the anonymous client, which still reads public in-review submissions. Only a missing pip package disables a connector — then the orchestrator prints a prominent **CONNECTORS DEGRADED** banner and writes a `.connectors_degraded` marker so a partial run is never mistaken for a full one.
 
 0. **Set two shell variables once per session** — where this skill is installed, and where run outputs should go. Neither depends on the harness:
    ```bash
-   SKILL_DIR=~/.claude/skills/idea-spark            # Claude Code default; Codex CLI: ~/.codex/skills/idea_spark; else wherever this folder lives
+   SKILL_DIR=.agents/skills/rs-idea-spark            # Claude Code default; Codex CLI: ~/.codex/skills/idea_spark; else wherever this folder lives
    RUN_DIR="$PWD/ideaspark_run/<topic-slug>" && mkdir -p "$RUN_DIR"   # convention: one run = one dir under ideaspark_run/, kebab-case topic slug; any absolute dir works
    ```
    `RUN_DIR` is purely an output anchor — the orchestrator only ever sees the absolute `--out` paths you pass, so the variable *name* does not matter (Claude Code sessions can reuse the injected `CLAUDE_PROJECT_DIR` as their `RUN_DIR`). The orchestrator hard-fails early with an actionable message when a path argument contains an unexpanded `$variable`, collapses to filesystem root (empty expansion, e.g. `/phase0`), or is a relative `--out` — instead of a confusing `FileNotFoundError` mid-run.
@@ -35,3 +35,4 @@ Read this once when installing the skill; at run time SKILL.md never needs this 
 7. **Optional — standing compute profile**: if your real budget differs from the factory default (80GB-class GPUs, ≤8 concurrent, ≈150 GPU-days / 5 months, ~$10k API campaign), add one line to `.env` instead of re-typing it per run: `IDEASPARK_DEFAULT_COMPUTE="8×H100 node, ~300 GPU-days, $50k API budget"`. Precedence: compute stated in your query > this profile > factory default.
 
 If a connector shows ❌, it's either missing creds (fix in `.env`) or missing the pip package (the error message tells you which `pip install` to run). If a full-text dep shows ⚠️, run `pip install feedparser openreview-py beautifulsoup4 pymupdf`.
+

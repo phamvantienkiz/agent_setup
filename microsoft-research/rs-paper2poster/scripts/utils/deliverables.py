@@ -1,4 +1,4 @@
-"""Final deliverables-presence gate — the *forcing function* that prevents
+﻿"""Final deliverables-presence gate — the *forcing function* that prevents
 "fill loop done = task done" rationalization.
 
 The 12-step paper2poster workflow ends with four required artifacts in the
@@ -60,14 +60,14 @@ _REQUIRED = [
         "poster.pdf",
         50_000,
         "Step 10 (render_poster.py)",
-        "Run Step 10:  python ~/.claude/skills/paper2poster/scripts/"
+        "Run Step 10:  python .agents/skills/rs-paper2poster/scripts/"
         "render_poster.py <outdir>/poster.html",
     ),
     (
         "poster.png",
         20_000,
         "Step 10 (render_poster.py — produced alongside the PDF)",
-        "Run Step 10:  python ~/.claude/skills/paper2poster/scripts/"
+        "Run Step 10:  python .agents/skills/rs-paper2poster/scripts/"
         "render_poster.py <outdir>/poster.html",
     ),
 ]
@@ -143,3 +143,4 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
         help="path to the paper's output directory (contains poster.html)",
     )
     p.set_defaults(func=cmd_deliverables)
+

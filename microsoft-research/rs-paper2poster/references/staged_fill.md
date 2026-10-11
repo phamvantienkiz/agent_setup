@@ -1,4 +1,4 @@
-# Staged-fill loop reference
+﻿# Staged-fill loop reference
 
 How to grow content from a lean initial render into a poster that exactly fills the 60×36in canvas. Read this when you reach **Step 8 — Stage-by-stage fill** in `SKILL.md`.
 
@@ -35,7 +35,7 @@ The gate is **per-section**: the loop is done when every section is `FULL`. No m
 **The loop has a second mandatory exit condition: zero `FIG/NARROW` warnings.** Every card figure MUST fill **90–100%** of its section on at least one axis (width OR height) — a figure that paints as a small stamp in its card is a defect, not a soft nit. So the loop is only done when **both** hold: (a) `check_poster.py slack` shows every section `FULL`, and (b) `check_poster.py polish` reports **0** `FIG/NARROW` warnings. A figure that's still narrow after the columns are all `FULL` is usually *height-bound* — the fit script hands it only the vertical room left after its section's text, so a wide banner caps its width below 90%. Fix it with the **Method figure max-height** method first (raise the figure's `max-height` cap to enlarge the figure box), and when the columns have **0 slack** and the cap can't grow, with the **targeted prose polish** method (tighten the prose in that figure's own section so its bullets wrap shorter, freeing vertical room the figure box grows into). Re-run `check_poster.py slack --with-polish` after every such edit; keep it only if figure warnings drop without pushing any section into overflow/spillage, else roll back. The only exemption is a deliberate image-left/text-right card marked `data-fig-layout="beside-text"`.
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/check_poster.py slack \
+python .agents/skills/rs-paper2poster/scripts/check_poster.py slack \
     <outdir>/poster.html --with-polish
 ```
 
@@ -83,7 +83,7 @@ Read `verdict.overflowSections` / `sparseSections` / `emptySections` for the act
 Before opening a browser, run the bundled HTML linter to catch LaTeX residue, raw `<` inside math, missing local images, and a missing root marker:
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/check_poster.py preflight <outdir>/poster.html
+python .agents/skills/rs-paper2poster/scripts/check_poster.py preflight <outdir>/poster.html
 ```
 
 The script tolerates paper2poster's class-based markup (`class="poster"`, `.col`, `.section`) — no `data-measure-role` attributes needed. Fix every reported `FAIL` (hard errors that would break the PDF) before going further. `WARN`s are informational. If preflight passes, continue.
@@ -436,3 +436,4 @@ Claude isn't actually rendering the page to look at it. `check_poster.py slack` 
 ## When to skip the loop entirely
 
 - Every section already reads `FULL` on the first measurement (rare for full papers; common for short workshop papers).
+

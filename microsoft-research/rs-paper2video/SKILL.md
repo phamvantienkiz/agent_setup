@@ -16,7 +16,7 @@ one shared trigger decision, then fully delegates:
 
 ```text
 paper.pdf
-  -> skills/paper2assets/scripts/build_package.py       (shared package)
+  -> .agents/skills/rs-paper2assets/scripts/build_package.py       (shared package)
   -> assets/meta/paper_spec.md + assets/meta/narration.json
   -> ppt_options_contract.py resolve-ppt-trigger          (ONE trigger decision)
   -> installed ppt-master skill                          (full workflow, receives the trigger)
@@ -109,8 +109,8 @@ delivered file. This skill's Step 2 and Step 6 close exactly that gap.
 Run Paper2Video workflow commands from `ResearchStudio-Reel/` unless noted.
 
 ```bash
-PAPER2VIDEO=skills/paper2video
-PAPER2ASSETS=skills/paper2assets
+PAPER2VIDEO=.agents/skills/rs-paper2video
+PAPER2ASSETS=.agents/skills/rs-paper2assets
 ```
 
 Install both external skills before starting. Do not clone or vendor either
@@ -195,14 +195,14 @@ skill promotes the result into `<video_outdir>` (see Step 5).
 ## Step 1: Build or reuse the shared paper2assets package
 
 ```bash
-python skills/paper2assets/scripts/build_package.py <paper.pdf> --outdir "$VIDEO_OUT"
+python .agents/skills/rs-paper2assets/scripts/build_package.py <paper.pdf> --outdir "$VIDEO_OUT"
 ```
 
 If `paper_spec.md` already exists, sync structured claims and narration
 instead of re-extracting:
 
 ```bash
-python skills/paper2assets/scripts/build_package.py <paper.pdf> \
+python .agents/skills/rs-paper2assets/scripts/build_package.py <paper.pdf> \
   --outdir "$VIDEO_OUT" \
   --skip-extract \
   --paper-spec "$VIDEO_OUT/assets/meta/paper_spec.md"
@@ -222,7 +222,7 @@ ppt-master and pptx2video. Never let either child skill fall back to its own
 independent default.
 
 ```bash
-python3 skills/paper2video/scripts/ppt_options_contract.py resolve-ppt-trigger \
+python3 .agents/skills/rs-paper2video/scripts/ppt_options_contract.py resolve-ppt-trigger \
   --ppt-trigger {auto,on-click,after-previous}
 ```
 
@@ -318,9 +318,9 @@ Before invoking ppt-master, prepare title-slide utility assets when a
 `paper2assets` package exists:
 
 ```bash
-python skills/paper2assets/scripts/fetch_logos.py \
+python .agents/skills/rs-paper2assets/scripts/fetch_logos.py \
   --outdir "$PAPER_ASSETS" --from-spec "$PAPER_ASSETS/assets/meta/paper_spec.md" || true
-python skills/paper2assets/scripts/make_qr.py \
+python .agents/skills/rs-paper2assets/scripts/make_qr.py \
   --outdir "$PAPER_ASSETS" --from-metadata "$PAPER_ASSETS/assets/meta/metadata.json" || true
 ```
 
@@ -451,7 +451,7 @@ resolved in Step 2, rather than trusting that ppt-master's flag and
 pptx2video's flag each did the right thing.
 
 ```bash
-python3 skills/paper2video/scripts/ppt_stage_validator.py audit-final-pptx-trigger \
+python3 .agents/skills/rs-paper2video/scripts/ppt_stage_validator.py audit-final-pptx-trigger \
   "$VIDEO_OUT/video.pptx" \
   --ppt-trigger <ppt_trigger from Step 2>
 ```
@@ -547,3 +547,5 @@ The generic render runtime is not owned or vendored by this skill. Install
 - `references/ppt_trigger_handoff.md` - deep dive on the four-concept model,
   the native OOXML mechanics behind it, and the failure modes this skill's
   Step 2/Step 6 close.
+
+

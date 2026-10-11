@@ -1,4 +1,4 @@
-# Audio narration reference
+﻿# Audio narration reference
 
 How the per-section narration MP3s are produced so the poster's Listen
 buttons work. Read this at **Step 5 — Synthesize narration audio** in
@@ -45,7 +45,7 @@ prose — no markdown / HTML / `<strong>`; TTS reads numerals and `%` fine.
 ## 2. Synthesize (paper2poster Step 5)
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/generate_audio.py \
+python .agents/skills/rs-paper2poster/scripts/generate_audio.py \
     <outdir>/assets/meta/narration.json --outdir <outdir>/assets/audio
 ```
 
@@ -82,3 +82,4 @@ The whole reason these artifacts beat a static export is the embedded
 narration — a passerby clicks Listen and hears an ~80-word voiced
 explanation per section. Treat the mp3s as first-class output alongside the
 figures and spec.
+

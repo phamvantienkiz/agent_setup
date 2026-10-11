@@ -48,6 +48,8 @@ def load_env_once() -> Optional[Path]:
             break
     if repo_root is not None:
         candidates += sorted(repo_root.glob("skills/*/.env"))
+        candidates += sorted(repo_root.glob(".agents/skills/*/.env"))
+        candidates += [repo_root / "microsoft-research" / ".env"]
 
     for cand in candidates:
         try:

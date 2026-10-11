@@ -1,4 +1,4 @@
-# Review Checklist
+﻿# Review Checklist
 
 Run this before delivering — and run it against **both** deliverables, the Chinese `<blog_outdir>/blog_zh.docx` and the English `<blog_outdir>/blog_en.docx` in normalized runs. The two articles share one evidence map and one set of figures, so most checks below apply to each file independently, plus a cross-version consistency pass.
 
@@ -63,7 +63,7 @@ Run this before delivering — and run it against **both** deliverables, the Chi
 - Run the hard gate before final delivery:
 
   ```bash
-  python skills/paper2blog/scripts/check_blog_package.py <blog_outdir> --strict
+  python .agents/skills/rs-paper2blog/scripts/check_blog_package.py <blog_outdir> --strict
   ```
 
 - Strict gate must inspect rendered layout previews for both DOCX files. By default it uses LibreOffice/PyMuPDF to render PDF/PNG previews. If the machine cannot render DOCX directly, create page PNGs with the available document tool and pass `--zh-preview-dir` and `--en-preview-dir`; do not skip preview checks for final output.
@@ -76,3 +76,4 @@ Mention:
 - Both final `.docx` paths (`_zh` and `_en`).
 - Any important QA limitation, such as unavailable rendering tools.
 - One or two concise notes about what the drafts contain.
+

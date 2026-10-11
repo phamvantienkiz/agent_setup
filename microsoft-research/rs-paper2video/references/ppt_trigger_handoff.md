@@ -1,4 +1,4 @@
-# The ppt_trigger handoff: four concepts, one native XML tree
+﻿# The ppt_trigger handoff: four concepts, one native XML tree
 
 This is the deep dive behind `SKILL.md` Step 2 (resolve) and Step 6 (audit).
 Read this file when you need to understand *why* the handoff protocol looks
@@ -107,7 +107,7 @@ delivered PPTX itself in PowerPoint.
 
 ## `resolve_ppt_trigger_handoff()`
 
-`skills/paper2video/scripts/ppt_options_contract.py` owns the single mapping
+`.agents/skills/rs-paper2video/scripts/ppt_options_contract.py` owns the single mapping
 from user intent to both children's flags:
 
 ```python
@@ -141,7 +141,7 @@ directly, not something paper2video resolves.
 
 ## `audit_final_pptx_trigger()`
 
-`skills/paper2video/scripts/ppt_stage_validator.py`'s
+`.agents/skills/rs-paper2video/scripts/ppt_stage_validator.py`'s
 `audit-final-pptx-trigger` CLI parses the delivered `video.pptx`'s actual
 `p:timing` tree, per slide, and checks every non-With-Previous row's native
 `nodeType` against `_EXPECTED_NATIVE_TRIGGER`:
@@ -165,3 +165,4 @@ render pipeline ran cleanly, but it says nothing about whether ppt-master's
 `--animation-trigger` and pptx2video's `--click-group-policy` actually agreed
 about the trigger the user asked for. Only parsing the delivered file's own
 native tree proves that.
+

@@ -1,4 +1,4 @@
-# paper2reel
+﻿# paper2reel
 
 > Turn the poster, blog, and video deliverables for one paper into an interactive `reel.html` viewer that aligns poster sections, slide thumbnails, video seek times, baked video captions, and bilingual blog content.
 
@@ -54,7 +54,7 @@ From a Claude Code session:
 For local preview, use the Range-capable server:
 
 ```bash
-python skills/paper2reel/scripts/serve_reel.py ./my_paper/ --port 8900
+python .agents/skills/rs-paper2reel/scripts/serve_reel.py ./my_paper/ --port 8900
 ```
 
 Open `http://127.0.0.1:8900/reel.html`. Do not use `python -m http.server` for validation; video seek requires HTTP Range support.
@@ -116,3 +116,4 @@ scripts/
 ## More detail
 
 [`SKILL.md`](SKILL.md) is the authoritative, agent-facing spec: the viewer UX contract, bootstrap rules for missing upstream stages, alignment rules, browser QA gate, and manifest requirements. `assets/section_modal_contract.json` is the golden UI contract used by the checker.
+

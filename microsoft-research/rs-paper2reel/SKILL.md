@@ -1,4 +1,4 @@
----
+﻿---
 name: rs-paper2reel
 description: Build an interactive HTML viewer (reel.html) that aligns paper2poster output with slide frames, video clips, and bilingual blog text via content_alignment.json without mutating original deliverables. STOPS to present interactive web preview.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
@@ -117,7 +117,7 @@ assets sit under `assets/`. Do not copy only `reel.html`.
 From the repo root:
 
 ```bash
-python skills/paper2reel/scripts/build_poster_slides_view.py \
+python .agents/skills/rs-paper2reel/scripts/build_poster_slides_view.py \
   --poster-dir <poster_outdir> \
   --slides-dir <slide_png_or_svg_dir> \
   --script-json <optional_audio_script_json> \
@@ -215,7 +215,7 @@ from complete timeline slide clips and end with a short silent freeze tail, so
 the modal does not stop mid-motion or mid-thought.
 
 ```bash
-python skills/paper2reel/scripts/build_section_media_from_timeline.py \
+python .agents/skills/rs-paper2reel/scripts/build_section_media_from_timeline.py \
   --viewer-dir <reel_outdir> \
   --timeline <video_outdir>/assets/meta/timeline.json \
   --video <video_outdir>/video.mp4 \
@@ -248,7 +248,7 @@ After building the base viewer and timeline-backed media, run the reel
 package checker. This is a required gate, not an optional smoke test:
 
 ```bash
-python skills/paper2reel/scripts/check_reel_package.py \
+python .agents/skills/rs-paper2reel/scripts/check_reel_package.py \
   <reel_outdir> \
   --browser \
   --file-browser \
@@ -296,7 +296,7 @@ by visually inspecting the page.
 For human preview, start the same Range-capable server used by the browser gate:
 
 ```bash
-python skills/paper2reel/scripts/serve_reel.py <reel_outdir> --port 8900
+python .agents/skills/rs-paper2reel/scripts/serve_reel.py <reel_outdir> --port 8900
 ```
 
 Open `http://127.0.0.1:8900/reel.html`. The preview is not considered faithful
@@ -337,7 +337,7 @@ Use the bootstrap helper for the inspection and for the deterministic final
 assembly:
 
 ```bash
-python skills/paper2reel/scripts/build_reel_from_paper.py <paper.pdf-or-bundle> --dry-run
+python .agents/skills/rs-paper2reel/scripts/build_reel_from_paper.py <paper.pdf-or-bundle> --dry-run
 ```
 
 Then follow its stage report:
@@ -361,7 +361,7 @@ Then follow its stage report:
 - When all upstream stages pass, let the helper assemble the reel:
 
   ```bash
-  python skills/paper2reel/scripts/build_reel_from_paper.py \
+  python .agents/skills/rs-paper2reel/scripts/build_reel_from_paper.py \
     <paper.pdf-or-bundle> \
     --run-missing \
     --download-mode materialized
@@ -417,10 +417,11 @@ If automatic slide matching is weak, pass an override JSON:
 Use the override with:
 
 ```bash
-python skills/paper2reel/scripts/build_poster_slides_view.py \
+python .agents/skills/rs-paper2reel/scripts/build_poster_slides_view.py \
   --poster-dir <paper2poster_outdir> \
   --slides-dir <slide_png_or_svg_dir> \
   --script-json <script.json> \
   --section-slide-map <map.json> \
   --outdir <viewer_outdir>
 ```
+

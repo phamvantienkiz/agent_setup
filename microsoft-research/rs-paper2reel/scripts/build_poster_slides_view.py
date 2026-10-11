@@ -45,9 +45,23 @@ TEMPLATE_VERSION = "attention_golden_section_modal.v1"
 LAYOUT_VERSION = "v2-assets"
 LOCAL_OPEN_RUNTIME = "srcdoc-poster.v1"
 MATHJAX_VERSION = "3.2.2"
-MATHJAX_TARBALL_URL = f"https://registry.npmjs.org/mathjax/-/mathjax-{MATHJAX_VERSION}.tgz"
-REEL_ROOT = Path(__file__).resolve().parents[3]
-KATEX_ASSET_DIR = REEL_ROOT / "skills" / "paper2poster" / "assets" / "katex"
+def _find_katex_dir() -> Path:
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        for cand in [
+            parent / "rs-paper2poster" / "assets" / "katex",
+            parent / "paper2poster" / "assets" / "katex",
+            parent / ".agents" / "skills" / "rs-paper2poster" / "assets" / "katex",
+            parent / ".agents" / "skills" / "paper2poster" / "assets" / "katex",
+            parent / "microsoft-research" / "rs-paper2poster" / "assets" / "katex",
+            parent / "skills" / "paper2poster" / "assets" / "katex",
+        ]:
+            if cand.is_dir():
+                return cand
+    return here.parents[1].parent / "rs-paper2poster" / "assets" / "katex"
+
+
+KATEX_ASSET_DIR = _find_katex_dir()
 
 POSTER_DIR = "assets/poster"
 SLIDES_DIR = "assets/slides"

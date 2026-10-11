@@ -1,4 +1,4 @@
----
+﻿---
 name: rs-paper2blog
 description: Transform academic paper materials into a bilingual editorial package (blog_en.docx and blog_zh.docx). Preserves exact experimental numbers and figures while adapting tone for international research blogs and WeChat public accounts. STOPS to present article drafts for review.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
@@ -96,13 +96,13 @@ demos, but new runs must use the v2 bundle shape above.
    - If starting from a PDF and no shared package exists yet, initialize one **into `$BLOG_OUT` directly** (resolved per the Output Contract above) — re-using `$BLOG_OUT` as paper2assets' `--outdir` keeps every paper2* skill writing into the same bundle root, so figures/captions/spec/narration that paper2assets produces sit right next to the `.docx` files this skill will later write. From the repo root:
 
      ```bash
-     python skills/paper2assets/scripts/build_package.py <paper.pdf> --outdir "$BLOG_OUT"
+     python .agents/skills/rs-paper2assets/scripts/build_package.py <paper.pdf> --outdir "$BLOG_OUT"
      ```
 
      After `paper_spec.md` or an equivalent section spec exists, sync it:
 
      ```bash
-     python skills/paper2assets/scripts/build_package.py <paper.pdf> \
+     python .agents/skills/rs-paper2assets/scripts/build_package.py <paper.pdf> \
        --outdir "$BLOG_OUT" \
        --skip-extract \
        --paper-spec "$BLOG_OUT/assets/meta/paper_spec.md"
@@ -171,7 +171,7 @@ demos, but new runs must use the v2 bundle shape above.
    - Run the machine QA gate before delivery:
 
      ```bash
-     python skills/paper2blog/scripts/check_blog_package.py "$BLOG_OUT" --strict
+     python .agents/skills/rs-paper2blog/scripts/check_blog_package.py "$BLOG_OUT" --strict
      ```
 
      The gate checks that both `.docx` files exist, embed the same figure set,
@@ -185,7 +185,7 @@ demos, but new runs must use the v2 bundle shape above.
      available document tool and pass:
 
      ```bash
-     python skills/paper2blog/scripts/check_blog_package.py "$BLOG_OUT" \
+     python .agents/skills/rs-paper2blog/scripts/check_blog_package.py "$BLOG_OUT" \
        --strict \
        --zh-preview-dir <rendered_cn_page_pngs> \
        --en-preview-dir <rendered_en_page_pngs>
@@ -239,3 +239,5 @@ scripts/
   layout previews. Run it with `--strict` before delivery and iterate until it
   passes.
 - Python package dependencies are listed in `requirements.txt`; `extract_pdf.py` also needs the Poppler `pdftotext` executable on `PATH`.
+
+

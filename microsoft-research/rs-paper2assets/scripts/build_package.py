@@ -82,7 +82,10 @@ def utc_now() -> str:
 
 
 def repo_root() -> Path:
-    # skills/paper2assets/scripts/build_package.py -> repo root
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if (parent / ".git").exists() or (parent / "pyproject.toml").exists():
+            return parent
     return Path(__file__).resolve().parents[3]
 
 
@@ -543,7 +546,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--outdir", required=True, help="Paper assets package root")
     ap.add_argument(
         "--extractor",
-        default=str(root / "skills" / "paper2assets" / "scripts" / "extract_pdf.py"),
+        default=str(Path(__file__).resolve().parent / "extract_pdf.py"),
         help="PDF extractor script to reuse",
     )
     ap.add_argument(

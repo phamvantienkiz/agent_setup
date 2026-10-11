@@ -1,4 +1,4 @@
-# html2pptx-skill
+﻿# html2pptx-skill
 
 Convert a rendered HTML page (especially A0 conference posters) into a native PowerPoint .pptx with **editable text + native shapes** — NOT a PNG-in-slide.
 
@@ -50,7 +50,7 @@ Output: `<name>_round_N.{pptx,pdf,png}` for each of N rounds. Final pptx is typi
 
 ## Use as Claude Code skill
 
-In this repo it's vendored under `skills/paper2poster/html2pptx/` as a bundled sub-skill of paper2poster (not a git submodule). To use it standalone elsewhere, place it under `.claude/skills/html2pptx` in your project (or symlink to it). Claude Code reads SKILL.md's frontmatter and exposes it as `html2pptx`.
+In this repo it's vendored under `.agents/skills/rs-paper2poster/html2pptx/` as a bundled sub-skill of paper2poster (not a git submodule). To use it standalone elsewhere, place it under `.claude/skills/html2pptx` in your project (or symlink to it). Claude Code reads SKILL.md's frontmatter and exposes it as `html2pptx`.
 
 ## Use standalone
 
@@ -65,3 +65,4 @@ See [SKILL.md](SKILL.md) for full capability matrix.
 ## License
 
 MIT
+

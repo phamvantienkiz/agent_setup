@@ -35,9 +35,33 @@ STATUS_MISSING = "MISSING"
 STATUS_BLOCKED = "BLOCKED"
 STATUS_RAN = "RAN"
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-SCRIPTS_DIR = REPO_ROOT / "skills" / "paper2reel" / "scripts"
-PAPER2ASSETS_BUILD = REPO_ROOT / "skills" / "paper2assets" / "scripts" / "build_package.py"
+def _find_repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if (parent / ".git").exists() or (parent / "pyproject.toml").exists():
+            return parent
+    return Path.cwd()
+
+
+def _find_paper2assets_build() -> Path:
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        for cand in [
+            parent / "rs-paper2assets" / "scripts" / "build_package.py",
+            parent / "paper2assets" / "scripts" / "build_package.py",
+            parent / ".agents" / "skills" / "rs-paper2assets" / "scripts" / "build_package.py",
+            parent / ".agents" / "skills" / "paper2assets" / "scripts" / "build_package.py",
+            parent / "microsoft-research" / "rs-paper2assets" / "scripts" / "build_package.py",
+            parent / "skills" / "paper2assets" / "scripts" / "build_package.py",
+        ]:
+            if cand.exists():
+                return cand
+    return here.parents[1].parent / "rs-paper2assets" / "scripts" / "build_package.py"
+
+
+REPO_ROOT = _find_repo_root()
+SCRIPTS_DIR = Path(__file__).resolve().parent
+PAPER2ASSETS_BUILD = _find_paper2assets_build()
 BUILD_VIEWER = SCRIPTS_DIR / "build_poster_slides_view.py"
 BUILD_MEDIA = SCRIPTS_DIR / "build_section_media_from_timeline.py"
 CHECK_REEL = SCRIPTS_DIR / "check_reel_package.py"

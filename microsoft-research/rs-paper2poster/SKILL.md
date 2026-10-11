@@ -1,4 +1,4 @@
----
+﻿---
 name: rs-paper2poster
 description: Render an extracted paper's 9-section spec into a print-ready academic poster (HTML, PDF, PNG) and an editable PowerPoint (.pptx with native shapes) via bundled html2pptx. Supports 60x36in landscape and A0 portrait with measured fill loops and Edge-TTS audio. STOPS to present deliverables for researcher editing.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
@@ -91,7 +91,7 @@ running concurrently). Therefore:
   call** (a Write, a substitution script you ran, a prior Edit) — NOT a
   competing process. Re-Read the file and continue. Do not investigate
   "who else is modifying it" — nobody else is.
-- The shared template at `<config>/skills/paper2poster/assets/*.html`
+- The shared template at `.agents/skills/rs-paper2poster/assets/*.html`
   is READ-ONLY input — copy it into your `<outdir>`, never edit it
   in place.
 
@@ -111,8 +111,8 @@ already exist**:
 if [[ -f "$outdir/poster.html" \
       && -f "$outdir/poster.pdf" \
       && -f "$outdir/poster.png" ]]; then
-  if python ~/.claude/skills/paper2poster/scripts/select_figures.py "$outdir" \
-      && python ~/.claude/skills/paper2poster/scripts/check_poster.py \
+  if python .agents/skills/rs-paper2poster/scripts/select_figures.py "$outdir" \
+      && python .agents/skills/rs-paper2poster/scripts/check_poster.py \
           preflight "$outdir/poster.html"; then
     echo "[paper2poster] CACHED in $outdir: semantic preflight passed, reusing."
     echo "  poster.html  $(stat -c%s "$outdir/poster.html") bytes"
@@ -181,11 +181,11 @@ fi
 
 # B. Retry fetch_logos.py from this skill (it's a paper2assets script
 #    but safe to call from paper2poster as a recovery step).
-python ~/.claude/skills/paper2assets/scripts/fetch_logos.py \
+python .agents/skills/rs-paper2assets/scripts/fetch_logos.py \
     --from-spec <outdir>/assets/meta/paper_spec.md --outdir <outdir>
 
 # C. Same for qr/ if missing
-python ~/.claude/skills/paper2assets/scripts/make_qr.py \
+python .agents/skills/rs-paper2assets/scripts/make_qr.py \
     --from-metadata <outdir>/assets/meta/metadata.json --outdir <outdir>
 ```
 
@@ -253,7 +253,7 @@ If a picked figure has **asymmetric noise** the deterministic chain couldn't cat
 2. **Decide** a tight pixel bbox `(X0, Y0, X1, Y1)`.
 3. **Apply:**
    ```bash
-   python ~/.claude/skills/paper2assets/scripts/crop_figure.py box <outdir>/assets/figures/<file>.png --box X0 Y0 X1 Y1
+   python .agents/skills/rs-paper2assets/scripts/crop_figure.py box <outdir>/assets/figures/<file>.png --box X0 Y0 X1 Y1
    ```
    This writes a one-time `<file>.png.bak` (or preserves the existing one from paper2assets' earlier work) and updates `figures.json`.
 4. **Re-Read** the result. Cap at 3 attempts per figure; restore from `.bak` with `cp` if you over-cut.
@@ -429,7 +429,7 @@ When two methods are independent (different columns) you may apply both in one p
 **Machine-checked exit gate.** The loop is done only when this command exits `0`:
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/check_poster.py slack \
+python .agents/skills/rs-paper2poster/scripts/check_poster.py slack \
     <outdir>/poster.html --with-polish --strict
 ```
 
@@ -459,7 +459,7 @@ semantic metadata.
 paper2assets produced the narration **script** (`<outdir>/assets/meta/narration.json`); paper2poster turns it into the mp3s the Listen buttons play — paper2poster is where TTS happens (paper2assets does NOT):
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/generate_audio.py \
+python .agents/skills/rs-paper2poster/scripts/generate_audio.py \
     <outdir>/assets/meta/narration.json --outdir <outdir>/assets/audio
 ```
 
@@ -480,7 +480,7 @@ python references/fit_logos.py --poster <outdir>/poster.html
 ### Step 6 — Render the poster to PDF + PNG (FIRST — applies + bakes the expand)
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/render_poster.py <outdir>/poster.html
+python .agents/skills/rs-paper2poster/scripts/render_poster.py <outdir>/poster.html
 ```
 
 Run this **before Step 7 (html2pptx)** so the expand is baked into `poster.html` *before* html2pptx reads it — the editable `poster.pptx` then matches the PDF/PNG instead of shipping the pre-expand layout. The script reads `@page { size: <W> <H> }` from the HTML, mirrors the bundled Inter webfonts into `<outdir>/assets/fonts/`, freezes any selected OS-font stack to its licensed portable browser face, opens Chromium with print emulation, waits for MathJax to settle, applies the render-time expand, **bakes that expand back into `poster.html`**, then writes `<outdir>/poster.pdf` and `<outdir>/poster.png` (0.35× scale by default). The poster HTML and `assets/fonts/` therefore stay self-contained for sharing across platforms.
@@ -510,7 +510,7 @@ Useful flags (defaults usually fine):
 After rendering, run the final dimension gate:
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/check_poster.py verify-final \
+python .agents/skills/rs-paper2poster/scripts/check_poster.py verify-final \
     <outdir>/poster.pdf --from-html <outdir>/poster.html
 ```
 
@@ -531,7 +531,7 @@ The skill extracts the DOM via Playwright, builds a native `.pptx` (editable tex
 ### Step 7.5 — Final deliverable check (MANDATORY before declaring done)
 
 ```bash
-python ~/.claude/skills/paper2poster/scripts/check_poster.py deliverables <outdir>
+python .agents/skills/rs-paper2poster/scripts/check_poster.py deliverables <outdir>
 ```
 
 Deterministic gate, not advisory. It exits `0` only when **all four** core artifacts exist in `<outdir>` and meet minimum size thresholds:
@@ -573,7 +573,7 @@ scripts/
 
 `check_poster.py slack` and `render_poster.py` both read `@page { size: W H }` from the input HTML — the templates set this — so the canvas size doesn't need to be passed on the command line.
 
-Note: figure-cropping tools (`crop_figure.py`, `extract_pdf.py`, `fetch_logos.py`, `make_qr.py`) live in the **paper2assets** skill. If you need a one-off visual `box` re-crop on a figure paper2assets' deterministic chain couldn't handle, invoke them via `~/.claude/skills/paper2assets/scripts/` (see Step 2.5).
+Note: figure-cropping tools (`crop_figure.py`, `extract_pdf.py`, `fetch_logos.py`, `make_qr.py`) live in the **paper2assets** skill. If you need a one-off visual `box` re-crop on a figure paper2assets' deterministic chain couldn't handle, invoke them via `.agents/skills/rs-paper2assets/scripts/` (see Step 2.5).
 
 ## Templates
 
@@ -652,3 +652,6 @@ Bundled in `assets/fonts/`: Inter Regular / SemiBold / Bold / ExtraBold in both 
   - **Check before declaring done.** Visually scan every multi-tile row in the rendered poster. If values are at different y-positions or labels show a stair-step baseline, the row fails uniformity — fix the content before signing off.
 - **Do not edit the canvas lock.** The 60×36in / `cqw` / `aspect-ratio: 5 / 3` rules in both templates are what makes the browser preview, print PDF, and PNG thumbnail look like the same layout at different magnifications.
 - **paper2assets owns the figure-cleanup pipeline (top-check → decaption → autotrim).** Don't re-run the deterministic chain here — it's already done. Step 2.5's visual `box` cut is for residual asymmetric noise only.
+
+
+

@@ -1,0 +1,61 @@
+<style>
+  .titlebar.hv-7 {
+    flex: 0 0 auto;
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 48pt;
+    padding: 32pt 56pt;
+    background: var(--tb-bg, var(--accent));
+    color: var(--tb-fg, #fff);
+    border: var(--tb-border, none);
+    border-radius: var(--tb-radius, 12pt);
+    box-shadow: var(--tb-shadow, none);
+  }
+  .titlebar.hv-7 .title-block { min-width: 0; text-align: left; }
+  .titlebar.hv-7 h1 {
+    margin: 0 0 0.2em;
+    font-size: 84pt;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--tb-title-fg, var(--tb-fg, #fff));
+  }
+  .titlebar.hv-7 .authors { font-size: 40pt; line-height: 1.3; }
+  .titlebar.hv-7 .venue-text {
+    max-width: 440pt;
+    padding-left: 32pt;
+    border-left: 2pt solid currentColor;
+    font-size: 32pt;
+    line-height: 1.25;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+  .titlebar.hv-7 .venue-text span { display: block; }
+  .titlebar.hv-7 .venue-text:not(:has(span:not(:empty))) { display: none; }
+  .titlebar.hv-7:not(:has(.venue-text span:not(:empty))) { grid-template-columns: minmax(0, 1fr); }
+  .titlebar.hv-7 .listen-all {
+    position: absolute;
+    bottom: 16pt;
+    right: 48pt;
+    z-index: 5;
+    font-size: 26pt;
+    font-weight: 600;
+    color: inherit;
+    background: transparent;
+    border: 1.5pt solid currentColor;
+    border-radius: 999px;
+    height: 66pt;
+    padding: 0 18pt;
+    cursor: pointer;
+  }
+</style>
+<header class="titlebar hv-7" data-section="title" data-header="v7" data-institution-branding="none">
+  <div class="title-block">
+    <h1>{{TITLE}}</h1>
+    <div class="authors">{{AUTHORS_PLAIN}}</div>
+  </div>
+  <div class="venue-text"><span>{{VENUE_NAME}}</span><span>{{VENUE_YEAR}}</span></div>
+  <button class="listen-all" data-listen-all>Full Listen</button>
+</header>

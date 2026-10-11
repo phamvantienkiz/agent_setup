@@ -1,0 +1,29 @@
+/* legend-frame.css — 'Legend Frame' body-block style (section card + h2). Adapts the
+   gallery block to the real poster (.section padding/flex unchanged, h2 60pt).
+   Theme/header ride the SOLID defaults (flat white chips) via --tb-chip-shadow. */
+:root { --fig-img-radius: 4px; --tb-chip-shadow: none; }
+.section {
+    position: relative; padding: 40pt 32pt 32pt; display: flex; flex-direction: column; min-height: 0; overflow: visible;
+  background:#fff; border:3pt solid var(--accent); border-radius:10pt;
+}
+.section h2 {
+  /* Static (was position:absolute) so the per-section Listen button — an h2
+     child — takes the .section as its containing block instead of this small
+     centred pill, letting it sit at the section's FAR-RIGHT corner rather than
+     hugging the title. The pill still straddles the frame's top edge and
+     centres horizontally: align-self:center sizes it to the title text, and a
+     negative top margin pulls it up ~half its own height above the border. */
+  align-self: center;
+  margin: -73pt 0 0.5em 0;
+  padding: 5pt 20pt !important;   /* !important beats the layout base `.section h2{padding-right:5.5em}` so the pill hugs the title symmetrically */
+  background: #fff; font-size: 50pt; line-height: 1.05; font-weight: 800;
+  text-align: center; white-space: nowrap;                       /* ONE line — the pill widens to the title */
+}
+/* Now that the h2 is static, the button anchors to the .section: place it at
+   the far top-right inside the frame, clear of the centred legend pill. */
+.section h2 .listen-btn {
+  top: 24pt;
+  right: 26pt;
+  left: auto;
+  transform: none;
+}

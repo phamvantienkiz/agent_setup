@@ -1,0 +1,46 @@
+<style>
+  .titlebar.pv7 {
+    grid-template-columns: minmax(0, 1fr) 300pt;
+    grid-template-areas: "tt mr";
+    gap: 32pt;
+  }
+  .titlebar.pv7 .title-block { align-self: center; text-align: left; }
+  .titlebar.pv7 .meta-rail {
+    margin: 0;
+    padding: 0 0 0 24pt;
+    border: 0;
+    border-left: 2pt solid var(--tb-divider, currentColor);
+    justify-content: center;
+    gap: 20pt;
+  }
+  .titlebar.pv7 .venue-badge { width: 100%; }
+  .titlebar.pv7 .venue-badge .vb-venue { font-size: 36pt; }
+  .titlebar.pv7 .venue-badge .vb-year { font-size: 24pt; }
+  .titlebar.pv7 .qr-block { flex-direction: row; gap: 18pt; }
+  .titlebar.pv7 .qr-block .qr-img { width: 108pt; height: 108pt; }
+  .titlebar.pv7 .qr-block .qr-label { font-size: 20pt; }
+  .titlebar.pv7:not(:has(.vb-venue:not(:empty), .vb-year:not(:empty), .qr-img[src]:not([src=""]):not([src*="{{"]))) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "tt";
+  }
+  .titlebar.pv7:not(:has(.vb-venue:not(:empty), .vb-year:not(:empty), .qr-img[src]:not([src=""]):not([src*="{{"]))) .meta-rail { display: none; }
+</style>
+<header class="titlebar pv7" data-section="title" data-header="pv7" data-institution-branding="none">
+  <div class="title-block">
+    <h1>{{TITLE}}</h1>
+    <div class="authors">{{AUTHORS_PLAIN}}</div>
+  </div>
+  <div class="meta-rail" data-section="header-meta">
+    <div class="venue-badge">
+      <a class="vb-link" href="{{VENUE_LINK}}" target="_blank" rel="noopener">
+        <div class="vb-venue">{{VENUE_NAME}}</div>
+        <div class="vb-year">{{VENUE_YEAR}}</div>
+      </a>
+    </div>
+    <div class="qr-block">
+      <figure class="qr"><img class="qr-img" src="{{QR_PAPER}}" alt="Paper QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Paper</figcaption></figure>
+      <figure class="qr"><img class="qr-img" src="{{QR_CODE}}" alt="Code QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Code</figcaption></figure>
+    </div>
+  </div>
+  <button class="listen-all" data-listen-all>Full Listen</button>
+</header>

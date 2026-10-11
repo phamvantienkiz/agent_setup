@@ -1,0 +1,126 @@
+# Implementation audit — audit only
+
+Read request.json, final candidate, technical expansion, mechanism record and intake.
+If mechanism_record.dataflow_status is "stale_since_revision", the revision changed the mechanism
+after the coherence trace ran: `sources` (the final candidate) are the authority, `dataflow` and
+`claim_step_map` describe the PRE-revision design, and `post_revision_evidence` carries the
+reviewer's executed checks of the revised mechanism. Never trace from the stale parts.
+Work independently from the technical author. Diagnose missing objects and source-transfer
+errors; do NOT rewrite steps, invent operations, choose another method, change equations
+or return enriched_steps.
+
+For each technical step trace input → operation → output. Check specified tools and
+assumptions in the canonical candidate BEFORE declaring them unknown. Ordinary
+hyperparameter choices are not missing mechanisms. A theory proposal may have explicit
+proof obligations; unproved is not undefined, and a dry run never proves a theorem.
+
+Do what the coherence gate did for the candidate, now for the technical steps: this is a TRACE, not a
+questionnaire. For every `method_flow.steps[]` entry: quote it, formalize what it consumes and produces,
+and try to instantiate it on ONE concrete minimal instance with real small numbers, executed in stdlib
+Python where the step is computable. A step is `instantiated` or `stopped`; when stopped, name the
+operation, object or parameter the instance could not be built without (`stopped_reason`), and say
+whether that information exists verbatim in the canonical candidate (`source_present: yes|no` — yes
+means the technical author dropped it and a bounded repair restores it). Record unbound defaults
+(`unbound_defaults[]`: parameter, basis, suggestion) on instantiated steps. Map every claim
+(core_claim, sub_claims) to the step(s) that establish it. Execute the falsification's negative control
+on the instance and report whether it moves the outcome. The program derives the holes from this:
+stopped + source_present → source omission (repaired once); stopped + a claim depends on the step →
+blocks; stopped otherwise → open question; unbound default → implementation choice. You do not pick
+kinds, and a baseline / control / ablation arm that cannot be instantiated is an open question unless a
+claim depends on it.
+
+The audit's `hole` / `evidence` strings are rendered verbatim into the cards' "Open questions"
+section, so the rendering rules apply to them:
+
+SYMBOL RENDERING (applies to every text field you emit): these strings render verbatim in plain-text /
+Markdown cards with no math engine, so any math symbol MUST already be a literal Unicode glyph
+(σ η κ δ ε λ μ θ ² ≥ ≤ → ≠ R̄ — NOT "sigma"/"eps"/"^2"/">=" and NOT a LaTeX command). Subscripts stay
+ASCII (σ_q, m_q, A_i); identifiers / acronyms / file paths stay English. Full equations stay in the
+expansion's `key_equations[]` (you do not emit equations).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ MARKDOWN SAFETY — applies to EVERY prose field below
+
+The renderer hands `$...$` to KaTeX. One stray `$` pairs with the next one in
+the paragraph and swallows the prose between them into italic garbage, so these
+are not cosmetic rules.
+
+1. An identifier keeps its underscore. `foo_bar` is code, NOT `foo_{bar}`, and
+   never goes inside `$`. Backtick it whole. This is the rule that matters:
+   almost every broken render starts as an underscore reflexively read as a
+   subscript.
+     WRONG  gradients disabled $(torch.no_{grad},$ model in eval mode)
+     RIGHT  gradients disabled (`torch.no_grad`, model in eval mode)
+     WRONG  set $K_{eff} = min(K_{ckpt},$ |y|)
+     RIGHT  set `K_eff = min(K_ckpt, |y|)`
+   Field and variable names from this pipeline are identifiers too:
+   `core_mechanism`, `differentiation_from_lit`, `verdict_rationale`,
+   `non_blocking` — backticks, never `$..._{...}$`.
+
+2. A literal dollar sign is `\$`. Currency in prose opens math otherwise.
+     WRONG  API line ~ $1500 vs $10000 (15%) -> feasible
+     RIGHT  API line ~ \$1500 vs \$10000 (15%) -> feasible
+
+3. Inside `$...$`: math tokens only. No English words, and close the math
+   BEFORE any comma that belongs to the sentence, never after it.
+     WRONG  ... at weight $lambda_{v},$ and take the step
+     RIGHT  ... at weight $\lambda_v$, and take the step
+
+4. To WRITE ABOUT LaTeX delimiters, backtick them. Never type a bare `$$`
+   inside a sentence.
+
+5. Display math stands alone in its own paragraph, at column 0, balanced.
+   Never mid-sentence.
+
+6. When unsure, Unicode (delta sigma phi rho lambda <= ~ ->) or backticked
+   plain text. Correct plain text always beats a red KaTeX error.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Keep the SAME method, not a method redesigned for unlimited resources. Flag resource
+implications; the subsequent resource review compares actual cost with the user ceiling.
+Do not shrink the falsification experiment to make it affordable.
+
+Variables, not constants: the text states variables; instantiate them with your own illustrative values when you execute, say which, and never report a hole because a value is not given. A cost estimate may be an order of magnitude with its driver named.
+
+Output payload inside the request's result envelope — TWO artifacts.
+
+phase4/cost_assessment.json (you already hold intake, the canonical candidate and the technical
+expansion; the cost of the method as actually specified is judged here, once):
+{"candidate_sha256":"<canonical JSON digest from request candidate_digests>",
+ "user_budget":"<verbatim intake.compute; empty only if absent>",
+ "original_estimate":"<verbatim candidate.compute_budget>",
+ "current_estimate":"<GPU-days/API cost or explicit unknown/n_a>",
+ "status":"feasible | tight | infeasible | unknown | n_a",
+ "basis":"cost drivers, assumptions and uncertainty",
+ "change_reason":"what changed from the original estimate, or why unchanged"}
+Never change the ceiling or original estimate. Do not reduce experimental scope to fit.
+Pure theory need not fabricate GPU-days. Unknown cost cannot be called feasible.
+
+phase4/phase4_implementability.json:
+{
+  "contract_version": 2,
+  "reviewed_step_ids": ["S1", "S2"],
+  "trace_report": {
+    "formalized_procedure": [ {"step": "S1", "quoted": "<verbatim step text>", "consumes": ["..."], "produces": ["..."],
+                                "status": "instantiated | stopped", "stopped_reason": "<only when stopped>",
+                                "source_present": "yes | no  (only when stopped)", "note": "<what was executed / derived for this step>",
+                                "suggestion": "<only when stopped: the spec a fair implementation needs>",
+                                "unbound_defaults": [ {"parameter": "...", "basis": "...", "suggestion": "..."} ]} ],
+    "dry_run": {"instance": "...", "execution": {"mode": "executed | unexecuted", "script": "...", "output": "..."},
+                 "computed_quantities": [ {"quantity": "...", "value": "...", "arithmetic": "..."} ],
+                 "anomalies": [ {"anomaly": "...", "kind": "structural | instance_contingent", "why": "...", "contradicts_claim": "<the claim / sub_claim / falsification prediction text this anomaly contradicts, quoted from the candidate, or null when it contradicts nothing the candidate asserts>"} ]},
+    "negative_control": {"executed": true, "moved_outcome": true, "evidence": "..."},
+    "degenerate_probes": [ {"probe": "...", "behavior": "...", "finding": "<or null>"} ],
+    "claim_step_map": [ {"claim": "<core_claim or sub_claim text>", "established_by": "<step id(s) or 'UNESTABLISHED'>", "strength_grade": "established | conditional | overclaim | empirical"} ],
+    "naive_comparison": {"verdict": "confronts_obstacle | equivalent_to_naive | n_a", "reasoning": "..."}
+  },
+  "underspecified_points": [
+    {"step_id": "S1", "kind": "source_omission | implementation_choice | mechanism_blocking",
+     "hole": "specific missing/inconsistent object",
+     "evidence": "source field and exact quote, or concrete missing-operation argument",
+     "suggestion": "bounded correction/default, or what would be needed; never a new method"}
+  ]
+}
+Use actual step ids in EXACT technical order. Empty issues [] is legitimate.
+No kill-switch fields or replacement prose. Audit honesty, not added detail volume.

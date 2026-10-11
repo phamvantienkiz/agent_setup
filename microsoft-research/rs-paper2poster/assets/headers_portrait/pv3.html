@@ -1,0 +1,58 @@
+<!-- pv3: left editorial masthead. Title + authors pin to the upper-left;
+     institution logos stay directly beside the paper information, while
+     Venue/QR occupies the outer-right utility rail behind one divider. -->
+<style>
+  .titlebar.pv3 {
+    --portrait-meta-track: 320pt;
+    grid-template-columns: minmax(0, 1fr) var(--portrait-inst-track) var(--portrait-meta-track);
+    grid-template-areas: "tt ir mr";
+    align-items: stretch;
+    column-gap: 0;
+  }
+  .titlebar.pv3 .title-block {
+    align-self: start;
+    padding: 10pt 48pt 0 0;
+    text-align: left;
+  }
+  .titlebar.pv3 .title-block h1 { font-size: 72pt; }
+  .titlebar.pv3 .authors { font-size: 34pt; }
+  .titlebar.pv3 .author-legend { font-size: 22pt; }
+  .titlebar.pv3 .meta-rail {
+    margin: 0 calc(-1 * var(--portrait-edge-pad)) 0 0;
+    padding: 0 18pt;
+    border-left: 2px solid var(--tb-divider, rgba(255,255,255,.35));
+    border-right: 0;
+  }
+  .titlebar.pv3 .logo-block.institution-rail { padding-right: 28pt; }
+  .titlebar.pv3:not(:has(.institution-rail img[src]:not([src=""]):not([src*="{{"]))) .meta-rail {
+    border-left: 0;
+  }
+</style>
+<header class="titlebar pv3" data-section="title" data-header="pv3">
+  <div class="title-block">
+    <h1>{{TITLE}}</h1>
+    <div class="authors">{{AUTHORS}}</div>
+    <div class="author-legend">{{AUTHOR_LEGEND}}</div>
+    <div class="contact">{{CONTACT}}</div>
+  </div>
+  <div class="meta-rail" data-section="header-meta">
+    <div class="venue-badge">
+      <a class="vb-link" href="{{VENUE_LINK}}" target="_blank" rel="noopener">
+        <div class="vb-venue">{{VENUE_NAME}}</div>
+        <div class="vb-year">{{VENUE_YEAR}}</div>
+        <div class="vb-tag">{{VENUE_TAG}}</div>
+      </a>
+    </div>
+    <div class="qr-block">
+      <figure class="qr"><img class="qr-img" src="{{QR_PAPER}}" alt="Paper QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Paper</figcaption></figure>
+      <figure class="qr"><img class="qr-img" src="{{QR_CODE}}" alt="Code QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Code</figcaption></figure>
+    </div>
+  </div>
+  <div class="logo-block institution-rail" data-section="inst-logos">
+    <img class="logo" src="{{LOGO_1}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_2}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_3}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_4}}" alt="" onerror="this.remove()">
+  </div>
+  <button class="listen-all" data-listen-all>Full Listen</button>
+</header>

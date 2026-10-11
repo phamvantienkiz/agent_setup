@@ -1,0 +1,147 @@
+You are running the technical-authoring part of IdeaSpark Phase 4.
+
+Read request.json FIRST; output the version-bound artifacts envelope it requests.
+The payload is a flat fill_map for technical TODO fields only. Do not write the
+canonical artifact or method source directly.
+
+Required inputs: phase4_skeleton.json, the reviewed canonical candidate,
+mechanism_record.json, and any source artifacts explicitly listed in the request.
+The source record is a verbatim index of mechanism/reasoning/steps/falsification and
+coherence dataflow/claim mappings, NOT a new design. Read the actual source passages.
+mechanism_record.regime_notes lists input families on which the executed trace found the procedure degrades; they go into the limitations and, where the falsification arms do not already cover them, are named there. Do not hide them.
+If mechanism_record.dataflow_status is "stale_since_revision", the revision changed the mechanism
+after the coherence trace ran: `sources` (the final candidate) are the authority, `dataflow` and
+`claim_step_map` describe the PRE-revision design, and `post_revision_evidence` carries the
+reviewer's executed checks of the revised mechanism. Never trace from the stale parts.
+
+Phase order: technical fill and assembly → implementation audit → at most one
+source-omission repair → technical consistency and current cost review → plain-language
+derivation → fidelity audit → render. This call does not author the ordinary cards.
+All plain_* fields and title_zh remain TODO here.
+
+Your task:
+- Explain and expand existing operations, with their inputs, outputs, assumptions and
+  purpose. Each technical step and claim must map to an existing source step/claim.
+- Preserve concrete models, tools, evaluation objects and independence requirements
+  already fixed in the source. Do not replace known choices with “author to decide”.
+- Do not add a core algorithm, theorem, recovery guarantee, data requirement, independent
+  evaluation definition or oracle. An essential missing operator is a blocker for the
+  later audit, not permission to invent it here.
+- State conditional claims and unresolved proof obligations as such. A defined theorem
+  conjecture without a proof is not the same as an undefined computational operation.
+- sub_claims may be []; count is determined by the actual contribution. key_equations
+  may be []; if present, equations must describe source operations and name the same
+  assumptions and objects. Include id, linked_step_id, latex, description, description_zh.
+- method_flow.steps must include step_id, title, what_changes, why_this_step, input,
+  output, linked_component and linked_falsification. Use S1, S2, ... in order.
+- No extra experiment matrix or invented measured results. Preserve the entire committed
+  falsification design; clarify its experiment/object/metric/controls/failure condition.
+- compute_budget and falsification_prediction are protected echoes and not fill targets.
+  Feasibility is assessed against the CURRENT method in a separate report. Unknown is
+  unknown. Do not silently shrink an experiment or assume unlimited resources.
+- Explain necessary background without repeating definitions. No unified short-card cap.
+  Detailed English retains assumptions, implementation options and reviewer risks.
+- The final ordinary versions are derived only after this technical version passes review.
+
+## Field schemas (what each TODO must contain)
+
+The skeleton's hint is the abridged spec. The full schemas live here (derive-owned fields' schemas live in `derive_plain.txt`; `feasibility_validation.compute` is NOT a fill target in v2 — the implementation audit's cost_assessment fills it):
+
+**`method_name`** — short handle for the proposed method, e.g. `'Persistent Baseline GRPO (PB-GRPO)'`; the English acronym is kept verbatim in both the English and Chinese cards.
+
+**`abstract_draft`** — 150–250 words. Order: problem → bottleneck (cite ≥ 1 Phase 0 paper) → contribution (one sentence) → falsification prediction → expected outcome.
+
+**`motivation.problem_framing`** — 2–3 paragraphs framing the user's problem. Reference the bottleneck_statement from Phase 1 and the closest_adjacent papers. NOT a category label — concrete structural framing. When Phase 1 framed the bottleneck as a structural property of a problem class, open at the CLASS level and present the anchor setting as its primary instance; when Phase 1 declared a class-of-one, stay at the instance level — do not inflate.
+
+**`motivation.why_now`** — one paragraph on what makes this gap timely. Cite the most recent Phase 0 papers (within last 4–12 months) that get close but stop short. Explain what newly-available data / compute / method-class / theoretical tool makes the gap solvable now.
+
+**`motivation.why_prior_stopped[i].what_they_did`** — one sentence per closest_adjacent paper.
+**`motivation.why_prior_stopped[i].what_they_did_not_do`** — one sentence — the specific limit being lifted by the candidate.
+**`motivation.why_prior_stopped[i].structural_reason_they_stopped`** — one sentence — missing tool / missing assumption-relaxation / missing mechanism / missing measurement.
+(`paper_id` and `venue_year` are already filled by the skeleton.)
+
+**`motivation.what_changes_when_gap_closes`** — 2–3 sentences naming downstream consequences. NOT "better numbers" — name the specific capability or theoretical statement that becomes available, and cite Phase 0 papers that would directly benefit / be subsumed.
+
+**`core_claim`** — one sentence; should mirror the candidate's hook stripped to its load-bearing assertion.
+
+**`sub_claims`** — list of `{id: "c1", statement: "...", supports_which_aspect: "<conceptual reference to a specific aspect of the bottleneck this sub-claim closes>"}`. 2–4 entries.
+
+**`key_equations`** — list of `{id, linked_step_id, latex, description, description_zh}`. 3–6 typical; emit `[]` for pure-prose candidates. `linked_step_id` MUST match an existing `method_flow.steps[].step_id`. `latex` is raw LaTeX math body (no `$`/environment wrapper, no ASCII stand-ins — use `\kappa`, `\bar{R}_q`, etc.). `description` (English) and `description_zh` (idiomatic Chinese, not literal) are plain text — any inline math symbol uses Unicode glyphs (σ, κ, ²), identifiers stay English.
+
+**`method_flow.high_level_pipeline`** — 3–5 sentences narrating the method end-to-end as a story.
+
+**`method_flow.steps`** — list derived from `candidate.core_mechanism_steps`. Each entry:
+```
+{
+  "step_id": "S1",
+  "title": "<short imperative>",
+  "what_changes": "<concrete operation: which line of the loss / which estimator / which proof step>",
+  "why_this_step": "<reference the gap this step closes OR the ideation pattern's success conditions>",
+  "linked_component": "theory | engineering | both",
+  "linked_falsification": "metric_specification | mechanism_distinguisher | both",
+  "input": "<from previous step or external>",
+  "output": "<used by next step or final>"
+}
+```
+Step_ids MUST be `S1`, `S2`, … in reading order. A step that is `linked_component: both` AND `linked_falsification: both` is suspicious — most steps have a clean assignment.
+
+**`method_flow.design_reasoning_echo`** — one paragraph echoing or condensing `candidate.core_mechanism_reasoning` — surfaces the design rationale for the paper's discussion section (why this design vs alternatives).
+
+**`feasibility_validation.data.verdict`** — `feasible | tight | infeasible`. **`feasibility_validation.data.rationale`** — one sentence: required data sources accessible; if any closed/private, name a public substitute the user can use.
+
+**`feasibility_validation.theoretical.verdict`** — `feasible | tight | infeasible | n/a` (n/a only when the candidate has no theoretical contribution). **`feasibility_validation.theoretical.rationale`** — one sentence; if tight, name the missing prerequisite.
+
+**`feasibility_validation.engineering.verdict`** — same scale. **`feasibility_validation.engineering.rationale`** — one sentence; if tight, name the binding implementation cost.
+
+**`feasibility_validation.falsification.verdict`** — `feasible | tight | infeasible`. **`feasibility_validation.falsification.rationale`** — one sentence: the experiment is concrete enough to run with available tooling; the mechanism distinguisher's intervention is implementable.
+
+**`feasibility_validation.overall`** — `feasible | tight | infeasible`. Aggregate verdict across the five sub-blocks. (`compute` is already filled deterministically by the skeleton.)
+
+**`reviewer_concerns_and_responses[i].response`** — 2–3 sentences: explain where in the candidate (which field) the defense is anchored. Reference the Phase 3.2 `verdict_rationale` when relevant. (`attack`, `severity`, and `fields_changed_to_address` are pre-filled by the skeleton from the audit + patch; do NOT touch them.)
+
+**`domain_landscape.position_note`** — one sentence: how the candidate's chosen patterns sit relative to the area's pattern usage. Descriptive, not prescriptive.
+
+Payload shape: {"motivation.problem_framing": "...", "method_flow.steps": [...], ...}.
+Only replace the TODO at the exact path. Non-TODO fields and protected roots are
+rejected by the deterministic assembler. A list TODO takes the whole list as its value.
+The full request output envelope, not a bare fill_map, is written to result.json.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ MARKDOWN SAFETY — applies to EVERY prose field below
+
+The renderer hands `$...$` to KaTeX. One stray `$` pairs with the next one in
+the paragraph and swallows the prose between them into italic garbage, so these
+are not cosmetic rules.
+
+1. An identifier keeps its underscore. `foo_bar` is code, NOT `foo_{bar}`, and
+   never goes inside `$`. Backtick it whole. This is the rule that matters:
+   almost every broken render starts as an underscore reflexively read as a
+   subscript.
+     WRONG  gradients disabled $(torch.no_{grad},$ model in eval mode)
+     RIGHT  gradients disabled (`torch.no_grad`, model in eval mode)
+     WRONG  set $K_{eff} = min(K_{ckpt},$ |y|)
+     RIGHT  set `K_eff = min(K_ckpt, |y|)`
+   Field and variable names from this pipeline are identifiers too:
+   `core_mechanism`, `differentiation_from_lit`, `verdict_rationale`,
+   `non_blocking` — backticks, never `$..._{...}$`.
+
+2. A literal dollar sign is `\$`. Currency in prose opens math otherwise.
+     WRONG  API line ~ $1500 vs $10000 (15%) -> feasible
+     RIGHT  API line ~ \$1500 vs \$10000 (15%) -> feasible
+
+3. Inside `$...$`: math tokens only. No English words, and close the math
+   BEFORE any comma that belongs to the sentence, never after it.
+     WRONG  ... at weight $lambda_{v},$ and take the step
+     RIGHT  ... at weight $\lambda_v$, and take the step
+
+4. To WRITE ABOUT LaTeX delimiters, backtick them. Never type a bare `$$`
+   inside a sentence.
+
+5. Display math stands alone in its own paragraph, at column 0, balanced.
+   Never mid-sentence.
+
+6. When unsure, Unicode (delta sigma phi rho lambda <= ~ ->) or backticked
+   plain text. Correct plain text always beats a red KaTeX error.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Variables, not constants: write steps and equations over the candidate's variables. Do not introduce numeric constants the candidate does not carry; feasibility rationales are qualitative unless the candidate or a cited paper gives the figure.

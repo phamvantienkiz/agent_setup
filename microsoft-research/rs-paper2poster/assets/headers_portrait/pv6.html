@@ -1,0 +1,45 @@
+<style>
+  .titlebar.pv6 {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "tt" "mr";
+    gap: 18pt;
+  }
+  .titlebar.pv6 .title-block { width: 100%; text-align: center; }
+  .titlebar.pv6 .meta-rail {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    flex-direction: row;
+    justify-content: center;
+    gap: 32pt;
+  }
+  .titlebar.pv6 .venue-badge { width: auto; max-width: 480pt; }
+  .titlebar.pv6 .venue-badge .vb-venue { font-size: 36pt; }
+  .titlebar.pv6 .venue-badge .vb-year { font-size: 24pt; }
+  .titlebar.pv6 .qr-block { flex-direction: row; gap: 24pt; }
+  .titlebar.pv6 .qr-block .qr-img { width: 108pt; height: 108pt; }
+  .titlebar.pv6 .qr-block .qr-label { font-size: 20pt; }
+  .titlebar.pv6:not(:has(.vb-venue:not(:empty), .vb-year:not(:empty), .qr-img[src]:not([src=""]):not([src*="{{"]))) {
+    grid-template-areas: "tt";
+  }
+  .titlebar.pv6:not(:has(.vb-venue:not(:empty), .vb-year:not(:empty), .qr-img[src]:not([src=""]):not([src*="{{"]))) .meta-rail { display: none; }
+</style>
+<header class="titlebar pv6" data-section="title" data-header="pv6" data-institution-branding="none">
+  <div class="title-block">
+    <h1>{{TITLE}}</h1>
+    <div class="authors">{{AUTHORS_PLAIN}}</div>
+  </div>
+  <div class="meta-rail" data-section="header-meta">
+    <div class="venue-badge">
+      <a class="vb-link" href="{{VENUE_LINK}}" target="_blank" rel="noopener">
+        <div class="vb-venue">{{VENUE_NAME}}</div>
+        <div class="vb-year">{{VENUE_YEAR}}</div>
+      </a>
+    </div>
+    <div class="qr-block">
+      <figure class="qr"><img class="qr-img" src="{{QR_PAPER}}" alt="Paper QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Paper</figcaption></figure>
+      <figure class="qr"><img class="qr-img" src="{{QR_CODE}}" alt="Code QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Code</figcaption></figure>
+    </div>
+  </div>
+  <button class="listen-all" data-listen-all>Full Listen</button>
+</header>

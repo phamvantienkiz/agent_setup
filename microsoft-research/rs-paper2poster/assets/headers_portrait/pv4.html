@@ -1,0 +1,46 @@
+<!-- pv4: centered mirror of pv1. Institutions anchor the left rail, the
+     paper information stays centered, and Venue + QR occupy the right rail. -->
+<style>
+  .titlebar.pv4 {
+    grid-template-columns: var(--portrait-inst-track) minmax(0, 1fr) var(--portrait-meta-track);
+    grid-template-areas: "ir tt mr";
+    align-items: stretch;
+    gap: 32pt;
+  }
+  .titlebar.pv4 .title-block { text-align: center; }
+  .titlebar.pv4 .meta-rail {
+    margin-left: 0;
+    margin-right: calc(-1 * var(--portrait-edge-pad));
+    padding: 0 14pt;
+    border-right: 0;
+    border-left: 2px solid var(--tb-divider, rgba(255,255,255,.35));
+  }
+</style>
+<header class="titlebar pv4" data-section="title" data-header="pv4">
+  <div class="meta-rail" data-section="header-meta">
+    <div class="venue-badge">
+      <a class="vb-link" href="{{VENUE_LINK}}" target="_blank" rel="noopener">
+        <div class="vb-venue">{{VENUE_NAME}}</div>
+        <div class="vb-year">{{VENUE_YEAR}}</div>
+        <div class="vb-tag">{{VENUE_TAG}}</div>
+      </a>
+    </div>
+    <div class="qr-block">
+      <figure class="qr"><img class="qr-img" src="{{QR_PAPER}}" alt="Paper QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Paper</figcaption></figure>
+      <figure class="qr"><img class="qr-img" src="{{QR_CODE}}" alt="Code QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Code</figcaption></figure>
+    </div>
+  </div>
+  <div class="title-block">
+    <h1>{{TITLE}}</h1>
+    <div class="authors">{{AUTHORS}}</div>
+    <div class="author-legend">{{AUTHOR_LEGEND}}</div>
+    <div class="contact">{{CONTACT}}</div>
+  </div>
+  <div class="logo-block institution-rail" data-section="inst-logos">
+    <img class="logo" src="{{LOGO_1}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_2}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_3}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_4}}" alt="" onerror="this.remove()">
+  </div>
+  <button class="listen-all" data-listen-all>Full Listen</button>
+</header>

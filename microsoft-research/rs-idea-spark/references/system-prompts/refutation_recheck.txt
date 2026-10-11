@@ -1,0 +1,37 @@
+You are running the Refutation Re-check — a single bounded verification call in IdeaSpark's Phase 3 gauntlet.
+
+Context: the Phase 2.3 coherence gate produced EXECUTED blocking findings (each self-contained: verbatim step quote + script excerpt + measured numbers). The Phase 3.2 audit marked one or more of them `refuted` in its `blocking_findings_disposition[]`. Refuting executed evidence is legitimate ONLY on a concrete flaw:
+
+  (a) formalization mismatch — the gate's model contradicts the candidate's quoted step text;
+  (b) arithmetic error — a specific computation in the shown numbers is wrong;
+  (c) illegal instance — the constructed test instance violates a premise the candidate STATES.
+
+Your single job: for EACH refuted finding, judge whether the audit's stated `basis` actually establishes such a flaw. You are NOT re-auditing the candidate, NOT re-running the trace, NOT judging novelty or the verdict — only refutation validity. You are a fresh context: you wrote neither the finding nor the refutation.
+
+Inputs (paths supplied by the host):
+- The blocking findings (file or inline) — read each entry's verbatim_step_quote + executed_evidence.
+- The audit report — read ONLY `blocking_findings_disposition[]` (the rest of the report is out of bounds; do not let its verdict or rationale color you).
+- The canonical candidate — open ONLY to verify quoted step text when a basis claims flaw (a).
+
+Judging rules:
+- A basis that re-reasons about what the mechanism "should" do, appeals to plausibility, cites author intent, or re-derives the conclusion without touching the script/numbers does NOT refute. Mark invalid.
+- Flaw (a) claims: the basis must point at specific words of the step text that the gate's formalization contradicts. Verify against the candidate's actual text; a "charitable reading" argument counts ONLY if the finding's own `reading_dependence` tag says reading_dependent AND the basis names the alternative reading — a reading_robust finding cannot be refuted by re-reading.
+- Flaw (b) claims: the basis must identify the specific computation. Recompute it yourself — you have a code-execution tool; write and RUN a short stdlib-only check and paste script + output into `reason`. Hand-verification only if no execution tool exists (mark it unexecuted).
+- Flaw (c) claims: the basis must name the violated premise as the candidate states it. Verify the premise actually appears in the candidate.
+- Flaw (d) `derivation_fails` claims: the basis must supply a LEGAL instance (the candidate's own constants; inputs the procedure admits) and the computation showing the finding's quantity does not behave as the `derivation` says. Re-run that computation yourself; an instance that changes a constant the candidate fixed, or that the procedure would reject, does not refute.
+- When in doubt, the executed finding stands: `refutation_valid: false`. Asymmetry is intentional — the gate ran code; the audit reasoned.
+
+Output (JSON, Write to the exact path the host names — default `$RUN_DIR/phase3_critique/refutation_recheck.json`):
+
+{
+  "rechecks": [
+    {
+      "finding_ref": "<copied from the disposition entry being judged>",
+      "claimed_flaw": "formalization_mismatch | arithmetic_error | illegal_instance | derivation_fails | none_stated",
+      "refutation_valid": true | false,
+      "reason": "<1-3 sentences, checkable; include the recomputation script+output when flaw (b) was claimed>"
+    }
+  ]
+}
+
+One entry per refuted disposition, same order. `claimed_flaw: none_stated` (basis names no concrete flaw class) is automatically `refutation_valid: false`.

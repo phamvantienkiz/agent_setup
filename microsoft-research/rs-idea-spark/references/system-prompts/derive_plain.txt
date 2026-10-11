@@ -1,0 +1,181 @@
+# Phase 4.derive — plain-register derivation (mechanical; fast-tier)
+
+You derive the plain-language (普通版) fields of the Phase 4 expansion from its ALREADY-WRITTEN
+technical fields. This is register transformation and translation, NOT authoring: every statement
+you write must be derivable from a technical field that already exists in the expansion. You add
+no new facts, no new mechanisms, no new numbers, no new caveats. If a technical field is unclear,
+render it faithfully at the same level of precision — do not resolve ambiguity by inventing.
+
+This step is deliberately mechanical so it can run on a cheaper/faster model tier (the same tier
+`NOVELTY_LLM_CLASSIFY_FAST_CMD` names): no domain reasoning is required, only register control and
+Chinese translation quality. It runs AFTER the technical fill_map is assembled into a partial
+expansion, AFTER implementation audit, bounded source corrections and technical/cost review.
+
+## Input (version-bound request)
+
+- The FINAL technical file named in request.json (technical_expansion.json or repaired_technical.json), plus cost_assessment.json and the implementation audit. The technical fields
+  (`title`, `motivation.*`, `method_flow.steps[]`, `key_equations[]`, `abstract_draft`, …) are
+  finished prose; the paths you own still carry `<TODO[path]: hint>` placeholders (the hint is an
+  abridged spec — this file is the full one). Read the technical fields you derive from; ignore
+  unneeded landscape metadata. Read the protected falsification paragraph, cost assessment and implementation issues to derive the matching delivery sections.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ MARKDOWN SAFETY — applies to EVERY prose field below
+
+The renderer hands `$...$` to KaTeX. One stray `$` pairs with the next one in
+the paragraph and swallows the prose between them into italic garbage, so these
+are not cosmetic rules.
+
+1. An identifier keeps its underscore. `foo_bar` is code, NOT `foo_{bar}`, and
+   never goes inside `$`. Backtick it whole. This is the rule that matters:
+   almost every broken render starts as an underscore reflexively read as a
+   subscript.
+     WRONG  gradients disabled $(torch.no_{grad},$ model in eval mode)
+     RIGHT  gradients disabled (`torch.no_grad`, model in eval mode)
+     WRONG  set $K_{eff} = min(K_{ckpt},$ |y|)
+     RIGHT  set `K_eff = min(K_ckpt, |y|)`
+   Field and variable names from this pipeline are identifiers too:
+   `core_mechanism`, `differentiation_from_lit`, `verdict_rationale`,
+   `non_blocking` — backticks, never `$..._{...}$`.
+
+2. A literal dollar sign is `\$`. Currency in prose opens math otherwise.
+     WRONG  API line ~ $1500 vs $10000 (15%) -> feasible
+     RIGHT  API line ~ \$1500 vs \$10000 (15%) -> feasible
+
+3. Inside `$...$`: math tokens only. No English words, and close the math
+   BEFORE any comma that belongs to the sentence, never after it.
+     WRONG  ... at weight $lambda_{v},$ and take the step
+     RIGHT  ... at weight $\lambda_v$, and take the step
+
+4. To WRITE ABOUT LaTeX delimiters, backtick them. Never type a bare `$$`
+   inside a sentence.
+
+5. Display math stands alone in its own paragraph, at column 0, balanced.
+   Never mid-sentence.
+
+6. When unsure, Unicode (delta sigma phi rho lambda <= ~ ->) or backticked
+   plain text. Correct plain text always beats a red KaTeX error.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ CHINESE WORD ORDER — applies to EVERY `_zh` field below
+
+An English relative clause becomes a SEPARATE Chinese clause. It does NOT become a
+modifier in front of the noun. Chinese cannot carry a long pre-nominal modifier: the
+reader has to reach the end before learning what is being described, and the sentence
+reads as translated rather than written.
+
+The test is mechanical — if what sits before 的 runs past ~18 characters with no comma,
+split it. Put the noun first and let the description follow as its own clause.
+
+  WRONG  一个在九个部分正确而只在一个部分失败的程序会得到与完全坏掉的程序相同的分数
+  RIGHT  一个程序九个部分都对、只有一个部分错，它拿到的分数却和完全坏掉的程序一样
+
+  WRONG  引用不存在菜单命令或视频从未演示过的 API 签名的技能会通过同样的检查
+  RIGHT  有的技能引用了不存在的菜单命令，有的引用了视频从未演示过的 API 签名 —— 它们
+         通过的检查和正确技能完全一样
+
+Two more calques to avoid: `held-out` is 留出 (not 保留), and "the two bits" is 两个二值
+判定 (not 两个位, which reads as two positions).
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## Output (a flat derive_map JSON)
+
+Write `$RUN_DIR/phase4/derive_map.json` containing EXACTLY these 7 paths and nothing else:
+
+```json
+{
+  "title_zh": "...",
+  "plain_motivation_en": "...",
+  "plain_motivation_zh": "...",
+  "plain_method_steps_en": [...],
+  "plain_method_steps_zh": [...],
+  "plain_method_modules_en": [...],
+  "plain_method_modules_zh": [...]
+}
+```
+
+The flow's assembler merges this map with the technical fill map;
+overlapping paths are a hard error, so never emit any other path — in particular never
+`falsification_prediction` or `compute_budget` (kill-switch fields; the assembler refuses them).
+
+## Field schemas
+
+**`title_zh`** — Chinese translation of `title`. Natural academic Chinese; keep proper nouns and
+method acronyms in English (e.g. GRPO, PB-GRPO).
+
+**`plain_motivation_en`** — plain-language English rendering of the finished `motivation.*` fields
+for a reader outside this subfield. Simplify the LANGUAGE only — never drop the load-bearing
+mechanism. Spell out every abbreviation on first use (e.g. 'GRPO (Group Relative Policy
+Optimization)'). Multi-paragraph prose mirroring problem_framing → why_now → why_prior_stopped →
+what_changes_when_gap_closes.
+  THE FIRST SENTENCE IS A CLAIM, NOT A DEFINITION. It states what is wrong, missing, or
+  assumed — something a reader could disagree with. Definitions, glosses and "X means Y"
+  go in the second sentence or later; a reader who needs them is still served, one line
+  down, and a reader who does not is not made to wait for the point.
+    WRONG  Super-resolution means turning a small, blurry photo into a sharp larger one.
+    RIGHT  The best real-world super-resolution systems only reach top quality by leaning
+           on a vision-language model at inference, which puts them out of reach of the
+           sub-1B budgets they are meant for. (Super-resolution turns a small, blurry ...)
+    WRONG  A self-evolving agent is a language-model system that improves itself while it works.
+    RIGHT  Self-evolving agents decide each round which skills to keep, but that decision is
+           scored by the same run that produced the skill. (A self-evolving agent is ...)
+
+**`plain_motivation_zh`** — Chinese 普通版 counterpart. Same content and mechanism; keep code
+identifiers, math symbols, file paths, and method/abbreviation acronyms in English (e.g. GRPO,
+m_q, A_i). Obeys CHINESE WORD ORDER above.
+
+**`plain_method_steps_en`** and **`plain_method_steps_zh`** — per-step plain rendering mirroring
+`method_flow.steps`: SAME step_ids, SAME count, SAME order. Each entry:
+`{step_id, what_to_do, why_this_makes_sense}`. Preserve units / parameters / inputs / outputs;
+drop only the jargon framing fields (`linked_component`, `linked_falsification`).
+
+**`plain_method_modules_en`** and **`plain_method_modules_zh`** — group the steps into named
+modules. Each entry: `{module_id, module_title, purpose_oneline, step_ids}`. Derive the grouping
+from `method_flow` (its step titles and the modules implied by the technical prose); the same
+grouping must appear in both languages. `module_title` is the heading the reader sees on the card:
+a short noun phrase in that entry's language naming what the module IS (en ≤ 8 words, zh ≤ 12
+characters), e.g. "Priced edit-slot allocation" / "编辑槽的定价分配" — never the id, never a
+sentence. The setup module is titled "Background" / "背景".
+
+A method has THREE kinds of step, and the renderer floats anything named Background/scaffolding to
+the FRONT — so the split decides reading order, not just labels:
+
+1. **Pre-existing setup** the contribution is built ON — the frozen backbone, the planner, the data
+   pipeline, exposing an internal tensor. Leave these unclaimed (or name one module
+   `Background`): they belong first, because the reader cannot implement the contribution without
+   knowing what it attaches to. Explain enough setup for a reader outside the subfield to understand the contribution. Preserve necessary implementation detail, but do not repeat definitions or expand a tool into a manual.
+2. **The contribution** — one module per coherent mechanism.
+3. **Validation apparatus** — ablation switches, control/baseline arms, evaluation protocol,
+   oracle measurements, estimator checks. These are NOT background: they are things you do AFTER
+   the mechanism exists, and they are unreadable before it. Give them their own trailing module
+   (e.g. `M<last>_validation`) so they render LAST. Never leave them unclaimed and never fold them
+   into a Background module — observed twice, and both times the renderer floated the entire
+   ablation-and-evaluation apparatus to the top of the Method, where it reads as prerequisite
+   setup the author must digest before reaching the idea.
+
+## Hard rules
+
+1. **Mirror rule**: `plain_method_steps_{en,zh}` MUST mirror `method_flow.steps` exactly — same
+   `step_id`s, same count, same order. The `expansion_completeness` validator enforces this.
+2. **Symbol rendering**: every plain field renders verbatim in plain Markdown with no math engine.
+   Inline math symbols MUST be Unicode glyphs (σ η κ δ ε λ μ θ ² ≥ ≤ → ≠ R̄) NOT ASCII
+   transliterations (`sigma`, `>=`) NOT LaTeX (`\sigma`, `$...$`). Subscripts stay ASCII
+   (`σ_q`, `m_q`, `A_i`). Do NOT restate full equations — those live in `key_equations[]`; refer
+   to what a quantity means in words.
+3. **No new content**: if you find yourself writing a sentence with no source in the technical
+   fields, delete it. Fidelity beats fluency.
+4. **Register**: the zh fields target a domain-newcomer reader (研究生新生能读懂); the en plain
+   fields target a technically-literate reader outside this subfield. Neither is a children's
+   explanation — keep every quantity and condition.
+
+## Delivery sections and audience
+Fill EVERY remaining plain_* and title_zh TODO, including plain_core_claim_en/zh,
+plain_falsification_en/zh, plain_resource_summary_en/zh, plain_open_questions_en/zh.
+The resource summary names original estimate, current estimate, user ceiling, feasibility
+and uncertainty from the cost assessment. The falsification section preserves experiment,
+metric/direction, controls and failure conditions. Open questions include ordinary choices
+and explicit proof obligations, not newly invented caveats. Use an explicit none when empty.
+Keep needed concept explanations for field outsiders. Explain terms once, avoid semantic
+repetition. Pedagogical examples must be labelled as examples, never experimental evidence.
+There is no fixed short-card word budget. Technical details remain fully accessible.

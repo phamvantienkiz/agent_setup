@@ -1,0 +1,77 @@
+<!-- pv2: landscape-v3-inspired masthead. Title + authors span the full top
+     row; Venue/QR and institution logos form one compact navigation strip
+     below, separated by a single vertical rule. -->
+<style>
+  .titlebar.pv2 {
+    --portrait-meta-track: 620pt;
+    grid-template-columns: var(--portrait-meta-track) minmax(0, 1fr);
+    grid-template-areas:
+      "tt tt"
+      "mr ir";
+    align-items: start;
+    column-gap: 0;
+    row-gap: 12pt;
+  }
+  .titlebar.pv2 .title-block {
+    align-self: start;
+    width: 100%;
+    text-align: center;
+  }
+  .titlebar.pv2 .title-block h1 { font-size: 72pt; }
+  .titlebar.pv2 .authors { font-size: 34pt; }
+  .titlebar.pv2 .author-legend { font-size: 22pt; }
+  .titlebar.pv2 .meta-rail {
+    align-self: stretch;
+    margin: 0;
+    padding: 0 14pt;
+    border-left: 0;
+    border-right: 2px solid var(--tb-divider, rgba(255,255,255,.35));
+    flex-direction: row;
+    justify-content: center;
+    gap: 14pt;
+  }
+  .titlebar.pv2 .venue-badge {
+    width: auto;
+    max-width: 280pt;
+  }
+  .titlebar.pv2 .venue-badge .vb-venue { font-size: 54pt; }
+  .titlebar.pv2 .venue-badge .vb-year { font-size: 28pt; }
+  .titlebar.pv2 .venue-badge .vb-tag { font-size: 20pt; }
+  .titlebar.pv2 .logo-block.institution-rail {
+    min-height: 172pt;
+    padding-left: 30pt;
+  }
+  .titlebar.pv2 .qr-block .qr-img { width: 112pt; height: 112pt; }
+  .titlebar.pv2 .qr-block .qr-label { font-size: 22pt; }
+  .titlebar.pv2:not(:has(.institution-rail img[src]:not([src=""]):not([src*="{{"]))) .meta-rail {
+    border-right: 0;
+  }
+</style>
+<header class="titlebar pv2" data-section="title" data-header="pv2">
+  <div class="meta-rail" data-section="header-meta">
+    <div class="venue-badge">
+      <a class="vb-link" href="{{VENUE_LINK}}" target="_blank" rel="noopener">
+        <div class="vb-venue">{{VENUE_NAME}}</div>
+        <div class="vb-year">{{VENUE_YEAR}}</div>
+        <div class="vb-tag">{{VENUE_TAG}}</div>
+      </a>
+    </div>
+    <div class="qr-block">
+      <figure class="qr"><img class="qr-img" src="{{QR_PAPER}}" alt="Paper QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Paper</figcaption></figure>
+      <figure class="qr"><img class="qr-img" src="{{QR_CODE}}" alt="Code QR" onerror="this.parentElement.remove()"><figcaption class="qr-label">Code</figcaption></figure>
+    </div>
+  </div>
+  <div class="title-block">
+    <h1>{{TITLE}}</h1>
+    <div class="authors">{{AUTHORS}}</div>
+    <div class="author-legend">{{AUTHOR_LEGEND}}</div>
+    <div class="contact">{{CONTACT}}</div>
+  </div>
+  <div class="logo-block institution-rail" data-section="inst-logos">
+    <img class="logo" src="{{LOGO_1}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_2}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_3}}" alt="" onerror="this.remove()">
+    <img class="logo" src="{{LOGO_4}}" alt="" onerror="this.remove()">
+  </div>
+  <button class="listen-all" data-listen-all>Full Listen</button>
+</header>

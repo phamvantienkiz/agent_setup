@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{LECTURE_TITLE}} - Bài Giảng Cao Học KHMT | VNUHCM-UIT</title>
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- KaTeX CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Three.js (Tùy chọn khi có trực quan hóa 3D) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        :root {
+            --sidebar-width: 290px;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', Consolas, monospace;
+
+            /* SOFT CLEAN CARDS DESIGN TOKENS */
+            --bg-page: #F5F5F7;
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F4F4F6;
+            --bg-subtle-hover: #ECECEF;
+            --border-hairline: #EFEFF2;
+            --border-card: #E9E9EE;
+            --text-primary: #0B0B0F;
+            --text-secondary: #6B6B76;
+            --text-tertiary: #9A9AA5;
+            --ink: #111114;
+
+            /* Data palette */
+            --data-1: #1F5FFF;
+            --data-2: #B13BF0;
+            --data-3: #FF8A1F;
+            --data-4: #1FA63A;
+            --data-alert: #E5483D;
+
+            /* Radius */
+            --radius-xs: 4px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 28px;
+            --radius-full: 999px;
+
+            /* Soft Shadows */
+            --shadow-card: 0 1px 2px rgba(16, 16, 24, 0.04), 0 8px 24px rgba(16, 16, 24, 0.06);
+            --shadow-control: 0 1px 2px rgba(16, 16, 24, 0.08), 0 0 0 1px rgba(16, 16, 24, 0.04);
+            --shadow-primary: 0 6px 16px rgba(16, 16, 24, 0.22);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.75;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Reading Progress Bar */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            width: 0%;
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
+        /* SIDEBAR STYLES (Word / Notion Minimalist) */
+        aside.sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 24px 16px;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header .badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.35;
+        }
+
+        .sidebar-header p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        nav.nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-group-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #94a3b8;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            padding-left: 12px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 7px 12px;
+            font-size: 0.85rem;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            line-height: 1.4;
+        }
+
+        .nav-item:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .nav-item.sub-item {
+            padding-left: 22px;
+            font-size: 0.82rem;
+        }
+
+        .nav-item.active {
+            background-color: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+            border-left: 3px solid var(--primary);
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding-left: 19px;
+        }
+
+        /* MAIN CONTENT - FULL WIDTH */
+        main.content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            padding: 40px 48px;
+            background: #ffffff;
+            min-height: 100vh;
+        }
+
+        header.doc-header {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1.doc-title {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.25;
+            margin-bottom: 12px;
+        }
+
+        .doc-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        h2.section-heading {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 44px 0 18px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3.sub-heading {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 28px 0 12px 0;
+        }
+
+        p {
+            margin-bottom: 14px;
+            color: #334155;
+            font-size: 0.96rem;
+        }
+
+        ul, ol {
+            margin: 12px 0 18px 24px;
+            color: #334155;
+            font-size: 0.95rem;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        /* SEMANTIC CALLOUT SYSTEM */
+        .callout {
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 22px 0;
+            border-left: 4px solid;
+            font-size: 0.94rem;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .callout.def {
+            background-color: #f0f7ff;
+            border-color: #2563eb;
+            color: #1e3a8a;
+        }
+
+        .callout.intuition {
+            background-color: #ecfdf5;
+            border-color: #059669;
+            color: #064e3b;
+            border-left-width: 5px;
+        }
+
+        .callout.tip {
+            background-color: #f5f3ff;
+            border-color: #7c3aed;
+            color: #4c1d95;
+        }
+
+        .callout.warn {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #991b1b;
+        }
+
+        .callout.theorem {
+            background-color: #eef2ff;
+            border-color: #4338ca;
+            color: #312e81;
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            margin-right: 6px;
+        }
+
+        /* TABLE CONTAINER */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0 26px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.91rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* COLLAPSIBLE PROOF BOX */
+        details.proof-box {
+            margin: 16px 0 22px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #fafafa;
+            padding: 12px 16px;
+        }
+
+        details.proof-box summary {
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+        }
+
+        details.proof-box[open] summary {
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        /* SOFT CLEAN CARDS SPECIFICATION */
+        .card, .interactive-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl); /* 28px bo tròn lớn */
+            padding: 24px 28px;
+            margin: 28px 0;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .interactive-card h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            margin-bottom: 2px;
+        }
+
+        .interactive-card p.subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        /* Metric Hero Component (One hero stat per card) */
+        .metric-hero {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin: 6px 0;
+        }
+
+        .metric-hero .value {
+            font-size: 3.5rem;
+            font-weight: 500;
+            line-height: 1;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
+        }
+
+        .metric-hero .unit {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .interactive-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: var(--radius-md); /* 12px */
+            cursor: pointer;
+            box-shadow: var(--shadow-control);
+            transition: all 0.15s ease;
+        }
+
+        .interactive-btn:hover {
+            background: var(--bg-subtle-hover);
+            color: var(--text-primary);
+        }
+
+        .interactive-btn.active {
+            background: var(--ink);
+            color: #ffffff;
+            border-color: var(--ink);
+            box-shadow: var(--shadow-primary);
+        }
+
+        /* Q&A ACCORDION - SOFT CLEAN CARDS STYLE */
+        .qa-card {
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg); /* 16px */
+            margin-bottom: 12px;
+            overflow: hidden;
+            background: var(--bg-card);
+            box-shadow: var(--shadow-card);
+            transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .qa-question {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            transition: background 0.15s;
+            position: relative;
+        }
+
+        .qa-question::after {
+            content: "+";
+            position: absolute;
+            right: 20px;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .qa-card.open .qa-question::after {
+            content: "−";
+            color: var(--primary);
+        }
+
+        .qa-card.open .qa-question {
+            background: var(--bg-subtle);
+            color: var(--primary-dark);
+        }
+
+        .qa-answer {
+            display: none;
+            padding: 18px 20px;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            border-top: 1px solid var(--border-hairline);
+            background: var(--bg-card);
+        }
+
+        .qa-card.open .qa-answer {
+            display: block;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            aside.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            aside.sidebar.open {
+                transform: translateX(0);
+            }
+            main.content {
+                margin-left: 0;
+                width: 100%;
+                padding: 24px 18px;
+            }
+            #mobile-menu-btn {
+                display: block;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: var(--primary);
+                color: #fff;
+                border: none;
+                border-radius: 50%;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+                z-index: 999;
+            }
+        }
+        @media (min-width: 901px) {
+            #mobile-menu-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-bar"></div>
+    <button id="mobile-menu-btn" title="Toggle Navigation">☰</button>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="badge">{{COURSE_CODE}} • VNUHCM-UIT</span>
+            <h1>{{LECTURE_SHORT_TITLE}}</h1>
+            <p>Bài Giảng Cao Học KHMT</p>
+        </div>
+
+        <nav class="nav-list" id="nav-list">
+            <span class="nav-group-title">Mở Đầu</span>
+            <a href="#intro" class="nav-item">Lời Mở Đầu & Lộ Trình</a>
+
+            <span class="nav-group-title">Chuyên Đề 01: Nền Tảng</span>
+            <a href="#mod1-1" class="nav-item sub-item">1.1 Bối Cảnh & Động Lực</a>
+            <a href="#mod1-2" class="nav-item sub-item">1.2 Từ Điển Ký Hiệu Đời Thường</a>
+            <a href="#mod1-3" class="nav-item sub-item">1.3 Ví Dụ Số Học Từng Bước</a>
+
+            <span class="nav-group-title">Chuyên Đề 02: Thuật Toán Gốc</span>
+            <a href="#mod2-1" class="nav-item sub-item">2.1 Triết Lý Vận Hành</a>
+            <a href="#mod2-2" class="nav-item sub-item">2.2 Quy Trình Từng Bước</a>
+            <a href="#mod2-3" class="nav-item sub-item">2.3 Trace Số Học Chi Tiết</a>
+
+            <span class="nav-group-title">Chuyên Đề 03: Thuật Toán Cải Tiến</span>
+            <a href="#mod3-1" class="nav-item sub-item">3.1 Đột Phá & So Sánh</a>
+            <a href="#mod3-2" class="nav-item sub-item">3.2 Cấu Trúc Dữ Liệu Tối Ưu</a>
+
+            <span class="nav-group-title">Thuyết Trình & Q&A</span>
+            <a href="#qa-section" class="nav-item sub-item">Hội Đồng Phản Biện Q&A</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <!-- HEADER HERO -->
+        <header id="intro" class="doc-header">
+            <h1 class="doc-title">{{LECTURE_TITLE}}</h1>
+            <div class="doc-meta">
+                <span><strong>Môn học:</strong> {{COURSE_NAME}} ({{COURSE_CODE}})</span>
+                <span><strong>Chương trình:</strong> Cao học Khoa học Máy tính - VNUHCM-UIT</span>
+                <span><strong>Thời lượng:</strong> {{DURATION}}</span>
+            </div>
+        </header>
+
+        <!-- CHUYÊN ĐỀ 01 -->
+        <section id="mod1">
+            <h2 class="section-heading">Chuyên Đề 01: Nền Tảng Lý Thuyết & Từ Điển Ký Hiệu</h2>
+            
+            <div id="mod1-1">
+                <h3 class="sub-heading">1.1 Bối Cảnh & Động Lực Bài Toán</h3>
+                <p>Nêu bối cảnh thực tế đời thường dẫn đến sự ra đời của bài toán...</p>
+            </div>
+
+            <div id="mod1-2">
+                <h3 class="sub-heading">1.2 Từ Điển Ký Hiệu & Khái Niệm Cốt Lõi (Dành Cho Người Mới Bắt Đầu / Học Chậm)</h3>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ký Hiệu</th>
+                                <th>Tên Tiếng Anh</th>
+                                <th>Tên Tiếng Việt</th>
+                                <th>Nghĩa Đời Thường (Ví dụ thực tế)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>$X$</td>
+                                <td>Entity / Itemset</td>
+                                <td>Tập đối tượng / Hạng mục</td>
+                                <td>Nhóm các phần tử cụ thể đang được xem xét.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- HỘP THOẠI TRỰC GIÁC CHO NGƯỜI HỌC CHẬM -->
+                <div class="callout intuition">
+                    <div class="callout-title">🌱 Góc Dành Cho Người Học Chậm: Bản Chất Của Ký Hiệu</div>
+                    <p>Giải thích bằng lời văn nhẹ nhàng, ẩn dụ đời sống...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Q&A PHẢN BIỆN -->
+        <section id="qa-section">
+            <h2 class="section-heading">Bộ Câu Hỏi Phản Biện Của Hội Đồng & Hướng Dẫn Trả Lời</h2>
+            <div id="qa-container">
+                <!-- JS injected Q&As -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- 1. KA-TEX AUTO RENDER ---
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '\\(', right: '\\)', display: false}
+                ],
+                throwOnError: false
+            });
+            initQA();
+            initScrollSpy();
+        });
+
+        // --- 2. READING PROGRESS BAR ---
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+        });
+
+        // --- 3. SCROLLSPY NAVIGATION ---
+        function initScrollSpy() {
+            const sections = document.querySelectorAll('section > div[id], section[id], header[id]');
+            const navLinks = document.querySelectorAll('.nav-item');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                const scrollPos = window.scrollY + 120;
+
+                sections.forEach(sec => {
+                    const top = sec.offsetTop;
+                    const height = sec.offsetHeight;
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        current = sec.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // Mobile drawer toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // --- 4. Q&A ACCORDION ---
+        const sampleQA = [
+            {
+                q: "1. Câu hỏi trọng tâm của giảng viên / hội đồng?",
+                a: "Câu trả lời mẫu giải thích bản chất toán học và kỹ thuật..."
+            }
+        ];
+
+        function initQA() {
+            const container = document.getElementById('qa-container');
+            if (!container) return;
+            container.innerHTML = sampleQA.map((item, idx) => `
+                <div class="qa-card" id="qa-${idx}">
+                    <div class="qa-question" onclick="toggleQA(${idx})">${item.q}</div>
+                    <div class="qa-answer">${item.a}</div>
+                </div>
+            `).join('');
+            if (window.renderMathInElement) {
+                renderMathInElement(container, {
+                    delimiters: [{left: '$', right: '$', display: false}],
+                    throwOnError: false
+                });
+            }
+        }
+
+        function toggleQA(idx) {
+            const card = document.getElementById(`qa-${idx}`);
+            if (card) card.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

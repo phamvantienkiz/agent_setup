@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Design Tokens - agent_setup (by Jin)
+   Dark Green & Emerald Cybernetic Palette (High-end Developer Tool)
+   ========================================================================== */
+
+:root {
+  /* Surfaces (OLED Deep Navy & Charcoal) */
+  --color-surface-base: #030712;               /* Nền trang sâu thẳm */
+  --color-surface-muted: #0a0f1d;              /* Nền container, navbar */
+  --color-surface-card: #0f172a;               /* Nền thẻ mặc định */
+  --color-surface-card-hover: #162238;         /* Nền thẻ khi hover */
+  --color-surface-input: #060b16;              /* Nền ô tìm kiếm, code block */
+  --color-surface-glass: rgba(15, 23, 42, 0.8);/* Lớp kính mờ */
+  
+  /* Text & Contrast (WCAG 2.2 AA Compliant) */
+  --color-text-primary: #ffffff;               /* Tiêu đề chính, văn bản nổi bật */
+  --color-text-secondary: #6ee7b7;             /* Xanh ngọc lục bảo (Emerald accent) */
+  --color-text-tertiary: #e2e8f0;              /* Đoạn văn mô tả */
+  --color-text-muted: #94a3b8;                 /* Nhãn phụ, caption, placeholder */
+
+  /* Borders & Accents */
+  --color-border-subtle: #1e293b;              /* Viền mờ */
+  --color-border-hover: #334155;               /* Viền hover */
+  --color-border-accent: #10b981;              /* Viền active, focus */
+  --color-border-glow: rgba(110, 231, 183, 0.25);
+
+  /* Brand Accents & Glows */
+  --color-brand-primary: #10b981;              /* Emerald 500 */
+  --color-brand-accent: #6ee7b7;               /* Emerald 300 / Mint */
+  --color-brand-glow: rgba(16, 185, 129, 0.18);
+  --color-brand-glow-strong: rgba(110, 231, 183, 0.35);
+  --color-brand-badge-bg: rgba(16, 185, 129, 0.12);
+  --color-brand-badge-border: rgba(110, 231, 183, 0.25);
+
+  /* Status Colors */
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-danger-bg: rgba(239, 68, 68, 0.12);
+  --color-danger-border: rgba(239, 68, 68, 0.3);
+
+  /* Typography */
+  --font-family-primary: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, ui-monospace, monospace;
+
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-md: 13px;
+  --font-size-base: 15px;
+  --font-size-lg: 17px;
+  --font-size-xl: 19px;
+  --font-size-h3: 22px;
+  --font-size-h2: 28px;
+  --font-size-h1: 36px;
+  --font-size-hero: 46px;
+
+  --line-height-tight: 1.2;
+  --line-height-base: 1.6;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-8: 24px;
+  --space-10: 32px;
+  --space-12: 40px;
+  --space-16: 48px;
+  --space-20: 64px;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--color-border-subtle);
+  --shadow-card-hover: 0 12px 32px -4px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--color-border-glow), 0 0 20px -5px var(--color-brand-glow);
+  --shadow-showcase: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 0 1px var(--color-border-glow), 0 0 40px -10px var(--color-brand-glow);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}

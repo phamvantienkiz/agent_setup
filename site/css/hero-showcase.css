@@ -1,0 +1,85 @@
+/* ==========================================================================
+   Hero Showcase Motion Card Styles (Square 1:1 Aspect Ratio)
+   ========================================================================== */
+
+.showcase-card-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at 50% 0%, #0d172b 0%, #030611 100%);
+  border: 1px solid var(--color-border-glow);
+  box-shadow: var(--shadow-showcase);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle Top Window Bar */
+.showcase-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background-color: rgba(10, 15, 29, 0.85);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  z-index: 10;
+}
+
+.window-dots {
+  display: flex;
+  gap: 6px;
+}
+.window-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #1e293b;
+}
+.window-dot.red { background: #ef4444; }
+.window-dot.yellow { background: #f59e0b; }
+.window-dot.green { background: #10b981; }
+
+.showcase-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-brand-accent);
+}
+
+.status-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-brand-accent);
+  box-shadow: 0 0 8px var(--color-brand-accent);
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+/* Canvas Container */
+.showcase-canvas-container {
+  position: relative;
+  flex-grow: 1;
+  width: 100%;
+  height: calc(100% - 37px);
+  background: #030611;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#hero-motion-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>agent_setup · Antigravity Agent Skills (by Hi Jin)</title>
+  <meta name="description"
+    content="Bộ cấu hình chuẩn mực và kho hơn 50+ kỹ năng chuyên sâu được tuyển chọn và custom riêng cho Antigravity CLI. Tác giả: Hi Jin.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/hero-showcase.css">
+</head>
+
+<body>
+
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-link">Bỏ qua đến nội dung chính</a>
+
+  <!-- Global Sticky Navbar -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="#" class="brand-group" aria-label="Trang chủ agent_setup by Hi Jin">
+        <div class="brand-icon-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-name">agent_setup</span>
+          <span class="brand-author">by Jin</span>
+        </div>
+      </a>
+
+      <nav aria-label="Điều hướng chính">
+        <ul class="nav-links">
+          <li><a href="#hero" class="nav-link active">Giới Thiệu</a></li>
+          <li><a href="#philosophy" class="nav-link">Triết Lý</a></li>
+          <li><a href="#skills" class="nav-link">Kho Skills</a></li>
+          <li><a href="#setup" class="nav-link">Cài Đặt</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#skills" class="btn btn-secondary btn-sm"
+          style="display: none; @media(min-width: 640px){display: inline-flex;}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>Tìm kiếm</span>
+          <span style="font-family: var(--font-family-mono); font-size: 11px; opacity: 0.6;">Ctrl+K</span>
+        </a>
+        <a href="https://github.com/phamvantienkiz/agent_setup" target="_blank" rel="noopener noreferrer"
+          class="btn btn-primary btn-sm" aria-label="Xem mã nguồn trên GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Landmark -->
+  <main id="main-content">
+
+    <!-- HERO SECTION (2 COLUMNS) -->
+    <section id="hero" class="section">
+      <div class="container hero-grid">
+
+        <!-- Left Column: Content -->
+        <div class="hero-content">
+          <div class="section-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            Antigravity Agent Skills Ecosystem
+          </div>
+          <h1 class="hero-headline">
+            Dạy nghề cho AI.<br>
+            <span class="gradient-text">Biến Antigravity thành kỹ sư thực thụ.</span>
+          </h1>
+          <p class="hero-description">
+            Kho cấu hình chuẩn mực và hơn 50+ kỹ năng chuyên sâu được tuyển chọn từ cộng đồng Claude Code và tùy biến
+            riêng cho Antigravity CLI. Bớt đoán mò, không over-engineering, giữ môi trường biệt lập và sửa code chuẩn
+            xác.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#skills" class="btn btn-primary">
+              <span>Khám phá 50+ Skills</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <polyline points="19 12 12 19 5 12"></polyline>
+              </svg>
+            </a>
+            <a href="#setup" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+              <span>Xem hướng dẫn setup</span>
+            </a>
+          </div>
+
+          <div class="hero-terminal-pill">
+            <span style="color: var(--color-brand-accent);">$</span>
+            <span>cp -r .agents/ AGENTS.md ./your-project</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Square 1:1 Motion Video Showcase -->
+        <div class="showcase-card-wrapper" aria-label="Hoạt cảnh chuyển động giới thiệu agent_setup cho Antigravity">
+
+          <!-- Top Window Bar -->
+          <div class="showcase-top-bar">
+            <div class="window-dots">
+              <span class="window-dot red"></span>
+              <span class="window-dot yellow"></span>
+              <span class="window-dot green"></span>
+            </div>
+            <div class="showcase-status">
+              <span class="status-pulse-dot"></span>
+              <span>RUNNING</span>
+            </div>
+          </div>
+
+          <!-- High-Resolution Canvas Container -->
+          <div class="showcase-canvas-container">
+            <canvas id="hero-motion-canvas" width="480" height="480"></canvas>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PHILOSOPHY SECTION -->
+    <section id="philosophy" class="section"
+      style="background-color: var(--color-surface-muted); border-top: 1px solid var(--color-border-subtle); border-bottom: 1px solid var(--color-border-subtle);">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="section-tag">Kỷ Luật Tác Chiến</div>
+          <h2 class="section-title">4 Nguyên Tắc Kỹ Thuật Bất Biến</h2>
+          <p class="section-subtitle">
+            Học tập từ nhận xét của Andrej Karpathy về các lỗi điển hình của LLM khi viết code: bớt đoán mò, tối giản,
+            và sửa đúng chỗ.
+          </p>
+        </div>
+
+        <div class="philosophy-grid">
+          <div class="philosophy-card">
+            <div class="philosophy-num">01 / DISCIPLINE</div>
+            <h3 class="philosophy-title">Think Before Coding</h3>
+            <p class="philosophy-desc">Không được tự giả định nếu yêu cầu mơ hồ. Nêu rõ các giả định, đánh đổi và hỏi
+              lại trước khi viết mã.</p>
+          </div>
+
+          <div class="philosophy-card">
+            <div class="philosophy-num">02 / MINIMALISM</div>
+            <h3 class="philosophy-title">Simplicity First</h3>
+            <p class="philosophy-desc">Chỉ viết lượng code tối thiểu giải quyết bài toán. Tuyệt đối không thêm
+              abstraction hay suy đoán tương lai.</p>
+          </div>
+
+          <div class="philosophy-card">
+            <div class="philosophy-num">03 / PRECISION</div>
+            <h3 class="philosophy-title">Surgical Changes</h3>
+            <p class="philosophy-desc">Chỉ sửa đúng phạm vi yêu cầu. Giữ nguyên style của codebase. Mọi dòng code thay
+              đổi đều phải truy vết được.</p>
+          </div>
+
+          <div class="philosophy-card">
+            <div class="philosophy-num">04 / SAFETY</div>
+            <h3 class="philosophy-title">Strict Isolation</h3>
+            <p class="philosophy-desc">Mọi gói phụ thuộc phải nằm trong môi trường ảo (.venv) cục bộ của workspace.
+              Nghiêm cấm làm bẩn host system.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SKILLS EXPLORER SECTION -->
+    <section id="skills" class="section">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="section-tag">Thư Viện Thực Chiến</div>
+          <h2 class="section-title">Kho 50+ Kỹ Năng Của agent_setup</h2>
+          <p class="section-subtitle">
+            Tuyển chọn và tối ưu hóa riêng cho Antigravity CLI. Tra cứu nhanh chóng, nắm bắt cú pháp kích hoạt và sao
+            chép prompt mẫu chuẩn hoá.
+          </p>
+        </div>
+
+        <!-- Search Bar with SVG Icon & Shortcut -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <span class="search-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <input type="text" id="skills-search-input" class="search-input"
+              placeholder="Tìm kiếm skill (ví dụ: fastapi, clean-code, user-story, diagram, 3d...)"
+              aria-label="Tìm kiếm kỹ năng">
+            <span class="search-kbd">Ctrl + K</span>
+          </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div id="filter-tabs" class="filter-tabs" role="tablist" aria-label="Bộ lọc phân loại kỹ năng">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Skills Cards Grid -->
+        <div id="skills-grid" class="grid-cards" aria-live="polite">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- QUICK SETUP & INTEGRATION SECTION -->
+    <section id="setup" class="section"
+      style="background-color: var(--color-surface-muted); border-top: 1px solid var(--color-border-subtle);">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="section-tag">Tích Hợp Dễ Dàng</div>
+          <h2 class="section-title">Khởi Động agent_setup Trong 3 Bước</h2>
+          <p class="section-subtitle">
+            Cấu hình nhẹ gọn, nạp trực tiếp vào dự án của bạn và chạy cùng Antigravity CLI.
+          </p>
+        </div>
+
+        <div
+          style="max-width: 840px; margin: 0 auto; background: var(--color-surface-base); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); padding: var(--space-8); box-shadow: var(--shadow-card);">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border-subtle); padding-bottom: var(--space-3);">
+            <div
+              style="font-family: var(--font-family-mono); font-size: var(--font-size-sm); color: var(--color-brand-accent); display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+              Terminal Quickstart cho Antigravity
+            </div>
+            <button id="copy-setup-cmd" class="btn btn-secondary btn-sm" aria-label="Sao chép các lệnh thiết lập">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Sao chép lệnh</span>
+            </button>
+          </div>
+
+          <pre id="setup-code-block"
+            style="font-family: var(--font-family-mono); font-size: 13.5px; line-height: 1.7; color: var(--color-text-secondary); overflow-x: auto; margin-bottom: var(--space-6);"><code># 1. Clone repository hoặc copy cấu hình cốt lõi vào root dự án
+git clone https://github.com/phamvantienkiz/agent_setup.git
+cp -r agent_setup/.agents agent_setup/AGENTS.md ./your-project/
+
+# (Tùy chọn) Nếu làm nghiên cứu khoa học, nạp thêm từ gói on-demand:
+# cp -r agent_setup/cs-research-skills/paper-lookup ./your-project/.agents/skills/
+# cp -r agent_setup/microsoft-research/rs-paper-search ./your-project/.agents/skills/
+
+# 2. Khởi tạo môi trường ảo Python biệt lập (Strict Environment Isolation)
+cd ./your-project
+python -m venv .venv
+source .venv/bin/activate  # Hoặc trên Windows: .venv\Scripts\activate
+
+# 3. Kích hoạt Antigravity CLI và tận hưởng kho 50+ Skills
+agy</code></pre>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
+            <div
+              style="background: var(--color-surface-card); padding: var(--space-4); border-radius: var(--radius-sm); border-left: 3px solid var(--color-brand-primary);">
+              <h4 style="color: #ffffff; font-size: var(--font-size-base); margin-bottom: 4px;">Nguyên Tắc Bất Biến</h4>
+              <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5;">Nghiêm cấm
+                cài đặt package toàn cục. Mọi thay đổi đều được cô lập trong dự án.</p>
+            </div>
+            <div
+              style="background: var(--color-surface-card); padding: var(--space-4); border-radius: var(--radius-sm); border-left: 3px solid var(--color-brand-primary);">
+              <h4 style="color: #ffffff; font-size: var(--font-size-base); margin-bottom: 4px;">Surgical Changes</h4>
+              <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5;">Chỉ viết
+                lượng code tối thiểu để giải quyết bài toán. Kiểm thử trước khi kết thúc.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SKILL DETAIL MODAL DIALOG -->
+  <div id="skill-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-skill-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="color: var(--color-brand-accent);">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          <span id="modal-skill-title">Chi Tiết Kỹ Năng</span>
+          <span id="modal-skill-badge" class="badge badge-emerald" style="margin-left: 8px;"></span>
+        </div>
+        <button id="modal-close-btn" class="modal-close-btn" aria-label="Đóng hộp thoại (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div id="modal-skill-body" class="modal-body">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="modal-footer">
+        <button id="modal-copy-btn" class="btn btn-primary btn-sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Sao Chép Prompt Này</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-notice" class="toast-notice" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span>Đã sao chép prompt vào clipboard!</span>
+  </div>
+
+  <!-- GLOBAL FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <!-- Col 1: Brand & Repo -->
+      <div>
+        <div class="footer-brand-title">agent_setup <span
+            style="font-size: 13px; font-weight: normal; color: var(--color-brand-accent);">· by Jin</span></div>
+        <p class="footer-brand-desc">Bộ cấu hình chuẩn mực và kho kỹ năng chuyên sâu tuyển chọn cho Antigravity CLI.</p>
+        <div style="margin-top: 14px;">
+          <a href="https://github.com/phamvantienkiz/agent_setup" target="_blank" rel="noopener noreferrer"
+            class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            <span>GitHub Repository</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Col 2: Navigation Links -->
+      <div>
+        <h4 class="footer-col-title">Điều Hướng</h4>
+        <ul class="footer-col-links">
+          <li><a href="#hero">Về Đầu Trang ↑</a></li>
+          <li><a href="#philosophy">Kỷ Luật Tác Chiến</a></li>
+          <li><a href="#skills">Kho Kỹ Năng (50+)</a></li>
+          <li><a href="#setup">Hướng Dẫn Cài Đặt</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Personal Links (Jin) -->
+      <div>
+        <h4 class="footer-col-title">Tác Giả (Jin)</h4>
+        <ul class="footer-col-links">
+          <li>
+            <a href="https://tienpham-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                </path>
+              </svg>
+              <span>Portfolio</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/phamvantienkiz" target="_blank" rel="noopener noreferrer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+              <span>GitHub Cá Nhân</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/vtienph/" target="_blank" rel="noopener noreferrer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.youtube.com/@hi-wenjin" target="_blank" rel="noopener noreferrer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+              </svg>
+              <span>YouTube</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div>© 2026 agent_setup · Created by Jin · MIT License.</div>
+      <div>Tailored specifically for Antigravity CLI</div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript App (ES Modules) -->
+  <script type="module" src="js/app.js"></script>
+
+</body>
+
+</html>

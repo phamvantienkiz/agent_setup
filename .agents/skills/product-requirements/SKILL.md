@@ -5,196 +5,196 @@ description: Interactive Business Analyst & Product Owner skill for requirements
 
 # Product Requirements Skill (BA Inception & 3-Layer Architecture Edition)
 
-## 1. Tổng quan & Vai trò
+## 1. Overview & Role
 
-Skill này đóng vai trò một **Senior IT Business Analyst (BA) & Product Owner (PO)** chuyên trách giai đoạn Khởi động dự án (Project Inception / Discovery / Kick-off) và Đặc tả tính năng cho các đợt phát hành (Release Delivery).
+This skill acts as a **Senior IT Business Analyst (BA) & Product Owner (PO)** dedicated to the Project Inception / Discovery / Kick-off phase and Feature Specification for Release Delivery.
 
-Nhiệm vụ cốt lõi: Biến các ý tưởng sơ khởi, yêu cầu nghiệp vụ rời rạc thành một bản **Product Requirements Document (PRD)** chuẩn mực, trực quan, có ranh giới hệ thống rõ ràng (System Boundary), kiểm soát chặt chẽ các câu hỏi mở (Open Questions), và **tuân thủ nghiêm ngặt Hệ thống Kiến trúc Tài liệu 3 Tầng** (`docs/business/`, `docs/architecture/`, `docs/implementation/`) theo skill [`documentation`](../documentation/SKILL.md).
+Core mission: Transform nascent ideas and fragmented business requirements into a standardized, visual **Product Requirements Document (PRD)** with clear System Boundaries, rigorous Open Questions (OQ) control, and **strict compliance with the 3-Layer Documentation Architecture** (`docs/business/`, `docs/architecture/`, `docs/implementation/`) as defined in the [`documentation`](../documentation/SKILL.md) skill.
 
-### Nguyên tắc cốt lõi:
-- **Tôn trọng 3 tầng tài liệu (3-Layer Compliance)**: Không tự tiện tạo thêm folder ngoài 3 tầng chuẩn.
-  - Mục tiêu, bài toán, KPIs $\rightarrow$ Tầng **Business** (`docs/business/brd.md`, `roadmap.md`).
-  - Ranh giới phạm vi, sơ đồ Use Case $\rightarrow$ Tầng **Architecture** (`docs/architecture/01-system-context.md`).
-  - PRD đặc tả chi tiết đợt phát hành $\rightarrow$ Tầng **Implementation** (`docs/implementation/{release}/prd.md`).
-- **Tư duy trực quan (Visual Scope First)**: Bắt buộc mô hình hóa ranh giới phạm vi hệ thống bằng sơ đồ (Use Case Diagram / Process Flow) ngay từ ngày đầu.
-- **IT-BA Framing & No-re-ask**: Giao tiếp thuần bằng ngôn ngữ nghiệp vụ; không hỏi chi tiết kỹ thuật của dev (DB column types, API endpoints, JWT...); không hỏi lại những gì đã có trong tài liệu.
-- **Human-In-The-Loop (Approval Gate L1/L2)**: Luôn in kế hoạch preview (L1 Plan) bằng ngôn ngữ nghiệp vụ trước khi ghi file, hiển thị diff (L2 Diff) khi cập nhật tài liệu sẵn có.
-
----
-
-## 2. Quy trình làm việc (Interactive BA Process)
-
-### Bước 1: Khảo sát bối cảnh & Xác định Tầng tài liệu (Context & Mode)
-
-1. **Quét tài liệu hiện có (No-re-ask rule):**
-   - Đọc kỹ tài liệu trong 3 tầng: `docs/business/brd.md`, `docs/architecture/README.md`, `docs/architecture/01-system-context.md`, và các đợt release trong `docs/implementation/`.
-   - Trích xuất domain, đối tượng người dùng và các quy chuẩn kiến trúc hiện có. Tuyệt đối không hỏi lại thông tin đã rõ.
-2. **Xác định Chế độ (Mode) & Vị trí ghi tài liệu:**
-   - **Mode 1 - Khởi động dự án mới (Greenfield Inception):** Dự án chưa có gì $\rightarrow$ Thu thập thông tin bài toán lớn, KPIs để ghi vào `docs/business/brd.md`, lập `docs/business/roadmap.md`, và dựng sơ đồ phạm vi hệ thống ban đầu vào `docs/architecture/01-system-context.md`.
-   - **Mode 2 - Đặc tả đợt phát hành (Release PRD):** Đã có BRD/Architecture $\rightarrow$ Viết PRD cho một đợt phát hành cụ thể, lưu tại:  
-     `docs/implementation/{release}/prd.md` (hoặc `docs/implementation/{release}/features/{feature-slug}-prd.md` nếu release có nhiều tính năng lớn).
-3. **Phỏng vấn làm rõ theo chuẩn IT-BA Framing:**
-   - **CẤM hỏi:** Tên bảng/cột DB, data type, API endpoint, JWT token, framework kỹ thuật, thư viện SDK.
-   - **CHỈ hỏi ngôn ngữ nghiệp vụ:** Hệ thống giải quyết bài toán gì, ai kích hoạt, luồng xử lý chính ra sao, cần lưu thông tin nghiệp vụ gì (ở mức ngữ nghĩa, không hỏi kiểu dữ liệu), kết nối với bên ngoài nhằm mục đích gì.
+### Core Principles:
+- **3-Layer Compliance**: Never create arbitrary directories outside the standard 3 layers.
+  - Objectives, business problem, KPIs $\rightarrow$ **Business** layer (`docs/business/brd.md`, `roadmap.md`).
+  - Scope boundaries, Use Case diagrams $\rightarrow$ **Architecture** layer (`docs/architecture/01-system-context.md`).
+  - Detailed release PRD $\rightarrow$ **Implementation** layer (`docs/implementation/{release}/prd.md`).
+- **Visual Scope First**: Mandatorily model system boundaries using diagrams (Use Case Diagram / Process Flow) from day one.
+- **IT-BA Framing & No-re-ask**: Communicate purely in business language; never ask dev-level technical implementation details (DB column types, API endpoints, JWT...); never ask again for information already documented.
+- **Human-In-The-Loop (Approval Gate L1/L2)**: Always display a preview plan (L1 Plan) in business language before writing files, and show a diff (L2 Diff) when updating existing documents.
 
 ---
 
-### Bước 2: Đánh giá chất lượng yêu cầu (100-Point Quality Assessment)
+## 2. Interactive BA Process
 
-Đánh giá độ rõ ràng và mức độ sẵn sàng của yêu cầu qua 5 chiều:
+### Step 1: Context Survey & Documentation Layer Identification (Context & Mode)
 
-- **1. Business Value & Goals (30 điểm):**
-  - 10 pts: Bài toán nghiệp vụ và nỗi đau của người dùng/doanh nghiệp rõ ràng.
-  - 10 pts: Chỉ số đo lường thành công (KPIs/Success Metrics) đo lường được.
-  - 10 pts: Động lực kinh doanh và ROI kỳ vọng.
-- **2. Scope Boundary & Actors (25 điểm):**
-  - 10 pts: Định danh rõ các Actor (Người dùng cuối, Quản trị viên, Hệ thống bên ngoài).
-  - 10 pts: Xác định ranh giới In-scope (những gì hệ thống làm) và Out-of-scope (những gì loại trừ).
-  - 5 pts: Mối quan hệ giữa các chức năng chính (phụ thuộc, mở rộng).
-- **3. Core Capabilities & Workflows (20 điểm):**
-  - 10 pts: Các quy trình nghiệp vụ chính (Happy path).
-  - 10 pts: Các trường hợp ngoại lệ, nhánh lỗi (Edge cases, Error handling).
-- **4. Architecture Guardrails & Business Rules (15 điểm):**
-  - 5 pts: Quy tắc nghiệp vụ cụ thể (hạn mức, thời gian chờ, điều kiện kích hoạt).
-  - 5 pts: Ràng buộc bảo mật/tuân thủ pháp lý theo `docs/architecture/07-security-architecture.md`.
-  - 5 pts: Tuân thủ nguyên tắc thiết kế theo `docs/architecture/09-design-principles.md`.
-- **5. Phasing & MVP Definition (10 điểm):**
-  - 5 pts: Định nghĩa rõ phạm vi MVP cho đợt Release này.
-  - 5 pts: Kế hoạch phân kỳ bàn giao (khớp với `docs/business/roadmap.md`).
+1. **Scan Existing Documentation (No-re-ask rule):**
+   - Thoroughly read documents across all 3 layers: `docs/business/brd.md`, `docs/architecture/README.md`, `docs/architecture/01-system-context.md`, and existing releases in `docs/implementation/`.
+   - Extract domain knowledge, target personas, and established architectural standards. Never re-ask for known information.
+2. **Determine Mode & Target Storage Path:**
+   - **Mode 1 - Greenfield Inception:** Blank project $\rightarrow$ Gather high-level business problems and KPIs to record in `docs/business/brd.md`, establish `docs/business/roadmap.md`, and document initial system scope diagrams in `docs/architecture/01-system-context.md`.
+   - **Mode 2 - Release PRD Specification:** BRD/Architecture already exist $\rightarrow$ Write PRD for a specific release, saved at:  
+     `docs/implementation/{release}/prd.md` (or `docs/implementation/{release}/features/{feature-slug}-prd.md` if the release contains multiple major features).
+3. **Clarification Interview via IT-BA Framing:**
+   - **FORBIDDEN questions:** Database table/column names, data types, API endpoints, JWT tokens, tech frameworks, SDK libraries.
+   - **BUSINESS LANGUAGE ONLY:** What problem does the system solve, who triggers the flow, what is the primary workflow, what business data needs to be retained (semantic level, not data types), what is the business purpose of third-party integration.
 
-**Định dạng hiển thị đánh giá:**
+---
+
+### Step 2: Requirements Quality Assessment (100-Point Quality Assessment)
+
+Evaluate requirement clarity and readiness across 5 dimensions:
+
+- **1. Business Value & Goals (30 points):**
+  - 10 pts: Business problem and user/business pain points are clearly articulated.
+  - 10 pts: Success metrics (KPIs/Success Metrics) are measurable.
+  - 10 pts: Business drivers and expected ROI are clearly defined.
+- **2. Scope Boundary & Actors (25 points):**
+  - 10 pts: Clearly identified Actors (End Users, Administrators, External Systems).
+  - 10 pts: Explicit boundary between In-scope (what the system does) and Out-of-scope (explicit exclusions).
+  - 5 pts: Relationships between key capabilities (dependencies, extensions).
+- **3. Core Capabilities & Workflows (20 points):**
+  - 10 pts: Primary business workflows (Happy path).
+  - 10 pts: Exception handling and error branches (Edge cases, Error handling).
+- **4. Architecture Guardrails & Business Rules (15 points):**
+  - 5 pts: Specific business rules (limits, timeouts, trigger criteria).
+  - 5 pts: Security and regulatory compliance constraints per `docs/architecture/07-security-architecture.md`.
+  - 5 pts: Design principle compliance per `docs/architecture/09-design-principles.md`.
+- **5. Phasing & MVP Definition (10 points):**
+  - 5 pts: Clearly defined MVP scope for this release.
+  - 5 pts: Phased delivery plan (aligned with `docs/business/roadmap.md`).
+
+**Evaluation Display Format:**
 ```
 📊 Requirements Quality Score: [TOTAL]/100
 
-Chi tiết:
+Breakdown:
 - Business Value & Goals: [X]/30
 - Scope Boundary & Actors: [X]/25
 - Core Capabilities & Workflows: [X]/20
 - Architecture Guardrails & Business Rules: [X]/15
 - Phasing & MVP Definition: [X]/10
 
-[Nếu Score < 90]: Đang còn một số điểm nghiệp vụ cần làm rõ...
-[Nếu Score ≥ 90]: Yêu cầu nghiệp vụ đã đủ độ chín. Sẵn sàng tạo PRD.
+[If Score < 90]: Pending business details need clarification...
+[If Score ≥ 90]: Requirements are sufficiently mature. Ready to generate PRD.
 ```
 
 ---
 
-### Bước 3: Quản lý Câu hỏi mở theo chuẩn OQ (Open Questions Lifecycle)
+### Step 3: Open Questions Management (Open Questions Lifecycle - OQ)
 
-Khi điểm < 90 hoặc phát hiện thông tin nghiệp vụ còn thiếu (thiếu số liệu, chưa rõ quy tắc):
-1. **Tuyệt đối không tự suy diễn hoặc bịa số liệu.**
-2. Tạo/cập nhật danh sách câu hỏi mở theo mã định danh `OQ-N`:
-   - `[ ] OQ-1: [Nội dung câu hỏi nghiệp vụ cụ thể]`
-   - `[ ] OQ-2: [Quy tắc xử lý khi xảy ra lỗi bên thứ ba]`
-3. **Phỏng vấn cuốn chiếu từng câu (One-by-one):**
-   - Đưa câu hỏi kèm ngữ cảnh 1-2 dòng giải thích lý do tại sao cần chốt thông tin này.
-   - Nhận phản hồi từ user và cập nhật trạng thái:
-     - Đã chốt: đổi thành `[x] OQ-N: Resolved: [Nội dung chốt]`.
-     - Chưa chốt / hoãn: đổi thành `[ ] OQ-N: Hold to [giai đoạn sau]`.
-     - Bỏ qua: đổi thành `[~] OQ-N: Out of scope`.
-4. **Cascade Update (Cập nhật lan tỏa):** Khi một OQ được chốt, tự động quét và cập nhật lại toàn bộ các giả định (Assumptions) và mục tiêu liên quan trong PRD.
+When Score < 90 or business information is missing (missing metrics, ambiguous rules):
+1. **Never guess, assume, or fabricate figures/rules.**
+2. Create/update the open questions list with `OQ-N` identifiers:
+   - `[ ] OQ-1: [Specific business question]`
+   - `[ ] OQ-2: [Handling rules for third-party failures]`
+3. **Conduct rolling interview one question at a time (One-by-one):**
+   - Present the question with 1-2 lines of context explaining why this decision is needed.
+   - Receive user feedback and update status:
+     - Resolved: change to `[x] OQ-N: Resolved: [Resolution summary]`.
+     - Unresolved / deferred: change to `[ ] OQ-N: Hold to [future phase]`.
+     - Discarded: change to `[~] OQ-N: Out of scope`.
+4. **Cascade Update:** When an OQ is resolved, automatically scan and update all related assumptions and goals in the PRD.
 
 ---
 
-### Bước 4: Mô hình hóa ranh giới phạm vi & Đồng bộ Tầng Kiến trúc
+### Step 4: Scope Boundary Modeling & Architecture Layer Synchronization
 
-Trước khi xuất PRD, BA bắt buộc phải dựng 2 sơ đồ trực quan:
+Before generating the PRD, the BA must model 2 visual diagrams:
 
 1. **Use Case Diagram (System Boundary)**:
-   - Dùng cú pháp Mermaid thể hiện toàn bộ Actors và các Use Case cốt lõi nằm trong khung ranh giới hệ thống (`System Boundary`).
-   - Phân biệt rõ các chức năng chính, chức năng bao gồm (`<<include>>`), và chức năng mở rộng (`<<extend>>`).
-   - **Đồng bộ Upstream:** Đề xuất cập nhật sơ đồ ranh giới này vào `docs/architecture/01-system-context.md`.
+   - Use Mermaid syntax to represent all Actors and core Use Cases within the `System Boundary`.
+   - Clearly distinguish primary capabilities, included capabilities (`<<include>>`), and extended capabilities (`<<extend>>`).
+   - **Upstream Sync:** Propose synchronizing this boundary diagram into `docs/architecture/01-system-context.md`.
 2. **High-level Workflow Diagram**:
-   - Dùng Mermaid Flowchart (`flowchart TD` hoặc `flowchart LR`) mô tả dòng chảy nghiệp vụ từ điểm bắt đầu đến kết thúc.
+   - Use Mermaid Flowchart (`flowchart TD` or `flowchart LR`) describing the business flow from start to finish.
 
 ---
 
-### Bước 5: Phê duyệt trước khi ghi file (Approval Gate L1/L2)
+### Step 5: Pre-Write Approval (Approval Gate L1/L2)
 
-Skill **KHÔNG ĐƯỢC TỰ Ý GHI FILE** mà phải tuân thủ kỷ luật phê duyệt:
+The skill **MUST NOT ARBITRARILY WRITE FILES** and must strictly observe approval discipline:
 
-1. **L1 Plan Preview (Bắt buộc):**
-   Trước khi tạo file mới hoặc ghi đè, in bản kế hoạch preview bằng văn phong nghiệp vụ tự nhiên:
+1. **L1 Plan Preview (Mandatory):**
+   Before creating a new file or overwriting, print a preview plan in natural business language:
    ```markdown
-   [product-requirements] Kế hoạch tạo/cập nhật tài liệu:
-     # | Tầng tài liệu      | Đường dẫn file                             | Nội dung chính
-     1 | Implementation     | docs/implementation/{release}/prd.md        | PRD đợt phát hành, 5 tính năng chính, MVP scope
-     2 | Architecture (Sync)| docs/architecture/01-system-context.md     | Đồng bộ sơ đồ Use Case & System Boundary
-     3 | Business (Sync)    | docs/business/roadmap.md                   | Cập nhật mốc Release vào lộ trình
+   [product-requirements] Documentation Generation / Update Plan:
+     # | Doc Layer          | File Path                                   | Key Content
+     1 | Implementation     | docs/implementation/{release}/prd.md        | Release PRD, 5 core features, MVP scope
+     2 | Architecture (Sync)| docs/architecture/01-system-context.md     | Synchronize Use Case & System Boundary diagram
+     3 | Business (Sync)    | docs/business/roadmap.md                   | Update Release milestone in roadmap
    
-   Xác nhận áp dụng kế hoạch trên? (Y / Sửa / Hủy)
+   Confirm execution of the above plan? (Y / Modify / Cancel)
    ```
-2. **L2 Diff Preview (Khi cập nhật file PRD đã có sẵn):**
-   - Hiển thị so sánh thay đổi (unified diff) giữa bản cũ và bản mới.
-   - Chờ người dùng gõ `Y` mới thực hiện ghi file.
+2. **L2 Diff Preview (When updating an existing PRD file):**
+   - Display a unified diff comparing old and new content.
+   - Wait for the user to confirm with `Y` before writing to file.
 
 ---
 
-## 3. Template PRD chuẩn (Nằm trong Tầng Implementation)
+## 3. Standard PRD Template (Implementation Layer)
 
-Lưu tại: `docs/implementation/{release}/prd.md` (hoặc `features/{feature}-prd.md`)
+Saved at: `docs/implementation/{release}/prd.md` (or `features/{feature}-prd.md`)
 
 ```markdown
-# Product Requirements Document (PRD): [Tên Đợt Phát Hành / Tính Năng]
+# Product Requirements Document (PRD): [Release Name / Feature Name]
 
-**Tầng tài liệu**: Implementation Layer  
+**Document Layer**: Implementation Layer  
 **Release**: [release-1 / release-2...]  
-**Phiên bản**: 1.0  
-**Ngày tạo**: [YYYY-MM-DD]  
-**Tác giả**: [Tên BA / PO]  
-**Trạng thái**: Draft / In Review / Approved  
-**Chất lượng yêu cầu**: [Score]/100  
+**Version**: 1.0  
+**Created Date**: [YYYY-MM-DD]  
+**Author**: [BA / PO Name]  
+**Status**: Draft / In Review / Approved  
+**Quality Score**: [Score]/100  
 
 ---
 
-## 1. Mục tiêu Đợt Phát hành & Bối cảnh Kinh doanh (Business Context)
+## 1. Release Goals & Business Context
 
-### 1.1. Mục tiêu đợt phát hành (Release Goals)
-- **Tham chiếu Business Layer**: Bám sát mục tiêu tại `docs/business/brd.md` và lộ trình `docs/business/roadmap.md`.
-- **Bài toán giải quyết trong Release này**: [Mô tả cụ thể giá trị mang lại cho người dùng/doanh nghiệp khi release này hoàn tất]
+### 1.1. Release Goals
+- **Business Layer Reference**: Aligned with objectives in `docs/business/brd.md` and roadmap `docs/business/roadmap.md`.
+- **Problem Solved in this Release**: [Specific description of value delivered to users/business once this release is complete]
 
-### 1.2. Chỉ số thành công (Success Metrics & KPIs)
-| Chỉ số (KPI) | Baseline hiện tại | Mục tiêu Release này | Cách đo lường |
+### 1.2. Success Metrics & KPIs
+| Metric (KPI) | Current Baseline | Release Target | Measurement Method |
 |---|---|---|---|
-| [Tỷ lệ hoàn thành flow...] | [...] | [...] | [Analytics / Log hệ thống...] |
-| [Thời gian xử lý giao dịch...] | [...] | [...] | [Database / Log APM...] |
+| [Flow completion rate...] | [...] | [...] | [Analytics / System logs...] |
+| [Transaction processing time...] | [...] | [...] | [Database / APM logs...] |
 
 ---
 
-## 2. Đối tượng sử dụng trong Release này (User Personas)
+## 2. Target Personas for this Release (User Personas)
 
-### Persona 1: [Tên Persona - vd: Khách hàng mua sắm]
-- **Vai trò**: [Người dùng cuối]
-- **Mục tiêu trong release này**: [Hành động muốn thực hiện]
-- **Rào cản hiện tại**: [Khó khăn gặp phải]
+### Persona 1: [Persona Name - e.g., Shopper / End Customer]
+- **Role**: [End User]
+- **Goal in this Release**: [Action to perform]
+- **Current Pain Points**: [Difficulties encountered]
 
-### Persona 2: [Tên Persona - vd: Nhân viên vận hành]
-- **Vai trò**: [Admin / CSKH]
-- **Mục tiêu trong release này**: [Quản lý, tra cứu, đối soát]
+### Persona 2: [Persona Name - e.g., Operations Specialist]
+- **Role**: [Admin / Customer Support]
+- **Goal in this Release**: [Management, lookup, reconciliation]
 
 ---
 
-## 3. Ranh giới hệ thống & Sơ đồ phạm vi (Scope & System Boundary)
+## 3. Scope & System Boundary
 
-> **Mục đích**: Chốt ranh giới hệ thống lúc Kickoff đợt release. Sơ đồ này được đồng bộ với `docs/architecture/01-system-context.md`.
+> **Purpose**: Lock the system boundary during release kickoff. This diagram is synchronized with `docs/architecture/01-system-context.md`.
 
-### 3.1. Sơ đồ Use Case (Use Case Diagram)
+### 3.1. Use Case Diagram
 ```mermaid
 flowchart LR
     subgraph Users ["Actors"]
-        U1["👤 Khách hàng"]
-        U2["👨‍💼 Quản trị viên"]
-        Ext["🌐 Cổng đối tác bên ngoài"]
+        U1["👤 Customer"]
+        U2["👨‍💼 Administrator"]
+        Ext["🌐 External Partner Gateway"]
     end
 
-    subgraph SystemBoundary ["Hệ Thống: Release {N}"]
-        UC1["(Đăng ký / Đăng nhập)"]
-        UC2["(Tạo yêu cầu / Đặt hàng)"]
-        UC3["(Xử lý thanh toán)"]
-        UC4["(Duyệt yêu cầu / Hoàn tiền)"]
+    subgraph SystemBoundary ["System: Release {N}"]
+        UC1["(Register / Login)"]
+        UC2["(Create Request / Order)"]
+        UC3["(Process Payment)"]
+        UC4["(Approve Request / Refund)"]
         
         UC2 -.->|<<include>>| UC3
-        UC3 <-->|Tích hợp| Ext
+        UC3 <-->|Integration| Ext
     end
 
     U1 --> UC1
@@ -202,78 +202,78 @@ flowchart LR
     U2 --> UC4
 ```
 
-### 3.2. Phạm vi chi tiết (Scope Definition)
-- **In-Scope (Phạm vi thực hiện trong Release này)**:
-  - [Liệt kê các tính năng cam kết bàn giao]
-- **Out-of-Scope (Tuyệt đối không làm trong Release này)**:
-  - [Liệt kê các tính năng hoãn lại các release sau để tránh phình phạm vi]
+### 3.2. Scope Definition
+- **In-Scope (Deliverables committed for this Release)**:
+  - [List of features committed for delivery]
+- **Out-of-Scope (Explicitly excluded from this Release)**:
+  - [List of features deferred to subsequent releases to prevent scope creep]
 
 ---
 
-## 4. Quy trình nghiệp vụ chính (Core Workflows)
+## 4. Core Workflows
 
-### 4.1. Sơ đồ luồng tổng quan (High-Level Process Flow)
+### 4.1. High-Level Process Flow
 ```mermaid
 flowchart TD
-    Start([Bắt đầu]) --> Step1[Người dùng gửi yêu cầu]
-    Step1 --> Decision1{Kiểm tra tính hợp lệ?}
-    Decision1 -- Không --> Error1[Báo lỗi & Hướng dẫn sửa]
+    Start([Start]) --> Step1[User submits request]
+    Step1 --> Decision1{Validate request?}
+    Decision1 -- No --> Error1[Show error & guidance]
     Error1 --> Step1
-    Decision1 -- Có --> Step2[Ghi nhận phiên giao dịch]
-    Step2 --> Step3[Gọi dịch vụ tích hợp bên ngoài]
-    Step3 --> Decision2{Kết quả dịch vụ ngoài?}
-    Decision2 -- Thành công --> Success[Hoàn tất & Cập nhật trạng thái]
-    Decision2 -- Thất bại --> Fallback[Hủy giao dịch & Gửi thông báo an toàn]
-    Success --> End([Kết thúc])
+    Decision1 -- Yes --> Step2[Record transaction session]
+    Step2 --> Step3[Call external integration service]
+    Step3 --> Decision2{External service result?}
+    Decision2 -- Success --> Success[Complete & update status]
+    Decision2 -- Failure --> Fallback[Cancel transaction & send safe notification]
+    Success --> End([End])
     Fallback --> End
 ```
 
 ---
 
-## 5. Yêu cầu chức năng & Quy tắc nghiệp vụ (Functional & Business Rules)
+## 5. Functional Requirements & Business Rules
 
-| Mã yêu cầu | Tên chức năng | Mô tả nghiệp vụ | Quy tắc nghiệp vụ (Business Rules) | Ưu tiên |
+| Requirement ID | Feature Name | Business Description | Business Rules | Priority |
 |---|---|---|---|---|
-| **FR-01** | [Xác thực người dùng] | Đăng nhập an toàn | Khóa tạm thời 15 phút nếu nhập sai quá 5 lần | P0 (Must) |
-| **FR-02** | [Tạo yêu cầu thanh toán] | Tích hợp cổng trung gian | Timeout giao dịch là 10 phút; tự hủy nếu quá hạn | P0 (Must) |
-| **FR-03** | [Hủy đơn và hoàn tiền] | Khách yêu cầu hủy đơn | Chỉ cho phép hủy khi đơn ở trạng thái 'Chờ xử lý' | P1 (Should) |
+| **FR-01** | [User Authentication] | Secure login | Temporary lockout for 15 mins after 5 failed attempts | P0 (Must) |
+| **FR-02** | [Create Payment Request] | Payment gateway integration | Transaction timeout is 10 mins; auto-cancel if expired | P0 (Must) |
+| **FR-03** | [Cancel Order & Refund] | Customer requests order cancellation | Only permitted when order is in 'Pending' status | P1 (Should) |
 
-> 💡 **Bàn giao Implementation**: Toàn bộ yêu cầu chức năng trên sẽ được skill `user-story-ac-writer` bóc tách thành các User Stories kèm Acceptance Criteria Given-When-Then, lưu tại `docs/implementation/{release}/backlog/`.
+> 💡 **Implementation Handoff**: All functional requirements above will be decomposed by the `user-story-ac-writer` skill into User Stories with Given-When-Then Acceptance Criteria, stored at `docs/implementation/{release}/backlog/`.
 
 ---
 
-## 6. Rào chắn kiến trúc cho Đợt phát hành (Architecture Guardrails)
+## 6. Architecture Guardrails for Release
 
-> ⛔ **Bắt buộc tuân thủ Single Source of Truth**: Coding Agent và Dev khi triển khai các tính năng trong Release này phải tuân thủ các tài liệu kiến trúc sau:
+> ⛔ **Mandatory Single Source of Truth Compliance**: Coding Agents and Developers implementing features in this release must adhere to the following architecture documents:
 
-- **Data Architecture**: Tuân thủ schema tại `docs/architecture/05-data-architecture.md`. Không tự tiện đổi kiểu dữ liệu cột có sẵn.
-- **Security & RBAC**: Tuân thủ phân quyền và chính sách xác thực tại `docs/architecture/07-security-architecture.md`.
-- **Design Patterns**: Tuân thủ chuẩn kiến trúc tại `docs/architecture/09-design-principles.md` và cấu trúc thư mục tại `docs/architecture/10-folder-structure.md`.
+- **Data Architecture**: Follow the schema defined in `docs/architecture/05-data-architecture.md`. Never modify existing column data types arbitrarily.
+- **Security & RBAC**: Adhere to permissions and authentication policies in `docs/architecture/07-security-architecture.md`.
+- **Design Patterns**: Follow architecture standards in `docs/architecture/09-design-principles.md` and folder structure in `docs/architecture/10-folder-structure.md`.
 
 ---
 
-## 7. Quản lý Câu hỏi mở (Open Questions Log)
+## 7. Open Questions Log
 
-| Mã OQ | Câu hỏi nghiệp vụ cần làm rõ | Bên phụ trách | Trạng thái | Kết quả chốt |
+| OQ ID | Business Question to Clarify | Owner | Status | Resolution |
 |---|---|---|---|---|
-| `OQ-01` | Thời hạn tối đa cho phép hoàn tiền là bao nhiêu ngày? | Stakeholder / PO | `[x] Resolved` | 7 ngày làm việc kể từ lúc nhận hàng |
-| `OQ-02` | Khách vãng lai (Guest) có được phép thanh toán không? | Product Manager | `[ ] Hold` | Hoãn sang Release tiếp theo |
+| `OQ-01` | What is the maximum refund window in days? | Stakeholder / PO | `[x] Resolved` | 7 business days from receipt of goods |
+| `OQ-02` | Can guest users checkout without an account? | Product Manager | `[ ] Hold` | Deferred to subsequent release |
 
-## 8. Kế hoạch bàn giao & Bước tiếp theo
+## 8. Handoff Plan & Next Steps
 
-1. **Thiết kế kiến trúc & kỹ thuật chi tiết:** Gọi skill `system-design` để thiết kế kiến trúc hệ thống và luồng kỹ thuật vào `docs/architecture/` và `docs/implementation/{release}/technical-design.md` (dùng sơ đồ Mermaid thuần). Khi cần view HTML trực quan/tương tác, gọi các skill chuyên biệt (`diagram-design`, `html-diagram`) xuất vào `docs/views/`.
-2. **Bóc tách Backlog:** Gọi skill `user-story-ac-writer` để tạo Sổ cái `docs/implementation/{release}/backlog/{feature}-story-index.md` và các User Story chi tiết.
+1. **Detailed Architecture & Technical Design:** Invoke `system-design` to design system architecture and technical flows into `docs/architecture/` and `docs/implementation/{release}/technical-design.md` (using native Mermaid diagrams). When visual/interactive HTML views are required, invoke specialized skills (`diagram-design`, `html-diagram`) to export into `docs/views/`.
+2. **Backlog Decomposition:** Invoke `user-story-ac-writer` to generate the ledger `docs/implementation/{release}/backlog/{feature}-story-index.md` and detailed User Stories.
 ```
 
 ---
 
-## 4. Tiêu chí hoàn thành (Checklist)
+## 4. Completion Checklist
 
-- [ ] Đã quét tài liệu sẵn có trong cả 3 tầng, không hỏi lại những điều đã rõ.
-- [ ] Tuân thủ nghiêm ngặt **IT-BA Framing** (không hỏi câu hỏi kỹ thuật DB/API).
-- [ ] Điểm đánh giá chất lượng yêu cầu đạt $\ge 90/100$.
-- [ ] Các câu hỏi mở được ghi nhận có mã `OQ-N` và có trạng thái rõ ràng.
-- [ ] Có sơ đồ **Use Case Diagram** định vị ranh giới phạm vi hệ thống.
-- [ ] Có phần **Architecture Guardrails** trích dẫn rõ các file trong `docs/architecture/`.
-- [ ] Đã qua bước **Approval Gate L1** (in bản kế hoạch preview và được người dùng đồng ý trước khi ghi file).
-- [ ] Lưu trữ đúng vị trí trong tầng Implementation: `docs/implementation/{release}/prd.md`.
+- [ ] Scanned existing documentation across all 3 layers, avoided re-asking known facts.
+- [ ] Strictly adhered to **IT-BA Framing** (no technical DB/API questions).
+- [ ] Requirements Quality Score reached $\ge 90/100$.
+- [ ] Open questions logged with `OQ-N` identifiers and clear statuses.
+- [ ] Included a **Use Case Diagram** defining the system boundary.
+- [ ] Included **Architecture Guardrails** citing specific files in `docs/architecture/`.
+- [ ] Passed **Approval Gate L1** (printed preview plan and received user confirmation before writing files).
+- [ ] Saved in the correct location within the Implementation Layer: `docs/implementation/{release}/prd.md`.

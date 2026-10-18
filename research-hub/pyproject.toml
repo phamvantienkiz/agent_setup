@@ -1,11 +1,11 @@
 [project]
-name = "microsoft-research-skills"
+name = "scientific-research-hub"
 version = "1.0.0"
-description = "Bộ công cụ kỹ năng nghiên cứu khoa học Microsoft Research Studio (Human-in-the-Loop & Isolated .venv Edition)"
+description = "Môi trường và thư viện phục vụ toàn diện cho bộ 57 Scientific Research Skills (research-hub, microsoft-research, cs-research-skills)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    # Nhóm 1: Kết nối học thuật & Phân tích văn bản
+    # Nhóm 1: Kết nối cổng học thuật & Phân tích văn bản
     "feedparser>=6.0.12",
     "openreview-py>=2.2.3",
     "beautifulsoup4>=4.13.0",
@@ -21,7 +21,7 @@ dependencies = [
     "qrcode>=7.4.2",
     "edge-tts>=7.2.8",
 
-    # Nhóm 3: Phương án 1 cho FFmpeg & Render cục bộ
+    # Nhóm 3: Playwright & Render đồ họa / FFmpeg cục bộ
     "imageio-ffmpeg>=0.5.1",      # Chứa sẵn binary ffmpeg độc lập trong .venv
     "playwright>=1.40.0",          # Trình duyệt Chromium headless độc lập
     "lxml>=5.0.0",

@@ -67,35 +67,42 @@ Agent sẽ đọc [SKILL.md](SKILL.md), tự động tìm thấy kỹ năng `rs-
 ---
 
 ### Cách 2: Copy kỹ năng sang một repo nghiên cứu khác của bạn
-Khi bạn có một repo NCKH riêng biệt (ví dụ: `D:/my-lab/quantum-gnn`), bạn chỉ cần copy các kỹ năng bạn cần từ kho này:
+Khi bạn có một repo NCKH riêng biệt (ví dụ: `D:/my-lab/quantum-gnn`), bạn có thể copy toàn bộ hoặc các kỹ năng cần thiết vào `.agents/skills/`:
 
-```bash
-# 1. Tạo thư mục .agents/skills trong dự án của bạn
-mkdir -p .agents/skills
+```powershell
+# Tạo thư mục .agents/skills nếu chưa có
+New-Item -ItemType Directory -Force -Path ".agents\skills"
 
-# 2. Copy research-hub để Agent có mục lục tra cứu:
-cp -r path/to/research-hub .agents/skills/
+# Copy research-hub (chứa sẵn pyproject.toml, .env.template và hướng dẫn toàn diện):
+Copy-Item -Recurse "E:\gemini\agent_setup\research-hub" ".agents\skills\"
 
-# 3. Copy các kỹ năng bạn cần dùng (ví dụ: tìm bài báo, tính mới, viết paper):
-cp -r path/to/microsoft-research/rs-paper-search .agents/skills/
-cp -r path/to/microsoft-research/rs-scoop-check .agents/skills/
-cp -r path/to/cs-research-skills/torch-geometric .agents/skills/
-cp -r path/to/cs-research-skills/scientific-writing .agents/skills/
+# Copy toàn bộ các skills nghiên cứu (hoặc chỉ chọn lọc các folder cần thiết):
+Copy-Item -Recurse "E:\gemini\agent_setup\microsoft-research\*" ".agents\skills\"
+Copy-Item -Recurse "E:\gemini\agent_setup\cs-research-skills\*" ".agents\skills\"
 ```
 
+*(Lưu ý: Do các file cấu hình rời như `pyproject.toml` và `.env.template` đã được dời gọn vào trong `research-hub/`, việc copy `*` từ hai thư mục trên sẽ chỉ copy các folder skill hợp lệ, không làm rác hay phá vỡ cấu trúc của `.agents/skills/`).*
+
 ### Thiết lập môi trường Python ảo (.venv) an toàn:
-```bash
+```powershell
 # Khởi tạo môi trường ảo Python 3.10+
 uv venv --python 3.10
+
 # Kích hoạt trên Windows:
 .venv\Scripts\activate
 # Hoặc trên Linux/macOS:
-source .venv/bin/activate
+# source .venv/bin/activate
 
-# Cài đặt các thư viện cần thiết từ microsoft-research (đã cô lập 100%):
-uv pip install -e path/to/microsoft-research
+# Cài đặt toàn bộ thư viện cần thiết trực tiếp từ research-hub:
+uv pip install -e .agents\skills\research-hub
+
+# Cài đặt trình duyệt Chromium headless phục vụ render poster:
 uv run python -m playwright install chromium
+
+# Cấu hình API keys (OpenReview, OpenAlex, Semantic Scholar):
+Copy-Item ".agents\skills\research-hub\.env.template" ".env"
 ```
+
 
 ---
 

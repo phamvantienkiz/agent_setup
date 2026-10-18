@@ -225,29 +225,41 @@ flowchart TD
 
 ## 4. INSTRUCTIONS FOR HUMAN RESEARCHERS & FRIENDS
 
-If you are cloning or adopting this repository for your own research projects:
+If you are adopting these scientific research skills in any of your projects:
 
-### How to use this repository in your project:
-1. **Keep this repository as your Central Skill Depot:**
-   - Keep `cs-research-skills/` and `microsoft-research/` in this repository as your permanent library.
-2. **Copying Skills to Any New Research Repo:**
-   - When starting a new research project, create `.agents/skills/` in that repo.
-   - Copy the specific skills you need for that project from `cs-research-skills/` or `microsoft-research/`:
-     ```bash
-     # Example: Copy literature search and ideation skills
-     cp -r path/to/microsoft-research/rs-paper-search path/to/my-repo/.agents/skills/
-     cp -r path/to/microsoft-research/rs-scoop-check path/to/my-repo/.agents/skills/
-     cp -r path/to/cs-research-skills/scientific-writing path/to/my-repo/.agents/skills/
-     ```
-3. **Isolated Python Environment (.venv):**
-   - Set up an isolated `.venv` in your project:
-     ```bash
-     uv venv --python 3.10
-     # On Windows: .venv\Scripts\activate
-     # On macOS/Linux: source .venv/bin/activate
-     uv pip install -e path/to/microsoft-research
-     uv run python -m playwright install chromium
-     ```
-4. **Collaborative Prompting Example:**
-   - Tell your AI Agent:  
-     *"Consult `research-hub` to see which skill to use. First, run `rs-paper-search` on KV cache compression, stop and show me the literature table before doing anything else."*
+### 1. Copying Research Skills into Your Target Repository:
+In your target research repository, skills are organized under `.agents/skills/`. You can copy `research-hub` along with all skills from `cs-research-skills/` and `microsoft-research/`:
+
+```powershell
+# In PowerShell from your target repository root:
+New-Item -ItemType Directory -Force -Path ".agents\skills"
+Copy-Item -Recurse "E:\gemini\agent_setup\research-hub" ".agents\skills\"
+Copy-Item -Recurse "E:\gemini\agent_setup\microsoft-research\*" ".agents\skills\"
+Copy-Item -Recurse "E:\gemini\agent_setup\cs-research-skills\*" ".agents\skills\"
+```
+
+*(Note: Since all standalone configuration files `pyproject.toml` and `.env.template` are cleanly housed inside `research-hub/`, copying `*` from the source directories copies 100% valid skill folders without leaving loose files at the `.agents/skills/` root level).*
+
+### 2. Isolated Python Environment Setup (.venv):
+Install the shared dependencies managed inside `research-hub/pyproject.toml` using `uv`:
+
+```powershell
+# 1. Initialize isolated virtual environment
+uv venv --python 3.10
+.venv\Scripts\activate   # On Windows (or 'source .venv/bin/activate' on macOS/Linux)
+
+# 2. Install dependencies via research-hub
+uv pip install -e .agents\skills\research-hub
+
+# 3. Install headless Chromium for poster rendering (Playwright)
+uv run python -m playwright install chromium
+
+# 4. Configure API keys (OpenAlex, OpenReview, Semantic Scholar)
+Copy-Item ".agents\skills\research-hub\.env.template" ".env"
+# Edit .env with your credentials
+```
+
+### 3. Collaborative Prompting Example:
+Tell your AI Agent:  
+*"Consult `research-hub` to see which skill to use. First, run `rs-paper-search` on KV cache compression, stop and show me the literature table before doing anything else."*
+

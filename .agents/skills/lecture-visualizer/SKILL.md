@@ -1,6 +1,6 @@
 ---
 name: lecture-visualizer
-description: "Xây dựng bài giảng, chuyên đề học thuật Cao học / Đại học dưới dạng Single-File HTML tương tác, trực quan hóa cao cấp (2D/3D). Đóng vai trò giảng viên tận tâm với phương pháp sư phạm 'Dành Cho Người Học Chậm': giải thích bản chất toán học bằng lời văn mộc mạc, ví dụ đời thực, bảng đối chiếu 1-1, widget mô phỏng thuật toán từng bước, và đồ họa không gian 3D (Three.js/WebGL) khi cần thiết."
+description: "Xây dựng bài giảng, chuyên đề học thuật Cao học / Đại học dưới dạng Single-File HTML hoặc Modular HTML tương tác, trực quan hóa cao cấp (2D/3D). Đóng vai trò giảng viên tận tâm với phương pháp sư phạm 'Dành Cho Người Học Chậm': giải thích bản chất toán học bằng lời văn mộc mạc, ví dụ đời thực, bảng đối chiếu 1-1, widget mô phỏng thuật toán từng bước, và đồ họa không gian 3D (Three.js/WebGL). Hỗ trợ Chế độ Đọc Kép (Dual-Reading) tích hợp nguyên văn bản dịch bài báo khoa học (Scientific Paper) song hành với phân tích sư phạm."
 ---
 
 # Lecture Visualizer — Sư Phạm Trực Quan & Đóng Gói Bài Giảng Học Thuật
@@ -23,6 +23,8 @@ Kích hoạt kỹ năng này khi người dùng yêu cầu:
 - *"Chuyển slide / tài liệu PDF / giáo trình thành trang landing page trực quan, có sidebar, công thức toán và mô phỏng tương tác."*
 - *"Trực quan hóa thuật toán này bằng HTML / widget tương tác / mô phỏng 3D."*
 - *"Tạo bộ câu hỏi phản biện và kịch bản thuyết trình bảo vệ đề tài trước hội đồng."*
+- *"Đọc và hiểu sâu sắc paper khoa học này để làm báo cáo / làm slide thuyết trình nhóm cuối môn."* (Kích hoạt Chế độ Hiểu Paper).
+- *"Tích hợp cả bài báo vào trang trực quan để vừa đọc nguyên văn bài báo vừa đọc lời giải thích (Dual-Reading). "* (Kích hoạt Chế độ Hiểu Paper).
 
 ---
 
@@ -49,6 +51,7 @@ Khi xử lý các yêu cầu chuyên biệt, kỹ năng này tự động phối
 4. [`references/interactive-widgets-and-katex.md`](references/interactive-widgets-and-katex.md): **Cấu Hình KaTeX & Bộ Widget Tương Tác** — Delimiters KaTeX chuẩn, code template thanh trượt tổ hợp, mô phỏng thuật toán step-by-step, suffix explorer và accordion 15 câu hỏi Q&A bảo vệ đề tài.
 5. [`references/3d-cs-visualization.md`](references/3d-cs-visualization.md): **Hướng Dẫn Tích Hợp Đồ Họa 3D (Three.js/WebGL)** — Cách nhúng canvas Three.js độc lập vào trang HTML cho các bài toán Khoa học Máy tính cần biểu diễn không gian.
 6. [`templates/lecture-starter-template.html`](templates/lecture-starter-template.html): **Mẫu Khung HTML Chuẩn Khởi Tạo Nhanh** — Bộ khung có sẵn toàn bộ CSS Soft Clean Cards, KaTeX CDN, Sidebar, JS engine chỉ cần đổ nội dung chuyên đề vào.
+7. [`references/paper-understanding-mode.md`](references/paper-understanding-mode.md): **Chế Độ Hiểu Paper Khoa Học & Hệ Thống Đọc Kép (Dual-Reading System)** — Cổng kiểm tra tài nguyên bắt buộc (HALT nếu thiếu bản dịch/figures), cấu trúc khối thẻ `.paper-passage-card` song hành, điều hướng sidebar 2 tầng, và phân tách kiến trúc module HTML/CSS/JS.
 
 ---
 
@@ -120,9 +123,32 @@ flowchart TD
 
 ---
 
-## 6. Tiêu Chuẩn Nghiệm Thu Bài Giảng (Staff Engineer Checklist)
+## 6. Chế Độ Đọc Kép Khi Nghiên Cứu & Hiểu Paper Khoa Học (Dual-Reading Paper Mode)
+
+Khi mục tiêu của người dùng là **đọc, hiểu sâu, báo cáo hoặc làm slide thuyết trình về một bài báo khoa học (Scientific Paper)**:
+
+### ⚠️ CỔNG KIỂM TRA TÀI NGUYÊN BẮT BUỘC (MANDATORY RESOURCE GATE)
+1. **Kiểm tra trước khi thực hiện**:
+   - Agent **bắt buộc** phải kiểm tra xem trong workspace đã có bản dịch tiếng Việt của paper hay chưa (chẳng hạn thư mục `presentation/another-resources/` chứa file HTML dịch, các batch văn bản dịch, hoặc file PDF bản dịch tiếng Việt).
+2. **Quy tắc dừng ngay lập tức (HALT)**:
+   - Nếu **CHƯA CÓ BẢN DỊCH TIẾNG VIỆT HOẶC THIẾU TÀI NGUYÊN BÀI BÁO**:
+     - **DỪNG NGAY LẬP TỨC!** Không tự ý tóm tắt sơ sài từ bản tiếng Anh rồi bỏ qua yêu cầu đọc nguyên văn.
+     - Yêu cầu người dùng cung cấp bản dịch tiếng Việt (file PDF, HTML hoặc thư mục batch dịch kèm figures/tables) trước khi tiếp tục.
+3. **Khi đã có đầy đủ tài nguyên**:
+   - Triển khai theo cấu trúc **Hệ Thống Đọc Kép (Dual-Reading System)** quy định chi tiết tại [`references/paper-understanding-mode.md`](references/paper-understanding-mode.md):
+     - **Nguyên văn bài báo**: Bao bọc từng phần trong thẻ `.paper-passage-card` với badge `📄 NGUYÊN VĂN BÀI BÁO`, trích dẫn hội nghị/tác giả, giữ trọn vẹn văn bản dịch, hình ảnh gốc (`assets/figures/`) và bảng số liệu thực nghiệm gốc.
+     - **Phân tích sư phạm liền kề**: Đặt ngay phía dưới mỗi đoạn paper để giải thích trực giác, ẩn dụ đời thường, trace số học và bảng từ điển ký hiệu.
+     - **Trang Foundation mở rộng**: Tạo các trang phụ trợ (`foundations-*.html`) để giảng dạy cặn kẽ các công nghệ nền tảng mà người học chưa nắm vững (CNN, Transformers, Attention, Self-Supervised, Deep Blocks...).
+     - **Tách biệt kiến trúc**: Phân chia rõ ràng `index.html`, `css/`, `js/`, `assets/figures/`, không dồn tất cả vào một file HTML duy nhất dễ gây quá tải và lỗi cú pháp.
+     - **Sidebar 2 tầng**: Đánh dấu nhãn `📄` dẫn trực tiếp tới từng đoạn paper và các mô-đun sư phạm.
+
+---
+
+## 7. Tiêu Chuẩn Nghiệm Thu Bài Giảng (Staff Engineer Checklist)
 
 Trước khi bàn giao bất kỳ tài liệu bài giảng nào cho học viên, hãy rà soát:
+- [ ] **Cổng Tài Nguyên (Với Case Hiểu Paper)**: Đã kiểm tra sự tồn tại của bản dịch tiếng Việt chưa? Nếu thiếu đã dừng lại hỏi người dùng chưa?
+- [ ] **Ánh Xạ Đọc Kép (Với Case Hiểu Paper)**: Các đoạn nguyên văn bài báo có được bao bọc trong `.paper-passage-card` chuẩn mực không? Toàn bộ hình ảnh và bảng số liệu thực nghiệm gốc của paper có được nhúng đầy đủ không?
 - [ ] **Sư phạm**: Đã có bảng từ điển ký hiệu 4 cột chưa? Các công thức toán có hộp thoại "Góc Dành Cho Người Học Chậm" chưa?
 - [ ] **Dữ liệu**: Bộ dữ liệu mẫu có được giải chi tiết từng bước số học không? Kết quả giữa các thuật toán có khớp nhau 100% không?
 - [ ] **Giao diện**: Trang có bị bóp hẹp chiều ngang không? Bảng biểu có thoáng đãng, dễ đọc trên cả màn hình lớn lẫn điện thoại không?

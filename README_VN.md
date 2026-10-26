@@ -8,7 +8,7 @@
 
 ## 🚀 Giới Thiệu Tổng Quan
 
-Repository này cung cấp một cấu hình hoàn chỉnh cùng thư viện đồ sộ gồm **87 kỹ năng chuyên biệt (skills)**, biến các trợ lý lập trình AI thông thường thành những kỹ sư phần mềm và cộng sự nghiên cứu khoa học có tính kỷ luật cao, làm việc có phương pháp và tự chủ.
+Repository này cung cấp một cấu hình hoàn chỉnh cùng thư viện đồ sộ gồm **88 kỹ năng chuyên biệt (skills)**, biến các trợ lý lập trình AI thông thường thành những kỹ sư phần mềm và cộng sự nghiên cứu khoa học có tính kỷ luật cao, làm việc có phương pháp và tự chủ.
 
 Thay vì đưa ra các câu trả lời chung chung hoặc phỏng đoán mò, hệ thống này thiết lập:
 - **Tiêu chuẩn công nghệ chuẩn Clean Architecture & SOLID** (PEP 8 nghiêm ngặt, TDD, sửa code chính xác từng dòng - surgical changes).
@@ -23,7 +23,7 @@ Thay vì đưa ra các câu trả lời chung chung hoặc phỏng đoán mò, h
 ```text
 ├── .agents/
 │   ├── mcp_config.json        # Cấu hình các MCP server (NVIDIA CUDA, v.v.)
-│   └── skills/                # 29 kỹ năng cốt lõi về Backend, Frontend, Kiến trúc, UI/UX
+│   └── skills/                # 30 kỹ năng cốt lõi về Backend, Frontend, Kiến trúc, Bảo mật, UI/UX
 ├── research-hub/              # Meta-skill & Trình điều phối chu trình NCKH 8 chặng
 ├── microsoft-research/        # 11 kỹ năng NCKH (Tìm bài báo, chẩn đoán điểm nghẽn, 15 pattern sáng tạo, xuất poster/video)
 ├── cs-research-skills/        # 46 kỹ năng NCKH máy tính (Xử lý dữ liệu lớn, ML/DL, Lượng tử, Bayesian, Thống kê, Phản biện)
@@ -194,13 +194,14 @@ flowchart LR
 
 ---
 
-## 📊 Bảng Tra Cứu Toàn Diện Tất Cả 87 Skills Hiện Có
+## 📊 Bảng Tra Cứu Toàn Diện Tất Cả 88 Skills Hiện Có
 
-### 1. Kiến Trúc Phần Mềm, Backend & Clean Code (Trong `.agents/skills/`)
+### 1. Kiến Trúc Phần Mềm, Backend, Bảo Mật & Clean Code (Trong `.agents/skills/`)
 
 | Tên Skill | Khi Nào Sử Dụng? (Triggers) | Làm Được Những Gì? (Capabilities) | Cách Phối Hợp Trong Luồng Công Việc |
 | :--- | :--- | :--- | :--- |
 | **`clean-code`** | Khi viết mới, sửa đổi, review, hoặc tái cấu trúc mã nguồn ở bất kỳ ngôn ngữ nào. | Áp dụng 66 quy tắc Clean Code kinh điển, Boy Scout Rule, phát hiện dead code, code smells, phân tích tĩnh ngoại tuyến. | Kết hợp với mọi skill viết code (`python-fastapi-code`, `stm32-embedded-workflow`). |
+| **`security-audit`** | Khi đánh giá lỗ hổng bảo mật, kiểm thử mã nguồn, pen-test, phân tích rủi ro an ninh mạng. | Quy trình audit phòng thủ 6 giai đoạn, trinh sát luồng dữ liệu, phân loại tấn công (memory safety, auth, crypto, AI/LLM), xác thực giả định và xuất báo cáo. | Kết hợp với `clean-code` và luồng phát triển backend/microservice. |
 | **`fastapi-backend-scaffold`** | Khi khởi tạo dự án backend mới, tạo microservice Python, hoặc sắp xếp lại cấu trúc thư mục. | Thiết lập chuẩn thư mục `backend/`, cấu hình `pyproject.toml`, `.venv` cô lập, phân tách Controller-Service-Repository, middleware tập trung. | Đi trước `python-fastapi-code`. Nhận đầu vào từ `api-design-patterns`. |
 | **`python-fastapi-code`** | Khi viết API endpoint, async SQLAlchemy, Pydantic V2, xác thực JWT, WebSockets, background tasks. | Triển khai Clean Code & SOLID trong Python, áp dụng Repository/Service Pattern, Depends injection, viết async test với pytest. | Kết hợp chặt chẽ với `fastapi-backend-scaffold` và `clean-code`. |
 | **`api-design-patterns`** | Khi thiết kế endpoint REST, phân trang, lọc dữ liệu, quản lý versioning API. | Hướng dẫn 7 mẫu thiết kế REST chuẩn: Versioning, Pagination, Filtering, Field Selection, Expansion, Async Request-Response, Consistent Response. | Định hướng thiết kế trước khi code trong `python-fastapi-code`. |

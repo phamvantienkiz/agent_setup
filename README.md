@@ -8,7 +8,7 @@
 
 ## 🚀 Overview
 
-This repository provides an enterprise-ready configuration layer and a modular library of **87 specialized skills** designed to turn AI coding assistants into high-discipline, autonomous engineering and research partners.
+This repository provides an enterprise-ready configuration layer and a modular library of **88 specialized skills** designed to turn AI coding assistants into high-discipline, autonomous engineering and research partners.
 
 Instead of generic chatbot answers, this setup enforces:
 - **Clean Architecture & SOLID Engineering Standards** (Strict PEP 8, test-driven development, surgical code changes).
@@ -23,7 +23,7 @@ Instead of generic chatbot answers, this setup enforces:
 ```text
 ├── .agents/
 │   ├── mcp_config.json        # MCP server configurations (NVIDIA CUDA, etc.)
-│   └── skills/                # 29 Core Engineering, UI/UX, and Architecture skills
+│   └── skills/                # 30 Core Engineering, UI/UX, Architecture, and Security skills
 ├── research-hub/              # Meta-skill & 8-stage scientific workflow orchestrator
 ├── microsoft-research/        # 11 Research skills (Literature search, bottlenecks, 15 patterns, paper2poster/video)
 ├── cs-research-skills/        # 46 Research skills (Data scaling, ML/DL, Quantum, Bayesian, Stats, Peer Review)
@@ -191,13 +191,14 @@ flowchart LR
 
 ---
 
-## 📊 Comprehensive Skills Directory (All 87 Skills)
+## 📊 Comprehensive Skills Directory (All 88 Skills)
 
-### 1. Software Architecture, Backend & Clean Code (In `.agents/skills/`)
+### 1. Software Architecture, Backend, Security & Clean Code (In `.agents/skills/`)
 
 | Skill Name | When to Use (Triggers) | Core Capabilities | Workflow Synergy |
 | :--- | :--- | :--- | :--- |
 | **`clean-code`** | Writing, editing, reviewing, or refactoring code in any language. | Enforces 66 canonical Clean Code rules (C1-C5, F1-F4, G1-G36, N1-N7, T1-T9), Boy Scout Rule, and offline static analysis. | Pair with `python-fastapi-code` or any code generation task. |
+| **`security-audit`** | Security guidance, vulnerability review, codebase audits, pen tests, triage. | 6-phase defensive audit workflow, reconnaissance, attack classes (memory safety, auth, crypto, AI/LLM), candidate validation, and report schema. | Pairs with `clean-code` and backend development workflows. |
 | **`fastapi-backend-scaffold`** | Starting a new backend, creating a microservice, or reorganizing a Python project. | Enforces `backend/` root, `pyproject.toml`, isolated `.venv`, strict Controller-Service-Repository separation, and cross-cutting middleware. | Precedes `python-fastapi-code`. Follows `api-design-patterns`. |
 | **`python-fastapi-code`** | Writing or reviewing production FastAPI code, async SQLAlchemy, Pydantic V2, WebSockets. | Applies SOLID principles, Repository pattern, JWT/OAuth2 authentication, async pytest suites, and performance optimization. | Works with `fastapi-backend-scaffold` and `clean-code`. |
 | **`api-design-patterns`** | Designing or reviewing RESTful APIs, pagination, versioning, filtering. | Implements 7 enterprise REST patterns: Versioning, Pagination, Filtering, Field Selection, Expansion, Async Job Request, Consistent Response. | Pairs with `system-design` and `fastapi-backend-scaffold`. |

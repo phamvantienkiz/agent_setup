@@ -191,7 +191,7 @@ flowchart LR
 
 ---
 
-## 📊 Comprehensive Skills Directory (All 88 Skills)
+## 📊 Comprehensive Skills Directory (All 91 Skills)
 
 ### 1. Software Architecture, Backend, Security & Clean Code (In `.agents/skills/`)
 
@@ -204,6 +204,9 @@ flowchart LR
 | **`api-design-patterns`** | Designing or reviewing RESTful APIs, pagination, versioning, filtering. | Implements 7 enterprise REST patterns: Versioning, Pagination, Filtering, Field Selection, Expansion, Async Job Request, Consistent Response. | Pairs with `system-design` and `fastapi-backend-scaffold`. |
 | **`system-design`** | Designing distributed systems, high availability, database sharding, caching strategies, rate limiters. | Provides capacity estimation, SLA/SLO math, CAP theorem tradeoffs, architecture topologies, and cloud infrastructure patterns. | Integrates with `documentation` (Layer 2 ADR) and `diagram-design`. |
 | **`stm32-embedded-workflow`** | STM32 MCU development, HAL drivers, CubeMX checklists, pin mapping, embedded C. | Generates complete hardware design dossiers, timer/clock calculation, peripheral register rationales, and verified `main.c`. | Pair with `nvidia-cuda` for edge-AI or `clean-code` for firmware. |
+| **`rust-best-practices`** | Writing, refactoring, debugging, or designing Rust code, crates, API design, traits, async, unsafe. | Idiomatic Rust distilled from 5 canonical guides (Google, Microsoft, Effective Rust, API Guidelines, Patterns) and Bevy 0.20 ECS rules. Bundles drop-in clippy/lint configs. | Pairs with `rust-review`, `rust-port`, and `clean-code`. |
+| **`rust-review`** | Auditing, critiquing, or reviewing Rust code, PR diffs, modules, or crates. | 3-tier prioritized reports (Must fix, Should fix, Consider), rule citing (API Guidelines, Clippy, Soundness), minimal fix diffs. | Pairs with `rust-best-practices` and `security-audit`. |
+| **`rust-port`** | Migrating or porting code from C/C++, Python, Go, JS/TS to idiomatic Rust. | Test-first migration, observable behavior matching, idiom mapping table, and comprehensive `PORTING.md` generation. | Pairs with `rust-best-practices`. |
 
 ---
 

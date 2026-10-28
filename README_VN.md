@@ -194,7 +194,7 @@ flowchart LR
 
 ---
 
-## 📊 Bảng Tra Cứu Toàn Diện Tất Cả 88 Skills Hiện Có
+## 📊 Bảng Tra Cứu Toàn Diện Tất Cả 91 Skills Hiện Có
 
 ### 1. Kiến Trúc Phần Mềm, Backend, Bảo Mật & Clean Code (Trong `.agents/skills/`)
 
@@ -207,6 +207,9 @@ flowchart LR
 | **`api-design-patterns`** | Khi thiết kế endpoint REST, phân trang, lọc dữ liệu, quản lý versioning API. | Hướng dẫn 7 mẫu thiết kế REST chuẩn: Versioning, Pagination, Filtering, Field Selection, Expansion, Async Request-Response, Consistent Response. | Định hướng thiết kế trước khi code trong `python-fastapi-code`. |
 | **`system-design`** | Khi thiết kế hệ thống phân tán, xử lý tải cao, sharding database, caching, message queue, CAP theorem. | Tính toán tải (capacity planning), đo lường SLA/SLO/latency, thiết kế topo hệ thống, chọn kiến trúc Cloud/Microservice. | Ghi kết quả vào tầng Kiến trúc của `documentation` và vẽ bằng `diagram-design`. |
 | **`stm32-embedded-workflow`** | Khi lập trình vi điều khiển STM32, cấu hình ngoại vi HAL, tra cứu datasheet, viết code C nhúng. | Phân tích bài toán, tính toán xung nhịp/timer, lập checklist STM32CubeMX, giải thích thanh ghi, sinh mã nguồn `main.c` chuẩn. | Kết hợp với `clean-code` cho firmware hoặc `nvidia-cuda` cho hệ thống nhúng AI. |
+| **`rust-best-practices`** | Khi viết mới, sửa đổi, gỡ lỗi, thiết kế API, traits, async, unsafe code trong Rust. | Đúc kết idiomatic Rust từ 5 cẩm nang hàng đầu (Google, Microsoft, Effective Rust, API Guidelines, Design Patterns) và quy chuẩn Bevy 0.20 ECS. Đi kèm cấu hình clippy/lints mẫu. | Kết hợp với `rust-review`, `rust-port` và `clean-code`. |
+| **`rust-review`** | Khi audit, đánh giá mã nguồn Rust hiện có, file `.rs`, crate hoặc Git Diff / Pull Request. | Báo cáo 3 cấp độ ưu tiên (Must fix, Should fix, Consider), trích dẫn chính xác quy tắc (API Guidelines, Clippy, Soundness) và mã sửa tối giản. | Kết hợp với `rust-best-practices` và `security-audit`. |
+| **`rust-port`** | Khi chuyển đổi mã nguồn từ C/C++, Python, Go, JS/TS sang Rust chuẩn idiomatic. | Chuyển đổi theo phương pháp Test-first, giữ nguyên hành vi quan sát được (observable behavior), bảng mapping cấu trúc và sinh tài liệu bàn giao `PORTING.md`. | Kết hợp với `rust-best-practices`. |
 
 ---
 

@@ -1,9 +1,11 @@
 /**
  * Skills Explorer Component (agent_setup by Jin)
- * Real-time search, category filtering, copy prompt with SVG icons, and detail modal
+ * Real-time search, category filtering, copy prompt with SVG icons, and detail modal.
+ * Full bilingual support (Vietnamese & English).
  */
 
-import { SKILLS_DATA, SKILL_CATEGORIES } from './skills-data.js';
+import { getSkills, getCategories } from './skills-data.js';
+import { i18n } from './i18n.js';
 
 // SVG Icon Helpers
 const ICONS = {
@@ -15,8 +17,9 @@ const ICONS = {
 
 export class SkillsExplorer {
   constructor() {
-    this.skills = SKILLS_DATA;
-    this.categories = SKILL_CATEGORIES;
+    this.lang = i18n.getLang();
+    this.skills = getSkills(this.lang);
+    this.categories = getCategories(this.lang);
     this.activeCategory = 'all';
     this.searchQuery = '';
 
@@ -41,6 +44,23 @@ export class SkillsExplorer {
     this.renderTabs();
     this.renderCards();
     this.bindEvents();
+  }
+
+  setLanguage(lang) {
+    this.lang = (lang === 'en') ? 'en' : 'vi';
+    this.skills = getSkills(this.lang);
+    this.categories = getCategories(this.lang);
+
+    this.renderTabs();
+    this.renderCards();
+
+    // If modal is currently open, refresh its content in the new language
+    if (this.activeModalSkill && this.modalBackdrop?.classList.contains('open')) {
+      const refreshedSkill = this.skills.find(s => s.id === this.activeModalSkill.id);
+      if (refreshedSkill) {
+        this.openModal(refreshedSkill);
+      }
+    }
   }
 
   bindEvents() {
@@ -131,14 +151,19 @@ export class SkillsExplorer {
     const filtered = this.getFilteredSkills();
 
     if (filtered.length === 0) {
+      const emptyTitle = i18n.t('emptySearchTitle') || 'Không tìm thấy kỹ năng phù hợp';
+      const emptyDesc = i18n.t('emptySearchDesc') || 'Hãy thử tìm với từ khóa khác.';
       this.cardsContainer.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 48px; background: var(--color-surface-muted); border-radius: var(--radius-md); border: 1px dashed var(--color-border-subtle);">
-          <p style="color: var(--color-brand-accent); font-size: var(--font-size-lg); font-weight: 600; margin-bottom: 8px;">Không tìm thấy kỹ năng phù hợp</p>
-          <p style="color: var(--color-text-muted); font-size: var(--font-size-sm);">Hãy thử tìm với từ khóa khác như "fastapi", "clean-code", "rag", "langchain", hoặc "3d".</p>
+          <p style="color: var(--color-brand-accent); font-size: var(--font-size-lg); font-weight: 600; margin-bottom: 8px;">${emptyTitle}</p>
+          <p style="color: var(--color-text-muted); font-size: var(--font-size-sm);">${emptyDesc}</p>
         </div>
       `;
       return;
     }
+
+    const copyText = i18n.t('btnCopyPrompt') || 'Copy Prompt';
+    const detailText = i18n.t('btnDetails') || 'Chi tiết';
 
     this.cardsContainer.innerHTML = '';
     filtered.forEach((skill) => {
@@ -173,10 +198,10 @@ export class SkillsExplorer {
         <div class="skill-card-footer">
           <button class="btn btn-secondary btn-sm copy-btn" data-id="${skill.id}">
             ${ICONS.copy}
-            <span>Copy Prompt</span>
+            <span>${copyText}</span>
           </button>
           <button class="btn btn-ghost btn-sm detail-btn" data-id="${skill.id}">
-            <span>Chi tiết</span>
+            <span>${detailText}</span>
             ${ICONS.arrowRight}
           </button>
         </div>
@@ -197,16 +222,18 @@ export class SkillsExplorer {
   }
 
   copyPrompt(text, btnElement = null) {
+    const copiedMsg = i18n.t('toastCopied') || 'Đã sao chép prompt vào clipboard!';
+    const copiedBtnText = i18n.t('btnCopied') || 'Đã chép!';
+    const defaultBtnText = i18n.t('btnCopyPrompt') || 'Copy Prompt';
+
     navigator.clipboard.writeText(text).then(() => {
-      this.showToast('Đã sao chép prompt vào clipboard!');
+      this.showToast(copiedMsg);
       if (btnElement) {
-        const textSpan = btnElement.querySelector('span');
-        const originalText = textSpan ? textSpan.textContent : '';
-        btnElement.innerHTML = `${ICONS.check} <span>Đã chép!</span>`;
+        btnElement.innerHTML = `${ICONS.check} <span>${copiedBtnText}</span>`;
         btnElement.style.borderColor = 'var(--color-brand-primary)';
         btnElement.style.color = 'var(--color-brand-accent)';
         setTimeout(() => {
-          btnElement.innerHTML = `${ICONS.copy} <span>${originalText || 'Copy Prompt'}</span>`;
+          btnElement.innerHTML = `${ICONS.copy} <span>${defaultBtnText}</span>`;
           btnElement.style.borderColor = '';
           btnElement.style.color = '';
         }, 1800);
@@ -241,30 +268,46 @@ export class SkillsExplorer {
       this.modalBadge.className = badgeClass;
     }
 
+    if (this.modalCopyBtn) {
+      const copyBtnText = i18n.t('modalCopyBtn') || 'Sao Chép Prompt Này';
+      this.modalCopyBtn.innerHTML = `
+        ${ICONS.copy}
+        <span>${copyBtnText}</span>
+      `;
+    }
+
     const formattedHtml = this.formatMarkdown(skill.details);
     if (this.modalBody) {
+      const packBadge = i18n.t('modalModularPackBadge') || 'Gói Modular On-Demand:';
+      const packTemplate = i18n.t('modalModularPackText') || 'Bộ công cụ này được lưu trữ tại thư mục gốc <code>{path}</code> để giữ cho Antigravity CLI luôn siêu nhẹ. Khi cần dùng, chỉ cần sao chép vào <code>.agents/skills/</code>.';
+      const packText = packTemplate.replace('{path}', skill.packPath);
+
       const modularBanner = skill.isModularPack ? `
         <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 20px; color: #fbbf24; font-size: 13.5px; line-height: 1.6;">
-          <strong>⚡ Gói Modular On-Demand:</strong> Bộ công cụ này được lưu trữ tại thư mục gốc <code>${skill.packPath}</code> để giữ cho Antigravity CLI luôn siêu nhẹ. Khi cần dùng, chỉ cần sao chép vào <code>.agents/skills/</code>.
+          <strong>⚡ ${packBadge}</strong> ${packText}
         </div>
       ` : '';
+
+      const overviewLabel = i18n.t('modalOverviewLabel') || 'Mô tả tổng quát:';
+      const triggersLabel = i18n.t('modalTriggersLabel') || 'Từ khóa kích hoạt (Triggers):';
+      const promptLabel = i18n.t('modalPromptLabel') || 'Prompt Mẫu Sẵn Sàng Kích Hoạt:';
 
       this.modalBody.innerHTML = `
         ${modularBanner}
         <div style="margin-bottom: 20px;">
-          <h4 style="color: var(--color-brand-accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Mô tả tổng quát:</h4>
+          <h4 style="color: var(--color-brand-accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">${overviewLabel}</h4>
           <p style="color: var(--color-text-primary); font-size: 15px;">${skill.description}</p>
         </div>
 
         <div style="margin-bottom: 20px;">
-          <h4 style="color: var(--color-brand-accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Từ khóa kích hoạt (Triggers):</h4>
+          <h4 style="color: var(--color-brand-accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">${triggersLabel}</h4>
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
             ${skill.triggers.map(t => `<span class="trigger-tag" style="font-size: 12px; padding: 2px 8px;">${t}</span>`).join('')}
           </div>
         </div>
 
         <div style="margin-bottom: 24px;">
-          <h4 style="color: var(--color-brand-accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Prompt Mẫu Sẵn Sàng Kích Hoạt:</h4>
+          <h4 style="color: var(--color-brand-accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">${promptLabel}</h4>
           <pre><code>${skill.promptTemplate}</code></pre>
         </div>
 

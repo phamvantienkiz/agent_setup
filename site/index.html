@@ -29,12 +29,12 @@
 <body>
 
   <!-- Accessibility Skip Link -->
-  <a href="#main-content" class="skip-link">Bỏ qua đến nội dung chính</a>
+  <a href="#main-content" class="skip-link" data-i18n="skipLink">Bỏ qua đến nội dung chính</a>
 
   <!-- Global Sticky Navbar -->
   <header class="site-header">
     <div class="container navbar">
-      <a href="#" class="brand-group" aria-label="Trang chủ agent_setup by Hi Jin">
+      <a href="#" class="brand-group" aria-label="Trang chủ agent_setup by Hi Jin" data-i18n-aria="brandAria">
         <div class="brand-icon-box">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -45,31 +45,37 @@
         </div>
         <div>
           <span class="brand-name">agent_setup</span>
-          <span class="brand-author">by Jin</span>
+          <span class="brand-author" data-i18n="brandAuthor">by Jin</span>
         </div>
       </a>
 
       <nav aria-label="Điều hướng chính">
         <ul class="nav-links">
-          <li><a href="#hero" class="nav-link active">Giới Thiệu</a></li>
-          <li><a href="#philosophy" class="nav-link">Triết Lý</a></li>
-          <li><a href="#skills" class="nav-link">Kho Skills</a></li>
-          <li><a href="#setup" class="nav-link">Cài Đặt</a></li>
+          <li><a href="#hero" class="nav-link active" data-i18n="navOverview">Giới Thiệu</a></li>
+          <li><a href="#philosophy" class="nav-link" data-i18n="navPhilosophy">Triết Lý</a></li>
+          <li><a href="#skills" class="nav-link" data-i18n="navSkills">Kho Skills</a></li>
+          <li><a href="#setup" class="nav-link" data-i18n="navSetup">Cài Đặt</a></li>
         </ul>
       </nav>
 
       <div class="nav-actions">
+        <!-- Language Switcher -->
+        <div class="lang-switch-group" role="group" aria-label="Language Selector">
+          <button type="button" class="lang-btn active" data-lang="vi" aria-label="Tiếng Việt" aria-pressed="true">VI</button>
+          <button type="button" class="lang-btn" data-lang="en" aria-label="English" aria-pressed="false">EN</button>
+        </div>
+
         <a href="#skills" class="btn btn-secondary btn-sm"
           style="display: none; @media(min-width: 640px){display: inline-flex;}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <span>Tìm kiếm</span>
+          <span data-i18n="searchShortcut">Tìm kiếm</span>
           <span style="font-family: var(--font-family-mono); font-size: 11px; opacity: 0.6;">Ctrl+K</span>
         </a>
         <a href="https://github.com/phamvantienkiz/agent_setup" target="_blank" rel="noopener noreferrer"
-          class="btn btn-primary btn-sm" aria-label="Xem mã nguồn trên GitHub">
+          class="btn btn-primary btn-sm" aria-label="Xem mã nguồn trên GitHub" data-i18n-aria="githubAria">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -95,13 +101,13 @@
               <polyline points="2 17 12 22 22 17"></polyline>
               <polyline points="2 12 12 17 22 12"></polyline>
             </svg>
-            Antigravity Agent Skills Ecosystem
+            <span data-i18n="heroTag">Antigravity Agent Skills Ecosystem</span>
           </div>
-          <h1 class="hero-headline">
+          <h1 class="hero-headline" data-i18n-html="heroHeadline">
             Dạy nghề cho AI.<br>
             <span class="gradient-text">Biến Antigravity thành kỹ sư thực thụ.</span>
           </h1>
-          <p class="hero-description">
+          <p class="hero-description" data-i18n="heroDescription">
             Kho cấu hình chuẩn mực và hơn 50+ kỹ năng chuyên sâu được tuyển chọn từ cộng đồng Claude Code và tùy biến
             riêng cho Antigravity CLI. Bớt đoán mò, không over-engineering, giữ môi trường biệt lập và sửa code chuẩn
             xác.
@@ -109,7 +115,7 @@
 
           <div class="hero-actions">
             <a href="#skills" class="btn btn-primary">
-              <span>Khám phá 50+ Skills</span>
+              <span data-i18n="heroBtnSkills">Khám phá 50+ Skills</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <polyline points="19 12 12 19 5 12"></polyline>
@@ -120,7 +126,7 @@
                 <polyline points="4 17 10 11 4 5"></polyline>
                 <line x1="12" y1="19" x2="20" y2="19"></line>
               </svg>
-              <span>Xem hướng dẫn setup</span>
+              <span data-i18n="heroBtnSetup">Xem hướng dẫn setup</span>
             </a>
           </div>
 
@@ -131,7 +137,7 @@
         </div>
 
         <!-- Right Column: Square 1:1 Motion Video Showcase -->
-        <div class="showcase-card-wrapper" aria-label="Hoạt cảnh chuyển động giới thiệu agent_setup cho Antigravity">
+        <div class="showcase-card-wrapper" aria-label="Hoạt cảnh chuyển động giới thiệu agent_setup cho Antigravity" data-i18n-aria="heroShowcaseAria">
 
           <!-- Top Window Bar -->
           <div class="showcase-top-bar">
@@ -162,9 +168,9 @@
       <div class="container">
 
         <div class="section-header">
-          <div class="section-tag">Kỷ Luật Tác Chiến</div>
-          <h2 class="section-title">4 Nguyên Tắc Kỹ Thuật Bất Biến</h2>
-          <p class="section-subtitle">
+          <div class="section-tag" data-i18n="philosophyTag">Kỷ Luật Tác Chiến</div>
+          <h2 class="section-title" data-i18n="philosophyTitle">4 Nguyên Tắc Kỹ Thuật Bất Biến</h2>
+          <p class="section-subtitle" data-i18n="philosophySubtitle">
             Học tập từ nhận xét của Andrej Karpathy về các lỗi điển hình của LLM khi viết code: bớt đoán mò, tối giản,
             và sửa đúng chỗ.
           </p>
@@ -172,30 +178,30 @@
 
         <div class="philosophy-grid">
           <div class="philosophy-card">
-            <div class="philosophy-num">01 / DISCIPLINE</div>
-            <h3 class="philosophy-title">Think Before Coding</h3>
-            <p class="philosophy-desc">Không được tự giả định nếu yêu cầu mơ hồ. Nêu rõ các giả định, đánh đổi và hỏi
+            <div class="philosophy-num" data-i18n="p1Num">01 / DISCIPLINE</div>
+            <h3 class="philosophy-title" data-i18n="p1Title">Think Before Coding</h3>
+            <p class="philosophy-desc" data-i18n="p1Desc">Không được tự giả định nếu yêu cầu mơ hồ. Nêu rõ các giả định, đánh đổi và hỏi
               lại trước khi viết mã.</p>
           </div>
 
           <div class="philosophy-card">
-            <div class="philosophy-num">02 / MINIMALISM</div>
-            <h3 class="philosophy-title">Simplicity First</h3>
-            <p class="philosophy-desc">Chỉ viết lượng code tối thiểu giải quyết bài toán. Tuyệt đối không thêm
+            <div class="philosophy-num" data-i18n="p2Num">02 / MINIMALISM</div>
+            <h3 class="philosophy-title" data-i18n="p2Title">Simplicity First</h3>
+            <p class="philosophy-desc" data-i18n="p2Desc">Chỉ viết lượng code tối thiểu giải quyết bài toán. Tuyệt đối không thêm
               abstraction hay suy đoán tương lai.</p>
           </div>
 
           <div class="philosophy-card">
-            <div class="philosophy-num">03 / PRECISION</div>
-            <h3 class="philosophy-title">Surgical Changes</h3>
-            <p class="philosophy-desc">Chỉ sửa đúng phạm vi yêu cầu. Giữ nguyên style của codebase. Mọi dòng code thay
+            <div class="philosophy-num" data-i18n="p3Num">03 / PRECISION</div>
+            <h3 class="philosophy-title" data-i18n="p3Title">Surgical Changes</h3>
+            <p class="philosophy-desc" data-i18n="p3Desc">Chỉ sửa đúng phạm vi yêu cầu. Giữ nguyên style của codebase. Mọi dòng code thay
               đổi đều phải truy vết được.</p>
           </div>
 
           <div class="philosophy-card">
-            <div class="philosophy-num">04 / SAFETY</div>
-            <h3 class="philosophy-title">Strict Isolation</h3>
-            <p class="philosophy-desc">Mọi gói phụ thuộc phải nằm trong môi trường ảo (.venv) cục bộ của workspace.
+            <div class="philosophy-num" data-i18n="p4Num">04 / SAFETY</div>
+            <h3 class="philosophy-title" data-i18n="p4Title">Strict Isolation</h3>
+            <p class="philosophy-desc" data-i18n="p4Desc">Mọi gói phụ thuộc phải nằm trong môi trường ảo (.venv) cục bộ của workspace.
               Nghiêm cấm làm bẩn host system.</p>
           </div>
         </div>
@@ -208,9 +214,9 @@
       <div class="container">
 
         <div class="section-header">
-          <div class="section-tag">Thư Viện Thực Chiến</div>
-          <h2 class="section-title">Kho 50+ Kỹ Năng Của agent_setup</h2>
-          <p class="section-subtitle">
+          <div class="section-tag" data-i18n="skillsTag">Thư Viện Thực Chiến</div>
+          <h2 class="section-title" data-i18n="skillsTitle">Kho 50+ Kỹ Năng Của agent_setup</h2>
+          <p class="section-subtitle" data-i18n="skillsSubtitle">
             Tuyển chọn và tối ưu hóa riêng cho Antigravity CLI. Tra cứu nhanh chóng, nắm bắt cú pháp kích hoạt và sao
             chép prompt mẫu chuẩn hoá.
           </p>
@@ -227,13 +233,15 @@
             </span>
             <input type="text" id="skills-search-input" class="search-input"
               placeholder="Tìm kiếm skill (ví dụ: fastapi, clean-code, user-story, diagram, 3d...)"
-              aria-label="Tìm kiếm kỹ năng">
+              aria-label="Tìm kiếm kỹ năng"
+              data-i18n-placeholder="searchPlaceholder"
+              data-i18n-aria="searchAria">
             <span class="search-kbd">Ctrl + K</span>
           </div>
         </div>
 
         <!-- Category Tabs -->
-        <div id="filter-tabs" class="filter-tabs" role="tablist" aria-label="Bộ lọc phân loại kỹ năng">
+        <div id="filter-tabs" class="filter-tabs" role="tablist" aria-label="Bộ lọc phân loại kỹ năng" data-i18n-aria="filterTabsAria">
           <!-- Populated dynamically via JS -->
         </div>
 
@@ -251,9 +259,9 @@
       <div class="container">
 
         <div class="section-header">
-          <div class="section-tag">Tích Hợp Dễ Dàng</div>
-          <h2 class="section-title">Khởi Động agent_setup Trong 3 Bước</h2>
-          <p class="section-subtitle">
+          <div class="section-tag" data-i18n="setupTag">Tích Hợp Dễ Dàng</div>
+          <h2 class="section-title" data-i18n="setupTitle">Khởi Động agent_setup Trong 3 Bước</h2>
+          <p class="section-subtitle" data-i18n="setupSubtitle">
             Cấu hình nhẹ gọn, nạp trực tiếp vào dự án của bạn và chạy cùng Antigravity CLI.
           </p>
         </div>
@@ -269,14 +277,14 @@
                 <polyline points="4 17 10 11 4 5"></polyline>
                 <line x1="12" y1="19" x2="20" y2="19"></line>
               </svg>
-              Terminal Quickstart cho Antigravity
+              <span data-i18n="setupTerminalTitle">Terminal Quickstart cho Antigravity</span>
             </div>
             <button id="copy-setup-cmd" class="btn btn-secondary btn-sm" aria-label="Sao chép các lệnh thiết lập">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
-              <span>Sao chép lệnh</span>
+              <span data-i18n="setupCopyBtn">Sao chép lệnh</span>
             </button>
           </div>
 
@@ -300,14 +308,14 @@ agy</code></pre>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
             <div
               style="background: var(--color-surface-card); padding: var(--space-4); border-radius: var(--radius-sm); border-left: 3px solid var(--color-brand-primary);">
-              <h4 style="color: #ffffff; font-size: var(--font-size-base); margin-bottom: 4px;">Nguyên Tắc Bất Biến</h4>
-              <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5;">Nghiêm cấm
+              <h4 style="color: #ffffff; font-size: var(--font-size-base); margin-bottom: 4px;" data-i18n="setupCard1Title">Nguyên Tắc Bất Biến</h4>
+              <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5;" data-i18n="setupCard1Desc">Nghiêm cấm
                 cài đặt package toàn cục. Mọi thay đổi đều được cô lập trong dự án.</p>
             </div>
             <div
               style="background: var(--color-surface-card); padding: var(--space-4); border-radius: var(--radius-sm); border-left: 3px solid var(--color-brand-primary);">
-              <h4 style="color: #ffffff; font-size: var(--font-size-base); margin-bottom: 4px;">Surgical Changes</h4>
-              <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5;">Chỉ viết
+              <h4 style="color: #ffffff; font-size: var(--font-size-base); margin-bottom: 4px;" data-i18n="setupCard2Title">Surgical Changes</h4>
+              <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5;" data-i18n="setupCard2Desc">Chỉ viết
                 lượng code tối thiểu để giải quyết bài toán. Kiểm thử trước khi kết thúc.</p>
             </div>
           </div>
@@ -329,10 +337,10 @@ agy</code></pre>
             <polyline points="16 18 22 12 16 6"></polyline>
             <polyline points="8 6 2 12 8 18"></polyline>
           </svg>
-          <span id="modal-skill-title">Chi Tiết Kỹ Năng</span>
+          <span id="modal-skill-title" data-i18n="modalDefaultTitle">Chi Tiết Kỹ Năng</span>
           <span id="modal-skill-badge" class="badge badge-emerald" style="margin-left: 8px;"></span>
         </div>
-        <button id="modal-close-btn" class="modal-close-btn" aria-label="Đóng hộp thoại (Esc)">
+        <button id="modal-close-btn" class="modal-close-btn" aria-label="Đóng hộp thoại (Esc)" data-i18n-aria="modalCloseAria">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -350,7 +358,7 @@ agy</code></pre>
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
           </svg>
-          <span>Sao Chép Prompt Này</span>
+          <span data-i18n="modalCopyBtn">Sao Chép Prompt Này</span>
         </button>
       </div>
     </div>
@@ -361,7 +369,7 @@ agy</code></pre>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
       <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
-    <span>Đã sao chép prompt vào clipboard!</span>
+    <span data-i18n="toastCopied">Đã sao chép prompt vào clipboard!</span>
   </div>
 
   <!-- GLOBAL FOOTER -->
@@ -371,7 +379,7 @@ agy</code></pre>
       <div>
         <div class="footer-brand-title">agent_setup <span
             style="font-size: 13px; font-weight: normal; color: var(--color-brand-accent);">· by Jin</span></div>
-        <p class="footer-brand-desc">Bộ cấu hình chuẩn mực và kho kỹ năng chuyên sâu tuyển chọn cho Antigravity CLI.</p>
+        <p class="footer-brand-desc" data-i18n="footerBrandDesc">Bộ cấu hình chuẩn mực và kho kỹ năng chuyên sâu tuyển chọn cho Antigravity CLI.</p>
         <div style="margin-top: 14px;">
           <a href="https://github.com/phamvantienkiz/agent_setup" target="_blank" rel="noopener noreferrer"
             class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 8px;">
@@ -386,18 +394,18 @@ agy</code></pre>
 
       <!-- Col 2: Navigation Links -->
       <div>
-        <h4 class="footer-col-title">Điều Hướng</h4>
+        <h4 class="footer-col-title" data-i18n="footerNavTitle">Điều Hướng</h4>
         <ul class="footer-col-links">
-          <li><a href="#hero">Về Đầu Trang ↑</a></li>
-          <li><a href="#philosophy">Kỷ Luật Tác Chiến</a></li>
-          <li><a href="#skills">Kho Kỹ Năng (50+)</a></li>
-          <li><a href="#setup">Hướng Dẫn Cài Đặt</a></li>
+          <li><a href="#hero" data-i18n="footerNavTop">Về Đầu Trang ↑</a></li>
+          <li><a href="#philosophy" data-i18n="footerNavPhilosophy">Kỷ Luật Tác Chiến</a></li>
+          <li><a href="#skills" data-i18n="footerNavSkills">Kho Kỹ Năng (50+)</a></li>
+          <li><a href="#setup" data-i18n="footerNavSetup">Hướng Dẫn Cài Đặt</a></li>
         </ul>
       </div>
 
       <!-- Col 3: Personal Links (Jin) -->
       <div>
-        <h4 class="footer-col-title">Tác Giả (Jin)</h4>
+        <h4 class="footer-col-title" data-i18n="footerAuthorTitle">Tác Giả (Jin)</h4>
         <ul class="footer-col-links">
           <li>
             <a href="https://tienpham-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer">
@@ -417,7 +425,7 @@ agy</code></pre>
                 <path
                   d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
               </svg>
-              <span>GitHub Cá Nhân</span>
+              <span data-i18n="footerGithubPersonal">GitHub Cá Nhân</span>
             </a>
           </li>
           <li>
@@ -443,8 +451,8 @@ agy</code></pre>
     </div>
 
     <div class="container footer-bottom">
-      <div>© 2026 agent_setup · Created by Jin · MIT License.</div>
-      <div>Tailored specifically for Antigravity CLI</div>
+      <div data-i18n="footerBottomLeft">© 2026 agent_setup · Created by Jin · MIT License.</div>
+      <div data-i18n="footerBottomRight">Tailored specifically for Antigravity CLI</div>
     </div>
   </footer>
 

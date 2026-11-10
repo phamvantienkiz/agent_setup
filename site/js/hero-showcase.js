@@ -19,6 +19,10 @@ export class HeroShowcase {
     this.accumulator = 0;
     this.isHovered = false;
 
+    // Bilingual Language State
+    const savedLang = localStorage.getItem('agent_setup_lang');
+    this.lang = savedLang === 'en' ? 'en' : 'vi';
+
     // Entities
     this.particles = [];
     this.initEntities();
@@ -40,6 +44,10 @@ export class HeroShowcase {
 
     // Start 30 FPS animation loop
     requestAnimationFrame((t) => this.loop(t));
+  }
+
+  setLanguage(lang) {
+    this.lang = lang === 'en' ? 'en' : 'vi';
   }
 
   resize() {
@@ -244,7 +252,13 @@ export class HeroShowcase {
 
     ctx.fillStyle = "#6ee7b7";
     ctx.font = '12.5px "Inter", sans-serif';
-    ctx.fillText("Dạy nghề cho AI · 50+ Kỹ năng chuyên sâu", cx, textY + 22);
+    ctx.fillText(
+      this.lang === "en"
+        ? "Upskill Your AI · 50+ Specialized Skills"
+        : "Dạy nghề cho AI · 50+ Kỹ năng chuyên sâu",
+      cx,
+      textY + 22
+    );
 
     ctx.fillStyle = "#94a3b8";
     ctx.font = '11px "JetBrains Mono", monospace';
@@ -287,11 +301,21 @@ export class HeroShowcase {
     ctx.fillStyle = "#ffffff";
     ctx.font = 'bold 18px "Inter", sans-serif';
     ctx.textAlign = "center";
-    ctx.fillText("Nút thắt không nằm ở model.", cx, 48);
+    ctx.fillText(
+      this.lang === "en" ? "The bottleneck is not the model." : "Nút thắt không nằm ở model.",
+      cx,
+      48
+    );
 
     ctx.fillStyle = "#6ee7b7";
     ctx.font = '13px "Inter", sans-serif';
-    ctx.fillText("Nút thắt là thiếu kỹ năng chuẩn và kỷ luật.", cx, 70);
+    ctx.fillText(
+      this.lang === "en"
+        ? "The bottleneck is lacking skills and discipline."
+        : "Nút thắt là thiếu kỹ năng chuẩn và kỷ luật.",
+      cx,
+      70
+    );
 
     // Pulsing Brain Node in Center
     const brainY = 118;
@@ -308,7 +332,20 @@ export class HeroShowcase {
     ctx.fillText("AI FAULT", cx, brainY + 4);
 
     // 3 Hazard Warning Cards
-    const cards = [
+    const cards = this.lang === "en" ? [
+      {
+        title: "1. Hallucinating & Over-engineering",
+        desc: "Spawning 200 redundant lines of pattern for 1 simple function",
+      },
+      {
+        title: "2. Messy Diffs & Scope Creep",
+        desc: "Blindly refactoring and breaking adjacent invariants",
+      },
+      {
+        title: "3. Polluting the Host System",
+        desc: "Installing dependencies indiscriminately into global environment",
+      },
+    ] : [
       {
         title: "1. Đoán mò & Over-engineering",
         desc: "Tự dựng 200 dòng pattern thừa thãi cho 1 hàm đơn giản",
@@ -376,9 +413,34 @@ export class HeroShowcase {
 
     ctx.fillStyle = "#ffffff";
     ctx.font = 'bold 18px "Inter", sans-serif';
-    ctx.fillText("4 Bất Biến Kỹ Thuật", cx, 66);
+    ctx.fillText(
+      this.lang === "en" ? "4 Engineering Invariants" : "4 Bất Biến Kỹ Thuật",
+      cx,
+      66
+    );
 
-    const rules = [
+    const rules = this.lang === "en" ? [
+      {
+        num: "01",
+        title: "Think Before Coding",
+        desc: "Never guess. State assumptions & tradeoffs before coding.",
+      },
+      {
+        num: "02",
+        title: "Simplicity First",
+        desc: "Minimal code only. Zero speculative future-proofing or bloat.",
+      },
+      {
+        num: "03",
+        title: "Surgical Changes",
+        desc: "Touch only what is broken. Match codebase style. 100% clean diffs.",
+      },
+      {
+        num: "04",
+        title: "Strict Isolation",
+        desc: "Strict project-scoped venv (.venv). Zero global pollution.",
+      },
+    ] : [
       {
         num: "01",
         title: "Think Before Coding",
@@ -386,7 +448,7 @@ export class HeroShowcase {
       },
       {
         num: "02",
-        Simplicity: "Simplicity First",
+        title: "Simplicity First",
         desc: "Lượng code tối thiểu. Không thiết kế cho tương lai tưởng tượng.",
       },
       {
@@ -458,7 +520,11 @@ export class HeroShowcase {
 
     ctx.fillStyle = "#ffffff";
     ctx.font = 'bold 18px "Inter", sans-serif';
-    ctx.fillText("Cấu Trúc 1 Kỹ Năng Chuẩn", cx, 66);
+    ctx.fillText(
+      this.lang === "en" ? "Anatomy of a Standard Skill" : "Cấu Trúc 1 Kỹ Năng Chuẩn",
+      cx,
+      66
+    );
 
     // Code Window
     const winW = Math.min(390, w - 48);
@@ -486,7 +552,11 @@ export class HeroShowcase {
     ctx.fillText(".agents/skills/clean-code/", winX + 16, winY + 20);
 
     // Tree lines
-    const items = [
+    const items = this.lang === "en" ? [
+      { icon: "📄", name: "SKILL.md", desc: "Guardrails & trigger prompts" },
+      { icon: "📁", name: "scripts/", desc: "Automated execution scripts" },
+      { icon: "📁", name: "references/", desc: "66 Clean Code rules" },
+    ] : [
       { icon: "📄", name: "SKILL.md", desc: "Quy chuẩn & trigger prompts" },
       { icon: "📁", name: "scripts/", desc: "Mã nguồn thực thi tự động" },
       { icon: "📁", name: "references/", desc: "66 quy tắc Clean Code" },
@@ -517,16 +587,24 @@ export class HeroShowcase {
 
     ctx.fillStyle = "#ffffff";
     ctx.font = 'bold 12.5px "Inter", sans-serif';
-    ctx.fillText("Nạp kỹ năng động theo ngữ cảnh", winX + 16, effY + 24);
+    ctx.fillText(
+      this.lang === "en" ? "Dynamic on-demand context loading" : "Nạp kỹ năng động theo ngữ cảnh",
+      winX + 16,
+      effY + 24
+    );
 
     ctx.fillStyle = "#94a3b8";
     ctx.font = '11px "Inter", sans-serif';
-    ctx.fillText("Không làm phình to context window", winX + 16, effY + 44);
+    ctx.fillText(
+      this.lang === "en" ? "Zero context window bloating" : "Không làm phình to context window",
+      winX + 16,
+      effY + 44
+    );
 
     ctx.fillStyle = "#6ee7b7";
     ctx.font = 'bold 16px "JetBrains Mono", monospace';
     ctx.textAlign = "right";
-    ctx.fillText("10x Gọn", winX + winW - 16, effY + 36);
+    ctx.fillText(this.lang === "en" ? "10x Lean" : "10x Gọn", winX + winW - 16, effY + 36);
 
     ctx.restore();
   }
@@ -550,7 +628,11 @@ export class HeroShowcase {
 
     ctx.fillStyle = "#ffffff";
     ctx.font = 'bold 17px "Inter", sans-serif';
-    ctx.fillText("Custom Riêng Cho Antigravity", cx, 66);
+    ctx.fillText(
+      this.lang === "en" ? "Tailored for Antigravity" : "Custom Riêng Cho Antigravity",
+      cx,
+      66
+    );
 
     // Terminal Card
     const termW = Math.min(390, w - 48);
@@ -571,9 +653,11 @@ export class HeroShowcase {
 
     ctx.fillStyle = "#94a3b8";
     ctx.fillText(
-      "# 1. Sao chép cấu hình vào project root",
+      this.lang === "en"
+        ? "# 1. Copy configurations to project root"
+        : "# 1. Sao chép cấu hình vào project root",
       termX + 16,
-      termY + 30,
+      termY + 30
     );
 
     ctx.fillStyle = "#6ee7b7";
@@ -581,7 +665,13 @@ export class HeroShowcase {
     ctx.fillText("$ cp agent_setup/AGENTS.md ./", termX + 16, termY + 74);
 
     ctx.fillStyle = "#94a3b8";
-    ctx.fillText("# 2. Khởi chạy Antigravity CLI", termX + 16, termY + 104);
+    ctx.fillText(
+      this.lang === "en"
+        ? "# 2. Launch Antigravity CLI"
+        : "# 2. Khởi chạy Antigravity CLI",
+      termX + 16,
+      termY + 104
+    );
 
     ctx.fillStyle = "#6ee7b7";
     ctx.fillText("$ agy", termX + 16, termY + 128);

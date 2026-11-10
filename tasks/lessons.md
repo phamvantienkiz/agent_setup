@@ -26,4 +26,9 @@
 2. **Sibling Cross-References in Modular Toolchains:** When a skill cluster shares common references (e.g. `rust-review` and `rust-port` needing `bevy.md` or general rules from `rust-best-practices`), referencing sibling directories via relative paths (`../rust-best-practices/references/`) preserves high modularity and single responsibility (SRP) without duplicating heavy reference documents.
 3. **Bundling Drop-in Tooling Configurations:** Packing production-ready linting configurations (`resources/lints/clippy.toml`, `lints.toml`) directly within the skill allows AI agents to directly suggest or generate enforceable compiler configurations for user projects on demand.
 
+## Production-Grade Bilingual Architecture (No Machine Translation Widgets)
+1. **Authentic Domain Lexicon Over Automated Translation:** Automated translation tools (Google Translate widgets, heuristic string replacers) corrupt technical engineering terminology (e.g., misinterpreting "Surgical Changes", "Session Persistence", "Context Window Bloat", or "Gherkin Acceptance Criteria"). High-standard bilingual applications must maintain verified domain-accurate dictionaries curated for technical clarity.
+2. **Reactive Canvas Motion Video Synchronization:** When rendering animated motion text onto an HTML5 Canvas loop at 30 FPS, decouple language state into a reactive setter (`setLanguage(lang)`). This allows canvas frames to transition smoothly mid-cycle without stutters, text overflow, or timeline resets.
+3. **Persisted Declarative i18n DOM Updates:** Utilizing `data-i18n`, `data-i18n-html`, `data-i18n-placeholder`, and `data-i18n-aria` attributes paired with `localStorage` persistence guarantees seamless zero-refresh language switching with instant accessibility and meta tags synchronization.
+
 

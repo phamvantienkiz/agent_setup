@@ -49,7 +49,7 @@ All project documentation is strictly divided into **3 independent layers** with
 └────────────────┬────────────────┘     ⛔ NEVER divided by Release!
                  │
 ┌────────────────▼────────────────┐
-│      IMPLEMENTATION LAYER       │  ← Delivery docs: PRD, Backlog, Stories, AC, Tech Design
+│      IMPLEMENTATION LAYER       │  ← Delivery docs: Plan, Spec, Backlog, Stories, Tech Design, Deploy
 └─────────────────────────────────┘     ✅ Organized per Release / Sprint
 ```
 
@@ -132,10 +132,16 @@ This is the **Delivery Documentation Layer**. All feature specifications, sprint
 ```
 docs/implementation/
     release-1/
-        prd.md                         ← Release PRD (Core capabilities, scope, KPIs for this release)
-        srs.md                         ← Software Requirements Specification (Functional requirements)
+        plan.md                        ← Release Plan (Core capabilities, scope, milestones, KPIs for this release)
+        spec.md                        ← Functional & Feature Specifications (Detailed functional requirements)
         technical-design.md            ← Feature Sequence Diagrams, Activity Swimlanes, DB diffs
+        api-contract.md                ← API contract & endpoint specs introduced/modified in this release
         migration.md                   ← Release-specific DB migration & breaking changes
+        test.md                        ← Test plan, test cases & QA verification checklist
+        deploy.md                      ← Server deployment guide (hướng dẫn đưa lên server, env, CI/CD, rollback)
+        issue.md                       ← Known issues, bug log & incident notes for this release
+        changelog.md                   ← Release changelog & summary of notable changes
+        maintain.md                    ← Post-release maintenance, monitoring & operational runbook
         │
         ├── backlog/                   ← Delivery Backlog & Sprint Execution
         │   ├── {feature}-story-index.md  ← Backlog ledger: stories, priorities, AC coverage
@@ -144,12 +150,8 @@ docs/implementation/
         │       ├── US-002.md
         │       └── ...
         │
-        ├── api/                       ← API specs introduced/modified in this release
-        │   └── v1.md
-        ├── frontend/                  ← Screen specifications & mockup links for this release
-        │   └── ui-spec.md
-        └── qa/                        ← QA test plans & test cases
-            └── test-cases.md
+        └── frontend/                  ← Screen specifications & mockup links for this release
+            └── ui-spec.md
 ```
 
 ---
@@ -207,15 +209,19 @@ To completely eradicate **Agent Amnesia and System Destruction**, the documentat
 | Global API Standard, Envelope & Integration | `system-design` / `api-design-patterns` | `docs/architecture/08-integration-architecture.md` |
 | Code Standards & Design Patterns | Tech Lead / Architect | `docs/architecture/09-design-principles.md` |
 | Architecture Decision Record (ADR) | `system-design` / Architect | `docs/architecture/adr/ADR-XXX.md` |
-| **Release PRD & Scope Definition** | `product-requirements` / BA | `docs/implementation/{release}/prd.md` |
-| Detailed Functional Requirements (FR) | BA / Spec Writer | `docs/implementation/{release}/srs.md` |
+| **Release Plan & Scope Definition** | `product-requirements` / BA / PO | `docs/implementation/{release}/plan.md` |
+| Detailed Functional Specifications | BA / Spec Writer | `docs/implementation/{release}/spec.md` |
 | **Feature Sequence & Technical Design** | `system-design` / `diagram-design` / Tech Lead | `docs/implementation/{release}/technical-design.md` |
 | **Backlog Story Index (Sổ cái Backlog)** | `user-story-ac-writer` / BA | `docs/implementation/{release}/backlog/{feature}-story-index.md` |
 | **User Stories & Acceptance Criteria** | `user-story-ac-writer` / BA | `docs/implementation/{release}/backlog/stories/{us-id}.md` |
-| Release API Endpoint Specs (7 Patterns) | `api-design-patterns` / Tech Lead | `docs/implementation/{release}/api/vX.md` |
+| Release API Contract & Endpoint Specs (7 Patterns) | `api-design-patterns` / Tech Lead | `docs/implementation/{release}/api-contract.md` |
 | Release UI Specs & Wireframes | BA / Designer | `docs/implementation/{release}/frontend/ui-spec.md` |
-| QA Test Plans & Test Cases | QA / QC | `docs/implementation/{release}/qa/test-cases.md` |
+| Test Plans & Test Cases | QA / QC | `docs/implementation/{release}/test.md` |
 | DB Migrations & Breaking Changes | Dev / DBA | `docs/implementation/{release}/migration.md` |
+| Server Deployment Guide (Hướng dẫn đưa lên server) | DevOps / Tech Lead | `docs/implementation/{release}/deploy.md` |
+| Known Issues & Bug Tracking | QA / Dev / Ops | `docs/implementation/{release}/issue.md` |
+| Release Changelog | Tech Lead / PO | `docs/implementation/{release}/changelog.md` |
+| Maintenance & Operational Runbook | Ops / Dev | `docs/implementation/{release}/maintain.md` |
 
 ---
 
@@ -223,7 +229,7 @@ To completely eradicate **Agent Amnesia and System Destruction**, the documentat
 
 ### 1. `product-requirements` Integration:
 - Inception / Project Kickoff: Generates `docs/business/brd.md` and updates `docs/architecture/01-system-context.md` with the System Boundary & Use Case Diagram.
-- Release Specification: Outputs the feature PRD to `docs/implementation/{release}/prd.md` (or `features/{feature}-prd.md`).
+- Release Specification: Outputs the release plan & scope to `docs/implementation/{release}/plan.md` (or `features/{feature}-plan.md`).
 
 ### 2. `diagram-skills-package` / `diagram-design` Integration:
 - Scope & Context Diagrams $\rightarrow$ updates `docs/architecture/01-system-context.md`.
@@ -232,7 +238,7 @@ To completely eradicate **Agent Amnesia and System Destruction**, the documentat
 - Feature Workflows & Sequences (`/sequence`, `/activity-swimlane`, `/bpmn`) $\rightarrow$ embedded into `docs/implementation/{release}/technical-design.md`.
 
 ### 3. `user-story-ac-writer` Integration:
-- Reads the Release PRD, SRS, and Technical Design.
+- Reads the Release Plan (`plan.md`), Spec (`spec.md`), and Technical Design (`technical-design.md`).
 - Outputs the backlog ledger to `docs/implementation/{release}/backlog/{feature}-story-index.md`.
 - Outputs individual user stories with Given-When-Then AC and Architecture Guardrails to `docs/implementation/{release}/backlog/stories/{us-id}.md`.
 
@@ -250,7 +256,7 @@ To completely eradicate **Agent Amnesia and System Destruction**, the documentat
 - Consumes the API Surface Summary produced by `system-design`.
 - Applies the 7 essential REST patterns (Versioning, Pagination, Filtering, Field Selection, Expansion, Async 202, Consistent Response Envelope).
 - Outputs system-wide API standards and envelope formats to `docs/architecture/08-integration-architecture.md`.
-- Outputs feature-specific endpoint specifications to `docs/implementation/{release}/api/vX.md`.
+- Outputs feature-specific endpoint specifications to `docs/implementation/{release}/api-contract.md`.
 
 ---
 
@@ -290,10 +296,16 @@ docs/
 │
 └── implementation/                    ← IMPLEMENTATION LAYER
     ├── release-1/
-    │   ├── prd.md                     ← Release scope & feature specs
-    │   ├── srs.md                     ← Detailed functional specifications
+    │   ├── plan.md                    ← Release plan, scope & milestones
+    │   ├── spec.md                    ← Detailed functional specifications
     │   ├── technical-design.md        ← Feature Sequence & Activity Swimlanes
+    │   ├── api-contract.md            ← API contract & endpoint specifications
     │   ├── migration.md               ← DB schema migration scripts & breaking changes
+    │   ├── test.md                    ← Test plan, test cases & QA verification
+    │   ├── deploy.md                  ← Server deployment guide (hướng dẫn đưa lên server)
+    │   ├── issue.md                   ← Known issues, bug log & incidents
+    │   ├── changelog.md               ← Release changelog & notable changes
+    │   ├── maintain.md                ← Maintenance & operational runbook
     │   │
     │   ├── backlog/                   ← Sổ cái & Danh mục User Stories
     │   │   ├── {feature}-story-index.md
@@ -302,12 +314,8 @@ docs/
     │   │       ├── US-002.md
     │   │       └── ...
     │   │
-    │   ├── api/
-    │   │   └── v1.md
-    │   ├── frontend/
-    │   │   └── ui-spec.md
-    │   └── qa/
-    │       └── test-cases.md
+    │   └── frontend/
+    │       └── ui-spec.md
     │
     └── release-N/
         └── ...

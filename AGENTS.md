@@ -60,6 +60,7 @@
 
 - Apply the same principle to any other ecosystem (Go, Rust, Java, etc.): use project-scoped dependency management (e.g., `go.mod`, `Cargo.toml`, wrapper scripts) and never modify system-wide installations.
 - If a task seems to require a global install or system-level change, **STOP** and ask the user first.
+- Adhere to the requirements outlined in @AGENTS.md, as well as my specific instructions: all files generated during your work—such as tasks, artifacts, plans, "brain" (reasoning/context), walkthroughs, previews, scripts, logs, etc.—must be created directly within the @docs\ai directory. When modifying files, perform the edits directly on the files themselves; do not write Python scripts to carry out these modifications.
 
 ---
 
